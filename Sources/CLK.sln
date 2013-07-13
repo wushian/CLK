@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{24E0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Settings.Samples", "CLK.Settings\CLK.Settings.Samples\CLK.Settings.Samples.csproj", "{924F1EFA-D959-4473-8825-DDE00E4A21D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Settings.Samples.WinConsole", "CLK.Settings\CLK.Settings.Samples.WinConsole\CLK.Settings.Samples.WinConsole.csproj", "{2DB74A67-A9D3-440B-B0CC-93A76CE6113F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{924F1EFA-D959-4473-8825-DDE00E4A21D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{924F1EFA-D959-4473-8825-DDE00E4A21D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{924F1EFA-D959-4473-8825-DDE00E4A21D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DB74A67-A9D3-440B-B0CC-93A76CE6113F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DB74A67-A9D3-440B-B0CC-93A76CE6113F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DB74A67-A9D3-440B-B0CC-93A76CE6113F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DB74A67-A9D3-440B-B0CC-93A76CE6113F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,5 +60,6 @@ Global
 		{6BAA3780-80F5-459B-944D-850B468B5E11} = {446F0026-7A88-4593-892B-2C3FE3DBF72B}
 		{24E08727-76A0-4950-933A-68CEB6B465D9} = {446F0026-7A88-4593-892B-2C3FE3DBF72B}
 		{924F1EFA-D959-4473-8825-DDE00E4A21D5} = {24E08727-76A0-4950-933A-68CEB6B465D9}
+		{2DB74A67-A9D3-440B-B0CC-93A76CE6113F} = {24E08727-76A0-4950-933A-68CEB6B465D9}
 	EndGlobalSection
 EndGlobal

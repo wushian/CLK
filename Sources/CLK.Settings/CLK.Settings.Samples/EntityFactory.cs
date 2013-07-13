@@ -12,8 +12,8 @@ namespace CLK.Settings.Samples
         {
             // Create
             Entity entity = new Entity();
-            entity.Property001 = CLK.Settings.SettingContext.Current.AppSettings["property001"];
-            entity.Property002 = CLK.Settings.SettingContext.Current.ConnectionStrings["property002"];
+            entity.Property001 = CLK.Settings.SettingContext.Current.AppSettings["AppSetting001"];
+            entity.Property002 = CLK.Settings.SettingContext.Current.ConnectionStrings["ConnectionString001"];
 
             // Return
             return entity;
