@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Setting.Configuration
+namespace CLK.Settings.Configuration
 {
     public sealed partial class ConfigSettingContext : SettingContext
     {

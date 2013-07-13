@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CLK.Setting
+namespace CLK.Settings
 {
     public sealed class MemorySettingContext : SettingContext
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using CLK.Collections;
 
-namespace CLK.Setting
+namespace CLK.Settings
 {
     public class SettingCollection : StoreDictionary<string, string>
     {        
