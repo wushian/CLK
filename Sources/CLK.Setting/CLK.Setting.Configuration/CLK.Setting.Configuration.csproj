@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -39,7 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigAppSettingRepository.cs" />
+    <Compile Include="ConfigConnectionStringRepository.cs" />
+    <Compile Include="ConfigSettingContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CLK\CLK\CLK.csproj">
+      <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
+      <Name>CLK %28CLK\CLK%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Setting\CLK.Setting.csproj">
+      <Project>{1c003938-7785-4a8f-887f-157009098b2d}</Project>
+      <Name>CLK.Setting %28CLK.Setting\CLK.Setting%29</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
