@@ -14,9 +14,9 @@ namespace CLK.Settings
     public abstract partial class SettingContext
     {
         // Properties
-        public SettingCollection AppSettings { get; private set; }
+        public SettingDictionary AppSettings { get; private set; }
 
-        public SettingCollection ConnectionStrings { get; private set; }
+        public SettingDictionary ConnectionStrings { get; private set; }
 
 
         // Methods   
@@ -30,8 +30,8 @@ namespace CLK.Settings
             #endregion
 
             // Arguments
-            this.AppSettings = new SettingCollection(appSettingRepository);
-            this.ConnectionStrings = new SettingCollection(connectionStringRepository);
+            this.AppSettings = new SettingDictionary(appSettingRepository);
+            this.ConnectionStrings = new SettingDictionary(connectionStringRepository);
         }
     }
 }

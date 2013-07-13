@@ -6,9 +6,9 @@ using CLK.Collections;
 
 namespace CLK.Settings
 {
-    public class SettingCollection : StoreDictionary<string, string>
+    public sealed class SettingDictionary : StoreDictionary<string, string>
     {        
         // Constructors
-        public SettingCollection(ISettingRepository repository) : base(repository) { }
+        internal SettingDictionary(ISettingRepository repository) : base(repository) { }
     }
 }
