@@ -6,7 +6,7 @@ using CLK.Collections;
 
 namespace CLK.Settings
 {
-    public interface ISettingRepository : IStoreRepository<string, string>
+    public interface ISettingRepository : IStoreProvider<string, string>
     {
 
     }

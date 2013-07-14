@@ -8,20 +8,20 @@ namespace CLK.Collections
     public class StoreDictionary<TKey, TValue>
     {
         // Fields
-        private readonly IStoreRepository<TKey, TValue> _repository = null;
+        private readonly IStoreProvider<TKey, TValue> _provider = null;
 
 
         // Constructors
-        public StoreDictionary(IStoreRepository<TKey, TValue> repository)
+        public StoreDictionary(IStoreProvider<TKey, TValue> provider)
         {
             #region Contracts
 
-            if (repository == null) throw new ArgumentNullException();
+            if (provider == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Repository
-            _repository = repository;
+            // Provider
+            _provider = provider;
         }
 
 
@@ -30,8 +30,8 @@ namespace CLK.Collections
         {
             get
             {
-                // Repository
-                return _repository.GetAllKey();
+                // Provider
+                return _provider.GetAllKey();
             }
         }
 
@@ -39,14 +39,14 @@ namespace CLK.Collections
         {
             get
             {
-                // Repository
-                return _repository.GetValue(key);
+                // Provider
+                return _provider.GetValue(key);
             }
             set
             {
-                // Repository
-                _repository.Remove(key);
-                _repository.Add(key, value);
+                // Provider
+                _provider.Remove(key);
+                _provider.Add(key, value);
             }
         }
 
@@ -54,18 +54,18 @@ namespace CLK.Collections
         // Methods  
         public void Add(TKey key, TValue value)
         {
-            // Repository
-            _repository.Remove(key);
-            _repository.Add(key, value);
+            // Provider
+            _provider.Remove(key);
+            _provider.Add(key, value);
         }
 
         public bool Remove(TKey key)
         {
             // Require
-            if (_repository.ContainsKey(key) == false) return false;
+            if (_provider.ContainsKey(key) == false) return false;
 
-            // Repository
-            _repository.Remove(key);
+            // Provider
+            _provider.Remove(key);
 
             // Return
             return true;
@@ -73,8 +73,8 @@ namespace CLK.Collections
 
         public bool ContainsKey(TKey key)
         {
-            // Repository
-            return _repository.ContainsKey(key);
+            // Provider
+            return _provider.ContainsKey(key);
         }
     }
 }

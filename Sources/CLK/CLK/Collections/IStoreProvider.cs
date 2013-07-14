@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CLK.Collections
 {
-    public interface IStoreRepository<TKey, TValue>
+    public interface IStoreProvider<TKey, TValue>
     {
         // Methods  
         void Add(TKey key, TValue value);
