@@ -26,7 +26,7 @@ namespace CLK.Collections
 
 
         // Properties   
-        public IEnumerable<TKey> Keys
+        public virtual IEnumerable<TKey> Keys
         {
             get
             {
@@ -35,7 +35,7 @@ namespace CLK.Collections
             }
         }
 
-        public TValue this[TKey key]
+        public virtual TValue this[TKey key]
         {
             get
             {
@@ -52,14 +52,14 @@ namespace CLK.Collections
 
 
         // Methods  
-        public void Add(TKey key, TValue value)
+        public virtual void Add(TKey key, TValue value)
         {
             // Provider
             _provider.Remove(key);
             _provider.Add(key, value);
         }
 
-        public bool Remove(TKey key)
+        public virtual bool Remove(TKey key)
         {
             // Require
             if (_provider.ContainsKey(key) == false) return false;
@@ -71,7 +71,7 @@ namespace CLK.Collections
             return true;
         }
 
-        public bool ContainsKey(TKey key)
+        public virtual bool ContainsKey(TKey key)
         {
             // Provider
             return _provider.ContainsKey(key);

@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{C014
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Configuration.Samples", "CLK\CLK.Configuration.Samples\CLK.Configuration.Samples.csproj", "{9B258443-BA27-4CA7-BD96-22683716936B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CLK.Reflection", "CLK.Reflection", "{112D4D5A-7847-4581-BDC4-5B5B28B49F6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Reflection", "CLK.Reflection\CLK.Reflection\CLK.Reflection.csproj", "{080F9B84-EE60-427B-9A2D-680702F21B1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,10 @@ Global
 		{9B258443-BA27-4CA7-BD96-22683716936B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B258443-BA27-4CA7-BD96-22683716936B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B258443-BA27-4CA7-BD96-22683716936B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{080F9B84-EE60-427B-9A2D-680702F21B1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{080F9B84-EE60-427B-9A2D-680702F21B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{080F9B84-EE60-427B-9A2D-680702F21B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{080F9B84-EE60-427B-9A2D-680702F21B1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +79,6 @@ Global
 		{924F1EFA-D959-4473-8825-DDE00E4A21D5} = {24E08727-76A0-4950-933A-68CEB6B465D9}
 		{2DB74A67-A9D3-440B-B0CC-93A76CE6113F} = {24E08727-76A0-4950-933A-68CEB6B465D9}
 		{9B258443-BA27-4CA7-BD96-22683716936B} = {C014B72E-D05B-4DB3-B541-687320386923}
+		{080F9B84-EE60-427B-9A2D-680702F21B1F} = {112D4D5A-7847-4581-BDC4-5B5B28B49F6D}
 	EndGlobalSection
 EndGlobal
