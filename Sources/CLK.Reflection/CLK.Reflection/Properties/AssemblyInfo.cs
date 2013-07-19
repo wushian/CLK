@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CLK.Reflection")]
-[assembly: AssemblyCopyright("Copyright (C)  201307")]
+[assembly: AssemblyCopyright("Copyright © 2013 CLK Software Studios")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("zh-Hant")]
