@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Settings.Samples.WinConsole
+namespace CLK.Settings.Samples
 {
     class Program
     {
@@ -52,8 +52,10 @@ namespace CLK.Settings.Samples.WinConsole
             // Title
             Console.WriteLine(title);
 
-            // Operate
+            // Create
             Entity entity = EntityFactory.Create();
+
+            // Operate            
             Console.WriteLine("Property001 : " + entity.Property001);
             Console.WriteLine("Property002 : " + entity.Property002);
             Console.WriteLine();
