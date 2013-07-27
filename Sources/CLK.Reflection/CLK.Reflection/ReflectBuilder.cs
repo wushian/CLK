@@ -8,18 +8,7 @@ namespace CLK.Reflection
 {
     public abstract class ReflectBuilder
     {
-        // Constructors
-        public ReflectBuilder()
-        {
-            // Default
-            this.EntityName = string.Empty;
-            this.Parameters = new Dictionary<string, string>();
-        }
-
-
         // Properties
-        public string EntityName { get; set; }
-
         public Dictionary<string, string> Parameters { get; private set; }       
 
 

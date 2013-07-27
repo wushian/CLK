@@ -47,9 +47,11 @@
     <Compile Include="IReflectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectBuilder.cs" />
+    <Compile Include="ReflectBuilderRepository.cs" />
     <Compile Include="ReflectContext.cs" />
     <Compile Include="ReflectSection.cs" />
     <Compile Include="ReflectSectionDictionary.cs" />
+    <Compile Include="ReflectSetting.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

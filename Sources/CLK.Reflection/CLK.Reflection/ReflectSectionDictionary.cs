@@ -9,26 +9,24 @@ namespace CLK.Reflection
     public sealed class ReflectSectionDictionary
     {
         // Fields        
-        private readonly StoreDictionary<string, ReflectSection> _sectionDictionary = null;
+        private readonly IReflectRepository _repository = null;       
+                        
+        private string _cacheSectionName = null;
 
-        private readonly IStoreProvider<string, ReflectBuilder> _builderProvider = null;
+        private ReflectSection _cacheSectionInstance = null;
 
 
         // Constructors
-        internal ReflectSectionDictionary(IStoreProvider<string, ReflectSection> sectionProvider, IStoreProvider<string, ReflectBuilder> builderProvider)
+        internal ReflectSectionDictionary(IReflectRepository repository)
         {
             #region Contracts
 
-            if (sectionProvider == null) throw new ArgumentNullException();
-            if (builderProvider == null) throw new ArgumentNullException();
+            if (repository == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Base
-            _sectionDictionary = new StoreDictionary<string, ReflectSection>(sectionProvider);
-
-            // Provider
-            _builderProvider = builderProvider;
+            // Arguments
+            _repository = repository;
         }
 
 
@@ -37,8 +35,8 @@ namespace CLK.Reflection
         {
             get
             {
-                // Base
-                return _sectionDictionary.Keys;
+                // Repository
+                return _repository.GetAllSectionName();
             }
         }
 
@@ -46,13 +44,19 @@ namespace CLK.Reflection
         {
             get
             {
-                // Base
-                return _sectionDictionary[key];
-            }
-            set
-            {
-                // Base
-                _sectionDictionary[key] = value;
+                // Require
+                if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
+                if (_repository.ContainsSection(key) == false) return null;
+
+                // Cache
+                if (_cacheSectionName != key)
+                {
+                    _cacheSectionName = key;
+                    _cacheSectionInstance = new ReflectSection(key, _repository);
+                }
+                
+                // Return
+                return _cacheSectionInstance;
             }
         }
 
@@ -66,11 +70,9 @@ namespace CLK.Reflection
 
             #endregion
 
-            // Create
-            ReflectSection reflectSection = new ReflectSection(key, _builderProvider);
-
-            // Base
-            _sectionDictionary.Add(key, reflectSection);
+            // Repository
+            _repository.RemoveSection(key);
+            _repository.AddSection(key);
         }
 
         public bool Remove(string key)
@@ -81,8 +83,14 @@ namespace CLK.Reflection
 
             #endregion
 
-            // Base
-            return _sectionDictionary.Remove(key);
+            // Require
+            if (_repository.ContainsSection(key) == false) return false;
+
+            // Repository
+            _repository.RemoveSection(key);
+
+            // Return
+            return true;
         }
 
         public bool ContainsKey(string key)
@@ -93,8 +101,8 @@ namespace CLK.Reflection
 
             #endregion
 
-            // Base
-            return _sectionDictionary.ContainsKey(key);
+            // Repository
+            return _repository.ContainsSection(key);
         }
     }
 }
