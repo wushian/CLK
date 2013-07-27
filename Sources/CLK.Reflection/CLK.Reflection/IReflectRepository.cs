@@ -30,9 +30,9 @@ namespace CLK.Reflection
 
         void RemoveSetting(string sectionName, string entityName);
 
-        ReflectSetting GetSetting(string sectionName, string entityName);
-        
         bool ContainsSetting(string sectionName, string entityName);
+
+        ReflectSetting GetSetting(string sectionName, string entityName);              
 
         IEnumerable<string> GetAllEntityName(string sectionName);        
     }

@@ -59,6 +59,23 @@ namespace CLK.Settings.Configuration
             _configuration.Save();
         }
 
+        public bool ContainsKey(string key)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
+
+            #endregion
+
+            // ContainsKey
+            var setting = _configuration.AppSettings.Settings[key];
+            if (setting == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public string GetValue(string key)
         {
             #region Contracts
@@ -79,23 +96,6 @@ namespace CLK.Settings.Configuration
         {
             // GetAllKey
             return _configuration.AppSettings.Settings.AllKeys.ToArray();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
-
-            #endregion
-
-            // ContainsKey
-            var setting = _configuration.AppSettings.Settings[key];
-            if (setting == null)
-            {
-                return false;
-            }
-            return true;
-        }
+        }        
     }
 }

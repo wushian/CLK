@@ -37,6 +37,18 @@ namespace CLK.Settings
             _dictionary.Remove(key);
         }
 
+        public bool ContainsKey(string key)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
+
+            #endregion
+
+            // ContainsKey
+            return _dictionary.ContainsKey(key);
+        }
+
         public string GetValue(string key)
         {
             #region Contracts
@@ -53,18 +65,6 @@ namespace CLK.Settings
         {
             // GetAllKey
             return _dictionary.Keys.ToArray();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
-
-            #endregion
-
-            // ContainsKey
-            return _dictionary.ContainsKey(key);
-        }
+        }        
     }
 }

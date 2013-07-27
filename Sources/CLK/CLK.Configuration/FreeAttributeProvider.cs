@@ -171,6 +171,18 @@ namespace CLK.Configuration
             }
         }
 
+        public bool ContainsKey(string name)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
+
+            #endregion
+
+            // FreeAttributeDictionary
+            return _freeAttributeDictionary.Contains(name);
+        }
+
         public string GetValue(string name)
         {
             #region Contracts
@@ -193,18 +205,6 @@ namespace CLK.Configuration
         {
             // FreeAttributeDictionary
             return _freeAttributeDictionary.ToArray();
-        }
-
-        public bool ContainsKey(string name)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
-
-            #endregion
-
-            // FreeAttributeDictionary
-            return _freeAttributeDictionary.Contains(name);
-        }
+        }        
     }
 }

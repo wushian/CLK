@@ -12,10 +12,10 @@ namespace CLK.Collections
 
         void Remove(TKey key);
 
+        bool ContainsKey(TKey key);
+
         TValue GetValue(TKey key);
 
-        IEnumerable<TKey> GetAllKey();
-
-        bool ContainsKey(TKey key);
+        IEnumerable<TKey> GetAllKey();        
     }
 }
