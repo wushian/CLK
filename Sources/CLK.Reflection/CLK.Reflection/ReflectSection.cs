@@ -8,7 +8,7 @@ namespace CLK.Reflection
 {
     public sealed class ReflectSection : StoreDictionary<string, ReflectBuilder>
     {
-        // Fields        
+        // Fields
         private readonly string _sectionName = null;
 
         private readonly IReflectRepository _repository = null;

@@ -8,8 +8,16 @@ namespace CLK.Reflection
 {
     public abstract class ReflectBuilder
     {
+        // Constructors
+        public ReflectBuilder()
+        {
+            // Default            
+            this.Parameters = new Dictionary<string, string>();
+        }
+
+
         // Properties
-        public Dictionary<string, string> Parameters { get; private set; }       
+        internal protected Dictionary<string, string> Parameters { get; private set; }       
 
 
         // Methods        
