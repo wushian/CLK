@@ -50,7 +50,9 @@ namespace CLK.Settings.Samples
             #endregion
 
             // Title
+            Console.WriteLine("====================");
             Console.WriteLine(title);
+            Console.WriteLine();
 
             // Create
             Entity entity = EntityFactory.Create();
@@ -58,6 +60,9 @@ namespace CLK.Settings.Samples
             // Operate            
             Console.WriteLine("Property001 : " + entity.Property001);
             Console.WriteLine("Property002 : " + entity.Property002);
+
+            // End
+            Console.WriteLine();
             Console.WriteLine();
         }
     }

@@ -12,7 +12,7 @@ namespace CLK.Reflection.Configuration
     public sealed class ConfigReflectContext : ReflectContext
     {
         // Constructors
-        public ConfigReflectContext(IReflectRepository repository, SettingContext settingContext)
+        public ConfigReflectContext()
         {
             // Configuration
             System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
