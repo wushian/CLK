@@ -4,13 +4,15 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CLK.Settings;
+using CLK.Settings.Configuration;
 
-namespace CLK.Settings.Configuration
+namespace CLK.Reflection.Configuration
 {
-    public sealed class ConfigSettingContext : SettingContext
+    public sealed class ConfigReflectContext : ReflectContext
     {
         // Constructors
-        public ConfigSettingContext()
+        public ConfigReflectContext(IReflectRepository repository, SettingContext settingContext)
         {
             // Configuration
             System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -20,7 +22,7 @@ namespace CLK.Settings.Configuration
             this.Initialize(configuration);
         }
 
-        public ConfigSettingContext(string configurationFilename)
+        public ConfigReflectContext(string configurationFilename)
         {
             #region Contracts
 
@@ -43,18 +45,6 @@ namespace CLK.Settings.Configuration
             this.Initialize(configuration);
         }
 
-        public ConfigSettingContext(System.Configuration.Configuration configuration)
-        {
-            #region Contracts
-
-            if (configuration == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Initialize
-            this.Initialize(configuration);
-        }
-
 
         // Methods   
         private void Initialize(System.Configuration.Configuration configuration)
@@ -65,14 +55,14 @@ namespace CLK.Settings.Configuration
 
             #endregion
 
-            // AppSettingRepository
-            ISettingRepository appSettingRepository = new ConfigAppSettingRepository(configuration);
-
-            // ConnectionStringRepository
-            ISettingRepository connectionStringRepository = new ConfigConnectionStringRepository(configuration);
+            // ReflectRepository
+            IReflectRepository reflectRepository = new ConfigReflectRepository(configuration);
+            
+            // SettingContext
+            SettingContext settingContext = new ConfigSettingContext(configuration);
 
             // Initialize
-            this.Initialize(appSettingRepository, connectionStringRepository);
+            base.Initialize(reflectRepository, settingContext);
         }
     }
 }

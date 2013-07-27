@@ -15,17 +15,21 @@ namespace CLK.Reflection
     public abstract partial class ReflectContext : IReflectContext
     {
         // Fields        
-        private readonly IReflectContext _reflectContext = null;
+        private IReflectContext _reflectContext = null;
 
-        private readonly SettingContext _settingContext = null;
+        private SettingContext _settingContext = null;
 
 
-        // Constructors
-        public ReflectContext(IReflectRepository repository, SettingContext settingContext)
+        // Properties
+        public ReflectSectionDictionary ReflectSectionCollection { get; private set; }
+
+
+        // Methods
+        protected void Initialize(IReflectRepository reflectRepository, SettingContext settingContext)
         {
             #region Contracts
 
-            if (repository == null) throw new ArgumentNullException();
+            if (reflectRepository == null) throw new ArgumentNullException();
             if (settingContext == null) throw new ArgumentNullException();
 
             #endregion
@@ -35,15 +39,10 @@ namespace CLK.Reflection
             _settingContext = settingContext;
 
             // Default        
-            this.ReflectSectionCollection = new ReflectSectionDictionary(repository);
+            this.ReflectSectionCollection = new ReflectSectionDictionary(reflectRepository);
         }
 
 
-        // Properties
-        public ReflectSectionDictionary ReflectSectionCollection { get; private set; }
-
-
-        // Methods
         private TEntity CreateEntity<TEntity>(ReflectSection section, string entityName) where TEntity : class
         {
             #region Contracts
@@ -68,7 +67,6 @@ namespace CLK.Reflection
             // Return
             return entity;
         }
-
 
         public TEntity CreateEntity<TEntity>(string sectionName) where TEntity : class
         {
