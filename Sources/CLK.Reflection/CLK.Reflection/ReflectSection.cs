@@ -2,20 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CLK.Collections;
 
 namespace CLK.Reflection
 {
-    public abstract class ReflectSection
+    public sealed class ReflectSection : StoreDictionary<string, ReflectBuilder>
     {
+        // Constructors
+        internal ReflectSection(string sectionName, IStoreProvider<string, ReflectBuilder> builderProvider) : base(builderProvider) 
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(sectionName) == true) throw new ArgumentNullException();
+
+            #endregion
+
+            // SectionName
+            this.SectionName = sectionName;
+        }
+
+
         // Properties
-        public string SectionName { get; set; }
-
-
-        // Methods
-        internal abstract TEntity CreateEntity<TEntity>() where TEntity : class;
-
-        internal abstract TEntity CreateEntity<TEntity>(string entityName) where TEntity : class;
-
-        internal abstract IEnumerable<TEntity> CreateAllEntity<TEntity>() where TEntity : class;
+        public string SectionName { get; private set; }
     }
 }

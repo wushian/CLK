@@ -12,40 +12,20 @@ namespace CLK.Reflection
         public ReflectBuilder()
         {
             // Default
-            this.SectionName = string.Empty;
-            this.BuilderName = string.Empty;
+            this.EntityName = string.Empty;
             this.Parameters = new Dictionary<string, string>();
-            this.ReflectContext = null;
         }
 
 
         // Properties
-        public string SectionName { get; set; }
+        public string EntityName { get; set; }
 
-        public string BuilderName { get; set; }
-
-        public Dictionary<string, string> Parameters { get; private set; }
-
-        protected SettingContext SettingContext { get; private set; }
-
-        protected IReflectContext ReflectContext { get; private set; }
+        public Dictionary<string, string> Parameters { get; private set; }       
 
 
-        // Methods
-        internal void Initialize(SettingContext settingContext, IReflectContext reflectContext)
-        {
-            #region Contracts
+        // Methods        
+        internal protected abstract object CreateEntity(IReflectContext reflectContext, SettingContext settingContext);
 
-            if (settingContext == null) throw new ArgumentNullException();
-            if (reflectContext == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Arguments
-            this.SettingContext = settingContext;
-            this.ReflectContext = reflectContext;
-        }
-               
 
         protected string GetParameterValue(string parameterName, string defaultValue = default(string))
         {
@@ -91,9 +71,6 @@ namespace CLK.Reflection
 
             // Return
             return resultValue;
-        }
-
-
-        internal protected abstract object CreateEntity();
+        }             
     }
 }

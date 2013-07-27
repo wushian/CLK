@@ -14,7 +14,7 @@ namespace CLK.Reflection
     public abstract partial class ReflectContext : IReflectContext
     {
         // Properties
-        //public SettingDictionary AppSettings { get; private set; }
+        public ReflectSectionDictionary ReflectSectionCollection { get; private set; }
 
 
         // Methods
@@ -23,5 +23,15 @@ namespace CLK.Reflection
         public abstract TEntity CreateEntity<TEntity>(string sectionName, string entityName) where TEntity : class;
 
         public abstract IEnumerable<TEntity> CreateAllEntity<TEntity>(string sectionName) where TEntity : class;
+    }
+
+    public interface IReflectContext
+    {
+        // Methods
+        TEntity CreateEntity<TEntity>(string sectionName) where TEntity : class;
+
+        TEntity CreateEntity<TEntity>(string sectionName, string entityName) where TEntity : class;
+
+        IEnumerable<TEntity> CreateAllEntity<TEntity>(string sectionName) where TEntity : class;
     }
 }
