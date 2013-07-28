@@ -6,67 +6,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CLK.Configuration
-{
-    public class FreeAttributeConfigurationElement : ConfigurationElement
+{    
+    public partial class FreeAttributeConfigurationElement : ConfigurationElement
     {
-        // Fields
-        private readonly FreeAttributeProvider _freeAttributeProvider = null;
-
-        private readonly FreeAttributeDictionary _freeAttributeDictionary = null;
-
-
         // Constructors
         public FreeAttributeConfigurationElement()
-        {
-            // FreeAttributeProvider
-            _freeAttributeProvider = new FreeAttributeProvider(this.Properties, this.AddProperty, this.RemoveProperty, this.GetPropertyValue, this.SetPropertyValue);
-
-            // FreeAttributeDictionary
-            _freeAttributeDictionary = new FreeAttributeDictionary(_freeAttributeProvider);
+        {            
+            // FreeAttributes
+            this.FreeAttributes = new FreeAttributeDictionary(new FreeAttributeProvider(this, this.Properties, this.GetPropertyValue, this.SetPropertyValue, this.RemovePropertyValue));
         }
 
 
         // Properties
-        public FreeAttributeDictionary FreeAttributes
-        {
-            get
-            {
-                return _freeAttributeDictionary;
-            }
-        }
+        public FreeAttributeDictionary FreeAttributes { get; private set; }
 
 
-        // Methods   
-        private void AddProperty(string name)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
-
-            #endregion
-
-            // AddProperty
-            if (this.Properties.Contains(name) == false)
-            {
-                this.Properties.Add(new ConfigurationProperty(name, typeof(string), null));
-            }
-        }
-
-        private void RemoveProperty(string name)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
-
-            #endregion
-
-            // RemoveProperty
-            if (this.Properties.Contains(name) == true)
-            {
-                this.Properties.Remove(name);
-            }
-        }
-
+        // Methods
         private string GetPropertyValue(string name)
         {
             #region Contracts
@@ -75,10 +30,7 @@ namespace CLK.Configuration
 
             #endregion
 
-            // Require
-            if (this.Properties.Contains(name) == false) throw new InvalidOperationException();
-
-            // GetPropertyValue
+            // Base
             return this[name] as string;
         }
 
@@ -87,18 +39,26 @@ namespace CLK.Configuration
             #region Contracts
 
             if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
-            if (value == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Require
-            if (this.Properties.Contains(name) == false) throw new InvalidOperationException();
-
-            // SetPropertyValue
+            // Base
             this[name] = value;
-        }       
+        }
 
- 
+        private void RemovePropertyValue(string name)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
+
+            #endregion
+
+            // Base
+            this[name] = null;
+        }
+
+
         protected override bool OnDeserializeUnrecognizedAttribute(string name, string value)
         {
             #region Contracts
@@ -115,22 +75,16 @@ namespace CLK.Configuration
             }
 
             // AddProperty
-            this.AddProperty(name);
+            if (this.Properties.Contains(name) == false)
+            {
+                this.Properties.Add(new ConfigurationProperty(name, typeof(string), null));
+            }
 
             // SetPropertyValue
             this.SetPropertyValue(name, value);
 
             // Return
             return true;
-        }
-
-        protected override void PostDeserialize()
-        {
-            // Base
-            base.PostDeserialize();
-
-            // Provider            
-            _freeAttributeProvider.Refresh(this.Properties);
         }
     }
 }

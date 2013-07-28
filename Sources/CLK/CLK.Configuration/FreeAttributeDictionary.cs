@@ -9,7 +9,7 @@ using CLK.Collections;
 namespace CLK.Configuration
 {
     public sealed class FreeAttributeDictionary: StoreDictionary<string, string>
-    {        
+    {
         // Constructors
         internal FreeAttributeDictionary(FreeAttributeProvider provider) : base(provider) { }
     }
