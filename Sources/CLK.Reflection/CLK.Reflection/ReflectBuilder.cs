@@ -60,14 +60,57 @@ namespace CLK.Reflection
             // Get
             if (this.Parameters.ContainsKey(parameterName) == true)
             {
-                if (convertDelegate != null)
-                {
-                    resultValue = convertDelegate(this.Parameters[parameterName]);
-                }
+                resultValue = convertDelegate(this.Parameters[parameterName]);
             }
 
             // Return
             return resultValue;
-        }             
+        }
+
+
+        protected void SetParameterValue(string parameterName, string parameterValue)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(parameterName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(parameterValue) == true) throw new ArgumentNullException();
+
+            #endregion
+
+            // Set
+            if (this.Parameters.ContainsKey(parameterName) == true)
+            {
+                this.Parameters[parameterName] = parameterValue;
+            }
+            else
+            {
+                this.Parameters.Add(parameterName, parameterValue);
+            }
+        }
+
+        protected void SetParameterValue<TValue>(string parameterName, TValue parameterValue, Func<TValue, string> convertDelegate)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(parameterName) == true) throw new ArgumentNullException();
+            if (parameterValue == null) throw new ArgumentNullException();
+            if (convertDelegate == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Result
+            string parameterValueString = convertDelegate(parameterValue);
+            if (string.IsNullOrEmpty(parameterValueString) == true) throw new ArgumentNullException();
+
+            // Set
+            if (this.Parameters.ContainsKey(parameterName) == true)
+            {
+                this.Parameters[parameterName] = parameterValueString;
+            }
+            else
+            {
+                this.Parameters.Add(parameterName, parameterValueString);
+            }
+        }
     }
 }

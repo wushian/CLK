@@ -46,7 +46,15 @@ namespace CLK.Reflection
             {
                 // Require
                 if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
-                if (_repository.ContainsSection(key) == false) return null;
+
+                // Create
+                if (_cacheSectionName != key)
+                {
+                    if (_repository.ContainsSection(key) == false)
+                    {
+                        this.Add(key);
+                    }
+                }
 
                 // Cache
                 if (_cacheSectionName != key)

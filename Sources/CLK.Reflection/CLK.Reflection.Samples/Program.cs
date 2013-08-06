@@ -28,6 +28,7 @@ namespace CLK.Reflection.Samples
             Run("Config Settings Sample");
         }
 
+
         private static void Run(string title)
         {
             #region Contracts
@@ -43,14 +44,15 @@ namespace CLK.Reflection.Samples
 
             // Result
             Entity entity = null;
+            EntityBuilder builder = null;
 
-            // List Section
+            // List by Section
             Console.WriteLine("List from Section");
             foreach (string sectionName in ReflectContext.Current.ReflectSectionCollection.Keys)
             {
                 ReflectSection section = ReflectContext.Current.ReflectSectionCollection[sectionName];
                 Print("SectionName=" + sectionName, section);
-            }                       
+            }
 
             // Create by EntityName
             entity = ReflectContext.Current.CreateEntity<Entity>("samples/entities", "Entity001");
@@ -62,7 +64,17 @@ namespace CLK.Reflection.Samples
             // Create by Default
             entity = ReflectContext.Current.CreateEntity<Entity>("samples/entities");
             Print("CreateEntity by Default", entity);
+                        
+            // Add Entity
+            builder = new EntityBuilder();
+            builder.Property001 = "77777";
+            builder.Property002 = "88888";
+            ReflectContext.Current.ReflectSectionCollection["clarkApp/providers"].Add("P001", builder);
 
+            builder = new EntityBuilder();
+            builder.Property002 = "99999";
+            ReflectContext.Current.ReflectSectionCollection["clarkApp/providers"].Add("P002", builder);
+            
             // End
             Console.WriteLine();
         }

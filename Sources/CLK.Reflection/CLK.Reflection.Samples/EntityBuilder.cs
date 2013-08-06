@@ -8,6 +8,20 @@ namespace CLK.Reflection.Samples
 {
     public class EntityBuilder : ReflectBuilder
     {
+        // Properties
+        public string Property001
+        {
+            get { return this.GetParameterValue("Property001"); }
+            set { this.SetParameterValue("Property001", value); }
+        }
+
+        public string Property002
+        {
+            get { return this.GetParameterValue("Property002"); }
+            set { this.SetParameterValue("Property002", value); }
+        }
+
+
         // Methods
         protected override object CreateEntity(IReflectContext reflectContext, SettingContext settingContext)
         {
@@ -20,8 +34,8 @@ namespace CLK.Reflection.Samples
 
             // Create
             Entity entity = new Entity();
-            entity.Property001 = this.GetParameterValue("Property001");
-            entity.Property002 = this.GetParameterValue("Property002");
+            entity.Property001 = this.Property001;
+            entity.Property002 = this.Property002;
 
             // Return
             return entity;
