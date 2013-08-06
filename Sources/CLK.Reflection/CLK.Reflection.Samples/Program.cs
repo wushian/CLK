@@ -44,19 +44,50 @@ namespace CLK.Reflection.Samples
             // Result
             Entity entity = null;
 
-            // Create by Config
-            entity = ReflectContext.Current.CreateEntity<Entity>("CLK.Reflection.Samples/entities");
-            Print("by Default", entity);
+            // List Section
+            Console.WriteLine("List from Section");
+            foreach (string sectionName in ReflectContext.Current.ReflectSectionCollection.Keys)
+            {
+                ReflectSection section = ReflectContext.Current.ReflectSectionCollection[sectionName];
+                Print("SectionName=" + sectionName, section);
+            }                       
 
-            // Create by Name
-            entity = ReflectContext.Current.CreateEntity<Entity>("CLK.Reflection.Samples/entities", "Entity001");
-            Print("by Entity001", entity);
+            // Create by EntityName
+            entity = ReflectContext.Current.CreateEntity<Entity>("samples/entities", "Entity001");
+            Print("CreateEntity by Entity001", entity);
 
-            entity = ReflectContext.Current.CreateEntity<Entity>("CLK.Reflection.Samples/entities", "Entity002");
-            Print("by Entity002", entity);
+            entity = ReflectContext.Current.CreateEntity<Entity>("samples/entities", "Entity002");
+            Print("CreateEntity by Entity002", entity);
+
+            // Create by Default
+            entity = ReflectContext.Current.CreateEntity<Entity>("samples/entities");
+            Print("CreateEntity by Default", entity);
 
             // End
             Console.WriteLine();
+        }
+
+        static void Print(string title, ReflectSection section)
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(title) == true) throw new ArgumentNullException();
+            if (section == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Title
+            Console.WriteLine(title);
+
+            // Default
+            Console.WriteLine("Default=" + section.DefaultEntityName);
+
+            // EntityName
+            Console.WriteLine("EntityName");
+            foreach (string entityName in section.Keys)
+            {
+                Console.WriteLine("=" + entityName);
+            }
             Console.WriteLine();
         }
 
@@ -73,8 +104,8 @@ namespace CLK.Reflection.Samples
             Console.WriteLine(title);
 
             // Print
-            Console.WriteLine("Property001 : " + entity.Property001);
-            Console.WriteLine("Property002 : " + entity.Property002);
+            Console.WriteLine("Property001=" + entity.Property001);
+            Console.WriteLine("Property002=" + entity.Property002);
             Console.WriteLine();
         }
     }

@@ -27,7 +27,7 @@ namespace CLK.Reflection.Configuration
         }
 
 
-        // Methods
+        // Methods        
         public void AddSection(string sectionName)
         {
             #region Contracts
@@ -152,8 +152,15 @@ namespace CLK.Reflection.Configuration
 
         public IEnumerable<string> GetAllSectionName()
         {
-            throw new NotImplementedException();
-        }
+            // Result
+            List<string> sectionNameList = new List<string>();
+
+            // Create 
+            this.CreateAllSectionName(ref sectionNameList, _configuration.RootSectionGroup);
+
+            // Return
+            return sectionNameList;
+        }       
 
 
         public void AddDefaultEntityName(string sectionName, string entityName)
@@ -260,7 +267,7 @@ namespace CLK.Reflection.Configuration
             }
 
             // Add
-            section.SettingCollection.Add(element);
+            section.ElementCollection.Add(element);
 
             // Save
             section.CurrentConfiguration.Save();
@@ -280,7 +287,7 @@ namespace CLK.Reflection.Configuration
             if (section == null) throw new InvalidOperationException(string.Format("Fail to Get ReflectConfigurationSection:{0}", sectionName));
 
             // Remove
-            section.SettingCollection.Remove(entityName);
+            section.ElementCollection.Remove(entityName);
 
             // Save
             section.CurrentConfiguration.Save();
@@ -300,7 +307,7 @@ namespace CLK.Reflection.Configuration
             if (section == null) throw new InvalidOperationException(string.Format("Fail to Get ReflectConfigurationSection:{0}", sectionName));
 
             // Element
-            ReflectConfigurationElement element = section.SettingCollection.GetByName(entityName);
+            ReflectConfigurationElement element = section.ElementCollection.GetByName(entityName);
             if (element == null) return false;
 
             // Return
@@ -321,7 +328,7 @@ namespace CLK.Reflection.Configuration
             if (section == null) throw new InvalidOperationException(string.Format("Fail to Get ReflectConfigurationSection:{0}", sectionName));
 
             // Element
-            ReflectConfigurationElement element = section.SettingCollection.GetByName(entityName);
+            ReflectConfigurationElement element = section.ElementCollection.GetByName(entityName);
             if (element == null) return null;
 
             // Setting
@@ -349,11 +356,37 @@ namespace CLK.Reflection.Configuration
                         
             // Create
             List<string> entityNameList = new List<string>();
-            foreach (ReflectConfigurationElement element in section.SettingCollection)
+            foreach (ReflectConfigurationElement element in section.ElementCollection)
             {
                 entityNameList.Add(element.EntityName);
             }
             return entityNameList;
+        }
+
+
+        private void CreateAllSectionName(ref List<string> sectionNameList, ConfigurationSectionGroup sectionGroup)
+        {
+            #region Contracts
+
+            if (sectionGroup == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Section
+            foreach (ConfigurationSection childSection in sectionGroup.Sections)
+            {
+                ReflectConfigurationSection section = childSection as ReflectConfigurationSection;
+                if (section != null)
+                {
+                    sectionNameList.Add(section.SectionInformation.SectionName);
+                }
+            }
+
+            // SectionGroup
+            foreach (ConfigurationSectionGroup childSectionGroup in sectionGroup.SectionGroups)
+            {
+                this.CreateAllSectionName(ref sectionNameList, childSectionGroup);
+            }
         }
     }
 }

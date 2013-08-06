@@ -24,10 +24,10 @@ namespace CLK.Reflection.Configuration
         }
 
         [ConfigurationProperty("", IsDefaultCollection = true, IsRequired = false)]
-        public ReflectConfigurationElementCollection SettingCollection
+        public ReflectConfigurationElementCollection ElementCollection
         {
             get
-            {
+            {                
                 return (ReflectConfigurationElementCollection)base[""];
             }
         }
