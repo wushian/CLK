@@ -21,7 +21,7 @@ namespace CLK.Reflection
 
 
         // Properties
-        public ReflectSectionDictionary ReflectSectionCollection { get; private set; }
+        public ReflectSectionDictionary ReflectSections { get; private set; }
 
 
         // Methods
@@ -39,7 +39,7 @@ namespace CLK.Reflection
             _settingContext = settingContext;
 
             // Default        
-            this.ReflectSectionCollection = new ReflectSectionDictionary(reflectRepository);
+            this.ReflectSections = new ReflectSectionDictionary(reflectRepository);
         }
 
 
@@ -53,7 +53,7 @@ namespace CLK.Reflection
             #endregion
 
             // Builder
-            ReflectBuilder builder = section[entityName];
+            ReflectBuilder builder = section.ReflectBuilders[entityName];
             if (builder == null) throw new InvalidOperationException(string.Format("Fail to Get Builder:{0}", entityName));
 
             // EntityObject
@@ -77,7 +77,7 @@ namespace CLK.Reflection
             #endregion
 
             // Section
-            ReflectSection section = this.ReflectSectionCollection[sectionName];
+            ReflectSection section = this.ReflectSections[sectionName];
             if (section == null) throw new InvalidOperationException(string.Format("Fail to Get Section:{0}", sectionName));
 
             // EntityName
@@ -98,7 +98,7 @@ namespace CLK.Reflection
             #endregion
 
             // Section
-            ReflectSection section = this.ReflectSectionCollection[sectionName];
+            ReflectSection section = this.ReflectSections[sectionName];
             if (section == null) throw new InvalidOperationException(string.Format("Fail to Get Section:{0}", sectionName));
 
             // Create
@@ -114,12 +114,12 @@ namespace CLK.Reflection
             #endregion
 
             // Section
-            ReflectSection section = this.ReflectSectionCollection[sectionName];
+            ReflectSection section = this.ReflectSections[sectionName];
             if (section == null) return new TEntity[0];
                  
             // Create
             List<TEntity> entityList = new List<TEntity>();
-            foreach (string entityName in section.Keys)
+            foreach (string entityName in section.ReflectBuilders.Keys)
             {
                 entityList.Add(this.CreateEntity<TEntity>(section, entityName));
             }

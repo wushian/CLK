@@ -6,7 +6,7 @@ using CLK.Collections;
 
 namespace CLK.Reflection
 {
-    public sealed class ReflectSection : StoreDictionary<string, ReflectBuilder>
+    public sealed class ReflectSection
     {
         // Fields
         private readonly string _sectionName = null;
@@ -16,7 +16,6 @@ namespace CLK.Reflection
 
         // Constructors
         internal ReflectSection(string sectionName, IReflectRepository repository)
-            : base(new ReflectBuilderRepository(sectionName, repository)) 
         {
             #region Contracts
 
@@ -27,6 +26,9 @@ namespace CLK.Reflection
             // Arguments
             _sectionName = sectionName;
             _repository = repository;
+
+            // Default        
+            this.ReflectBuilders = new StoreDictionary<string, ReflectBuilder>(new ReflectBuilderRepository(sectionName, repository));
         }
 
 
@@ -66,5 +68,7 @@ namespace CLK.Reflection
                 }                              
             }
         }
+
+        public StoreDictionary<string, ReflectBuilder> ReflectBuilders { get; private set; }
     }
 }

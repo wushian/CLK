@@ -48,9 +48,9 @@ namespace CLK.Reflection.Samples
 
             // List by Section
             Console.WriteLine("List from Section");
-            foreach (string sectionName in ReflectContext.Current.ReflectSectionCollection.Keys)
+            foreach (string sectionName in ReflectContext.Current.ReflectSections.Keys)
             {
-                ReflectSection section = ReflectContext.Current.ReflectSectionCollection[sectionName];
+                ReflectSection section = ReflectContext.Current.ReflectSections[sectionName];
                 Print("SectionName=" + sectionName, section);
             }
 
@@ -64,17 +64,17 @@ namespace CLK.Reflection.Samples
             // Create by Default
             entity = ReflectContext.Current.CreateEntity<Entity>("samples/entities");
             Print("CreateEntity by Default", entity);
-                        
+
             // Add Entity
             builder = new EntityBuilder();
             builder.Property001 = "77777";
             builder.Property002 = "88888";
-            ReflectContext.Current.ReflectSectionCollection["clarkApp/providers"].Add("P001", builder);
+            ReflectContext.Current.ReflectSections["clarkApp/providers"].ReflectBuilders.Add("P001", builder);
 
             builder = new EntityBuilder();
             builder.Property002 = "99999";
-            ReflectContext.Current.ReflectSectionCollection["clarkApp/providers"].Add("P002", builder);
-            
+            ReflectContext.Current.ReflectSections["clarkApp/providers"].ReflectBuilders.Add("P002", builder);
+
             // End
             Console.WriteLine();
         }
@@ -96,7 +96,7 @@ namespace CLK.Reflection.Samples
 
             // EntityName
             Console.WriteLine("EntityName");
-            foreach (string entityName in section.Keys)
+            foreach (string entityName in section.ReflectBuilders.Keys)
             {
                 Console.WriteLine("=" + entityName);
             }
