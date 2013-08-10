@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CLK.Configuration.Samples")]
-[assembly: AssemblyCopyright("Copyright © 2013 CLK Software Studios")]
+[assembly: AssemblyCopyright("Copyright © 2013 CLK Software Studios ")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
