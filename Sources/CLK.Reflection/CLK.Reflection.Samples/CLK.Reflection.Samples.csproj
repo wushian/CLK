@@ -56,7 +56,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\CLK.Settings\CLK.Settings\CLK.Settings.csproj">
       <Project>{3d0ab3ce-bea2-4f3d-92df-584d64acd15c}</Project>
-      <Name>CLK.Settings %28CLK.Settings\CLK.Settings%29</Name>
+      <Name>CLK.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CLK\CLK.Configuration\CLK.Configuration.csproj">
       <Project>{d821cfe4-a1c8-4252-8929-4404155ad5dd}</Project>
@@ -64,7 +64,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\CLK\CLK\CLK.csproj">
       <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
-      <Name>CLK %28CLK\CLK%29</Name>
+      <Name>CLK</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Reflection.Configuration\CLK.Reflection.Configuration.csproj">
       <Project>{9126fa3b-08bc-43a0-9a4a-9c5c9201e642}</Project>
@@ -72,7 +72,7 @@
     </ProjectReference>
     <ProjectReference Include="..\CLK.Reflection\CLK.Reflection.csproj">
       <Project>{080f9b84-ee60-427b-9a2d-680702f21b1f}</Project>
-      <Name>CLK.Reflection %28CLK.Reflection\CLK.Reflection%29</Name>
+      <Name>CLK.Reflection</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -48,11 +48,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CLK\CLK\CLK.csproj">
       <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
-      <Name>CLK %28CLK\CLK%29</Name>
+      <Name>CLK</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Settings\CLK.Settings.csproj">
       <Project>{3d0ab3ce-bea2-4f3d-92df-584d64acd15c}</Project>
-      <Name>CLK.Settings %28CLK.Settings\CLK.Settings%29</Name>
+      <Name>CLK.Settings</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
