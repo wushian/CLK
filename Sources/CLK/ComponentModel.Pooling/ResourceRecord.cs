@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CLK.Pooling 
+namespace CLK.ComponentModel.Pooling 
 {
     internal sealed class ResourceRecord<TResourceKey, TResource>
     {

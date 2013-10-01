@@ -1,4 +1,4 @@
-﻿using CLK.Pooling;
+﻿using CLK.ComponentModel.Pooling;
 using System;
 using System.Collections.Generic;
 using System.Linq;

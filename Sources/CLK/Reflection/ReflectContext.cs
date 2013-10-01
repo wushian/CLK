@@ -6,7 +6,29 @@ using CLK.Settings;
 
 namespace CLK.Reflection
 {
-    public abstract class ReflectContext : IReflectContext
+    public abstract partial class ReflectContext
+    {
+        // Locator
+        private static ReflectContext _instance = null;
+
+        public static ReflectContext Current
+        {
+            set
+            {
+                _instance = value;
+            }
+            get
+            {
+                if (_instance == null)
+                {
+                    throw new InvalidOperationException();
+                }
+                return _instance;
+            }
+        }
+    }
+
+    public abstract partial class ReflectContext : IReflectContext
     {
         // Fields        
         private IReflectContext _reflectContext = null;

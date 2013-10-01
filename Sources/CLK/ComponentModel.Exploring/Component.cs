@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CLK.Projection
+namespace CLK.ComponentModel.Exploring
 {
-    public abstract class Device 
+    public abstract class Component 
     {
         // Methods
         internal protected abstract void Start();

@@ -6,36 +6,62 @@ using System.Threading;
 
 namespace CLK.Threading
 {
-    public sealed class PortableReaderWriterLock
+    public class PortableReaderWriterLock : IDisposable
     {
         // Fields
-        private readonly object _readRoot = new object();
+        private readonly ReaderWriterLockSlim _readerWriterLock = null;
 
-        private readonly object _writeRoot = new object();
+        private readonly CountdownEvent _countdownEvent = new CountdownEvent(1);
+
+
+        // Constructors
+        public PortableReaderWriterLock()
+        {
+            // Lock
+            _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        }
+
+        public PortableReaderWriterLock(LockRecursionPolicy lockRecursionPolicy)
+        {
+            // Lock
+            _readerWriterLock = new ReaderWriterLockSlim(lockRecursionPolicy);
+        }
+
+        public void Dispose()
+        {
+            // Wait
+            _countdownEvent.Signal();
+            _countdownEvent.Wait();
+
+            // Dispose
+            _countdownEvent.Dispose();
+            _readerWriterLock.Dispose();
+        }
 
 
         // Methods
         public void EnterReadLock()
         {
-            Monitor.Enter(_readRoot);
+            _countdownEvent.AddCount();
+            _readerWriterLock.EnterReadLock();
         }
 
         public void ExitReadLock()
         {
-            Monitor.Exit(_readRoot);
+            _readerWriterLock.ExitReadLock();
+            _countdownEvent.Signal();
         }
-
 
         public void EnterWriteLock()
         {
-            Monitor.Enter(_writeRoot);
-            Monitor.Enter(_readRoot);
+            _countdownEvent.AddCount();
+            _readerWriterLock.EnterWriteLock();
         }
 
         public void ExitWriteLock()
         {
-            Monitor.Exit(_readRoot);
-            Monitor.Exit(_writeRoot);
+            _readerWriterLock.ExitWriteLock();
+            _countdownEvent.Signal();
         }
     }
 }
