@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CLK.ComponentModel.Operation;
+using CLK.Operation;
 
 namespace CLK.Configuration.Operation
 {
-    public sealed class ConfigComponentWrapperRepository : IComponentWrapperRepository
+    public class ConfigComponentWrapperRepository : IComponentWrapperRepository
     {
         // Fields
         private readonly string _configFilename = string.Empty;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.ComponentModel.Operation
+namespace CLK.Operation
 {
     public abstract class ComponentWrapper
     {
@@ -13,7 +13,7 @@ namespace CLK.ComponentModel.Operation
 
 
         // Methods
-        internal abstract TImport Create<TImport>(object component) where TImport : class;
+        internal abstract TAdapter Create<TAdapter>(object component) where TAdapter : class;
     }
 
     public abstract class ComponentWrapper<TSource, TResult> : ComponentWrapper
@@ -25,7 +25,7 @@ namespace CLK.ComponentModel.Operation
 
 
         // Methods
-        internal override TImport Create<TImport>(object component) 
+        internal override TAdapter Create<TAdapter>(object component) 
         {
             #region Contracts
 
@@ -34,7 +34,7 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Require       
-            if (typeof(TImport) != typeof(TResult)) return null;
+            if (typeof(TAdapter) != typeof(TResult)) return null;
 
             // Source
             TSource source = component as TSource;
@@ -45,7 +45,7 @@ namespace CLK.ComponentModel.Operation
             if (result == null) return null;
 
             // Return
-            return result as TImport;
+            return result as TAdapter;
         }
 
         protected abstract TResult Create(TSource source);

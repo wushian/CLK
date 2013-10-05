@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.ComponentModel.Operation
+namespace CLK.Operation
 {
     public abstract class ComponentBroker
     {
@@ -37,7 +37,7 @@ namespace CLK.ComponentModel.Operation
         internal virtual void Detach(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection) { }
     }
 
-    public abstract class ComponentBroker<TComponent> : ComponentBroker
+    public class ComponentBroker<TComponent> : ComponentBroker
         where TComponent : class
     {
         // Constructors
@@ -60,7 +60,7 @@ namespace CLK.ComponentModel.Operation
 
 
         // Methods
-        internal void Attach<TImport>(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection, Action<IEnumerable<TImport>> attachDelegate, ref IEnumerable<TImport> importCollection) where TImport : class
+        internal void Attach<TAdapter>(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection, Action<IEnumerable<TAdapter>> attachDelegate, ref IEnumerable<TAdapter> adapterCollection) where TAdapter : class
         {
             #region Contracts
 
@@ -70,15 +70,15 @@ namespace CLK.ComponentModel.Operation
 
             #endregion
 
-            // ImportCollection
-            importCollection = this.CreateAll<TImport>(componentWrapperCollection, componentCollection);
-            if (importCollection == null) throw new InvalidOperationException();
+            // AdapterCollection
+            adapterCollection = this.CreateAll<TAdapter>(componentWrapperCollection, componentCollection);
+            if (adapterCollection == null) throw new InvalidOperationException();
 
             // AttachDelegate
-            attachDelegate(importCollection);
+            attachDelegate(adapterCollection);
         }
 
-        internal void Detach<TImport>(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection, Action<IEnumerable<TImport>> detachDelegate, ref IEnumerable<TImport> importCollection) where TImport : class
+        internal void Detach<TAdapter>(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection, Action<IEnumerable<TAdapter>> detachDelegate, ref IEnumerable<TAdapter> adapterCollection) where TAdapter : class
         {
             #region Contracts
 
@@ -89,16 +89,16 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Require
-            if (importCollection == null) return;
+            if (adapterCollection == null) return;
 
-            // Detach
-            detachDelegate(importCollection);
+            // DetachDelegate
+            detachDelegate(adapterCollection);
 
-            // ImportCollection
-            importCollection = null;
+            // AdapterCollection
+            adapterCollection = null;
         }
 
-        private IEnumerable<TImport> CreateAll<TImport>(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection) where TImport : class
+        private IEnumerable<TAdapter> CreateAll<TAdapter>(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection) where TAdapter : class
         {
             #region Contracts
 
@@ -108,21 +108,21 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Result
-            IEnumerable<TImport> importCollection = new TImport[0];
+            IEnumerable<TAdapter> adapterCollection = new TAdapter[0];
 
             // Create
             foreach (object component in componentCollection)
             {
-                IEnumerable<TImport> resultCollection = this.CreateAll<TImport>(componentWrapperCollection, component);
+                IEnumerable<TAdapter> resultCollection = this.CreateAll<TAdapter>(componentWrapperCollection, component);
                 if (resultCollection == null) throw new InvalidOperationException();
-                importCollection = importCollection.Concat(resultCollection);
+                adapterCollection = adapterCollection.Concat(resultCollection);
             }
 
             // Return
-            return importCollection;
+            return adapterCollection;
         }
 
-        private IEnumerable<TImport> CreateAll<TImport>(IEnumerable<ComponentWrapper> componentWrapperCollection, object component) where TImport : class
+        private IEnumerable<TAdapter> CreateAll<TAdapter>(IEnumerable<ComponentWrapper> componentWrapperCollection, object component) where TAdapter : class
         {
             #region Contracts
 
@@ -132,22 +132,22 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Result
-            List<TImport> importCollection = new List<TImport>();
-            TImport import = null;
+            List<TAdapter> adapterCollection = new List<TAdapter>();
+            TAdapter adapter = null;
 
             // Component
-            import = component as TImport;
-            if (import != null) importCollection.Add(import);
+            adapter = component as TAdapter;
+            if (adapter != null) adapterCollection.Add(adapter);
 
             // Wrapper
             foreach (ComponentWrapper componentWrapper in componentWrapperCollection)
             {
-                import = componentWrapper.Create<TImport>(component);
-                if (import != null) importCollection.Add(import);
+                adapter = componentWrapper.Create<TAdapter>(component);
+                if (adapter != null) adapterCollection.Add(adapter);
             }
 
             // Return
-            return importCollection;
+            return adapterCollection;
         }
     }
 
@@ -156,7 +156,7 @@ namespace CLK.ComponentModel.Operation
         where T1 : class
     {
         // Fields        
-        private IEnumerable<T1> _importCollection = null;
+        private IEnumerable<T1> _adapterCollection = null;
 
 
         // Constructors
@@ -177,7 +177,7 @@ namespace CLK.ComponentModel.Operation
             base.Attach(componentWrapperCollection, componentCollection);
 
             // Attach
-            this.Attach<T1>(componentWrapperCollection, componentCollection, this.Attach, ref _importCollection);
+            this.Attach<T1>(componentWrapperCollection, componentCollection, this.Attach, ref _adapterCollection);
         }
 
         internal override void Detach(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection)
@@ -190,15 +190,15 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Detach
-            this.Detach<T1>(componentWrapperCollection, componentCollection, this.Detach, ref _importCollection);
+            this.Detach<T1>(componentWrapperCollection, componentCollection, this.Detach, ref _adapterCollection);
 
             // Base
             base.Detach(componentWrapperCollection, componentCollection);
         }
 
-        protected abstract void Attach(IEnumerable<T1> importCollection);
+        protected abstract void Attach(IEnumerable<T1> adapterCollection);
 
-        protected abstract void Detach(IEnumerable<T1> importCollection);
+        protected abstract void Detach(IEnumerable<T1> adapterCollection);
     }
 
     public abstract class ComponentBroker<TComponent, T1, T2> : ComponentBroker<TComponent, T1>
@@ -207,7 +207,7 @@ namespace CLK.ComponentModel.Operation
         where T2 : class
     {
         // Fields        
-        private IEnumerable<T2> _importCollection = null;
+        private IEnumerable<T2> _adapterCollection = null;
 
 
         // Constructors
@@ -228,7 +228,7 @@ namespace CLK.ComponentModel.Operation
             base.Attach(componentWrapperCollection, componentCollection);
 
             // Attach
-            this.Attach<T2>(componentWrapperCollection, componentCollection, this.Attach, ref _importCollection);
+            this.Attach<T2>(componentWrapperCollection, componentCollection, this.Attach, ref _adapterCollection);
         }
 
         internal override void Detach(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection)
@@ -241,15 +241,15 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Detach
-            this.Detach<T2>(componentWrapperCollection, componentCollection, this.Detach, ref _importCollection);
+            this.Detach<T2>(componentWrapperCollection, componentCollection, this.Detach, ref _adapterCollection);
 
             // Base
             base.Detach(componentWrapperCollection, componentCollection);
         }
 
-        protected abstract void Attach(IEnumerable<T2> importCollection);
+        protected abstract void Attach(IEnumerable<T2> adapterCollection);
 
-        protected abstract void Detach(IEnumerable<T2> importCollection);
+        protected abstract void Detach(IEnumerable<T2> adapterCollection);
     }
 
     public abstract class ComponentBroker<TComponent, T1, T2, T3> : ComponentBroker<TComponent, T1, T2>
@@ -259,7 +259,7 @@ namespace CLK.ComponentModel.Operation
         where T3 : class
     {
         // Fields        
-        private IEnumerable<T3> _importCollection = null;
+        private IEnumerable<T3> _adapterCollection = null;
 
 
         // Constructors
@@ -280,7 +280,7 @@ namespace CLK.ComponentModel.Operation
             base.Attach(componentWrapperCollection, componentCollection);
 
             // Attach
-            this.Attach<T3>(componentWrapperCollection, componentCollection, this.Attach, ref _importCollection);
+            this.Attach<T3>(componentWrapperCollection, componentCollection, this.Attach, ref _adapterCollection);
         }
 
         internal override void Detach(IEnumerable<ComponentWrapper> componentWrapperCollection, IEnumerable<object> componentCollection)
@@ -293,14 +293,14 @@ namespace CLK.ComponentModel.Operation
             #endregion
 
             // Detach
-            this.Detach<T3>(componentWrapperCollection, componentCollection, this.Detach, ref _importCollection);
+            this.Detach<T3>(componentWrapperCollection, componentCollection, this.Detach, ref _adapterCollection);
 
             // Base
             base.Detach(componentWrapperCollection, componentCollection);
         }
 
-        protected abstract void Attach(IEnumerable<T3> importCollection);
+        protected abstract void Attach(IEnumerable<T3> adapterCollection);
 
-        protected abstract void Detach(IEnumerable<T3> importCollection);
+        protected abstract void Detach(IEnumerable<T3> adapterCollection);
     }
 }

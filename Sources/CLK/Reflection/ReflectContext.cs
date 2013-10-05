@@ -94,7 +94,7 @@ namespace CLK.Reflection
 
             // Entity
             TEntity entity = entityObject as TEntity;
-            if (entityObject == null) throw new InvalidOperationException(string.Format("Fail to Get Entity:{0}", typeof(TEntity)));
+            if (entity == null) throw new InvalidOperationException(string.Format("Fail to Create Entity:{0}", typeof(TEntity)));
 
             // Return
             return entity;

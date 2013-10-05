@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.ComponentModel.Operation
+namespace CLK.Operation
 {
     public interface IComponentBrokerRepository
     {

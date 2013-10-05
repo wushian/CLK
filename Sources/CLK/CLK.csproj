@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="Operation\Implementation\" />
     <Folder Include="Reflection\Implementation\" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +49,10 @@
     <Compile Include="Collections\StoreDictionary.cs" />
     <Compile Include="Operation\ComponentBroker.cs" />
     <Compile Include="Operation\ComponentBrokerRepository.cs" />
+    <Compile Include="Operation\Implementation\ConcatComponentBrokerRepository.cs" />
+    <Compile Include="Operation\Implementation\EmptyComponentBrokerRepository.cs" />
+    <Compile Include="Operation\Implementation\EmptyComponentWrapperRepository.cs" />
+    <Compile Include="Operation\Implementation\FixedComponentBrokerRepository.cs" />
     <Compile Include="Operation\OperateContext.cs" />
     <Compile Include="Operation\ComponentWrapper.cs" />
     <Compile Include="Operation\ComponentWrapperRepository.cs" />

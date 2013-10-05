@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.ComponentModel.Operation
+namespace CLK.Operation
 {
     public class OperateContext
     {
@@ -28,10 +28,10 @@ namespace CLK.ComponentModel.Operation
             if (componentWrapperRepository == null) throw new ArgumentNullException();
 
             #endregion
-            
+
             // ComponentBroker
             _componentBrokerCollection = componentBrokerRepository.GetAllComponentBroker();
-            if (_componentBrokerCollection == null) throw new InvalidOperationException();                                   
+            if (_componentBrokerCollection == null) throw new InvalidOperationException();
 
             // ComponentWrapper
             _componentWrapperCollection = componentWrapperRepository.GetAllComponentWrapper();
@@ -55,7 +55,7 @@ namespace CLK.ComponentModel.Operation
                 // Attach
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {
-                    componentBroker.Attach(_componentWrapperCollection, _componentBrokerCollection);
+                    componentBroker.Attach(_componentWrapperCollection, _componentCollection);
                 }
 
                 // Start
@@ -88,7 +88,7 @@ namespace CLK.ComponentModel.Operation
                 // Detach
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {
-                    componentBroker.Detach(_componentWrapperCollection, _componentBrokerCollection);
+                    componentBroker.Detach(_componentWrapperCollection, _componentCollection);
                 }
             }
             finally
