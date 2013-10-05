@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Net.Sockets", "CLK.Net.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Threading", "CLK.Threading\CLK.Threading.csproj", "{84A6E04A-6832-4A38-9C26-4C66448A46A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Composition", "CLK.Composition\CLK.Composition.csproj", "{C5E951B5-9571-44FF-B3B9-5D7CFA26F538}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{84A6E04A-6832-4A38-9C26-4C66448A46A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84A6E04A-6832-4A38-9C26-4C66448A46A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84A6E04A-6832-4A38-9C26-4C66448A46A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5E951B5-9571-44FF-B3B9-5D7CFA26F538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5E951B5-9571-44FF-B3B9-5D7CFA26F538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5E951B5-9571-44FF-B3B9-5D7CFA26F538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5E951B5-9571-44FF-B3B9-5D7CFA26F538}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
