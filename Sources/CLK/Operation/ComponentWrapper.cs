@@ -13,7 +13,7 @@ namespace CLK.Operation
 
 
         // Methods
-        internal abstract TAdapter Create<TAdapter>(object component) where TAdapter : class;
+        internal abstract IEnumerable<TResource> Create<TResource>(object component) where TResource : class;
     }
 
     public abstract class ComponentWrapper<TSource, TResult> : ComponentWrapper
@@ -25,7 +25,7 @@ namespace CLK.Operation
 
 
         // Methods
-        internal override TAdapter Create<TAdapter>(object component) 
+        internal override IEnumerable<TResource> Create<TResource>(object component) 
         {
             #region Contracts
 
@@ -34,20 +34,20 @@ namespace CLK.Operation
             #endregion
 
             // Require       
-            if (typeof(TAdapter) != typeof(TResult)) return null;
+            if (typeof(TResource) != typeof(TResult)) return null;
 
             // Source
             TSource source = component as TSource;
             if (source == null) return null;
 
             // Create
-            TResult result = this.Create(source);
-            if (result == null) return null;
+            IEnumerable<TResult> resultCollection = this.Create(source);
+            if (resultCollection == null) return null;
 
             // Return
-            return result as TAdapter;
+            return resultCollection as IEnumerable<TResource>;
         }
 
-        protected abstract TResult Create(TSource source);
+        protected abstract IEnumerable<TResult> Create(TSource source);
     }
 }

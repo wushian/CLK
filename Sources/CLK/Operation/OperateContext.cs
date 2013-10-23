@@ -52,10 +52,10 @@ namespace CLK.Operation
             // Start
             try
             {
-                // Attach
+                // Initialize
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {
-                    componentBroker.Attach(_componentWrapperCollection, _componentCollection);
+                    componentBroker.Initialize(_componentCollection, _componentWrapperCollection);
                 }
 
                 // Start
@@ -83,12 +83,6 @@ namespace CLK.Operation
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {
                     componentBroker.Stop();
-                }
-
-                // Detach
-                foreach (ComponentBroker componentBroker in _componentBrokerCollection)
-                {
-                    componentBroker.Detach(_componentWrapperCollection, _componentCollection);
                 }
             }
             finally
