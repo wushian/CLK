@@ -1,4 +1,4 @@
-#[CLK Framework] CLK.Settings - 移除App.Config相依的參數設定
+##[CLK Framework] CLK.Settings - 移除相依的參數模組
 
 
 ##模組下載

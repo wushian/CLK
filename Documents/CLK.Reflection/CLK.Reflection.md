@@ -1,4 +1,4 @@
-##[CLK Framework] CLK.Reflection - 超輕量級的DI Framework##
+##[CLK Framework] CLK.Reflection - 超輕量級的DI Framework
 
 
 
