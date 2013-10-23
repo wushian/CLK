@@ -1,11 +1,11 @@
 ##[CLK Framework] CLK.Settings - 移除App.Config相依的參數設定
 
-[[繼續閱讀]](https://github.com/Clark159/CLK)
+[[繼續閱讀]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Settings/CLK.Settings.md)
 
-##[CLK Framework] CLK.Reflection - 設定簡化的DI Framework
+##[CLK Framework] CLK.Reflection - 超輕量級的DI Framework
 
-[[即將推出]](#)
+[[即將推出]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Reflection/CLK.Reflection.md)
 
-##[CLK Framework] CLK.Operation - 模組掛載的運轉環境
+##[CLK Framework] CLK.Operation - 外部掛載的運轉環境
 
-[[即將推出]](#)
+[[即將推出]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Operation/CLK.Operation.md)
