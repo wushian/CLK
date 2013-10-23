@@ -1,4 +1,4 @@
-##[CLK Framework] CLK.Operation - 外部掛載的運轉環境
+##[CLK Framework] CLK.Operation - 功能模組的掛載環境
 
 
 

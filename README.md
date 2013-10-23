@@ -6,6 +6,6 @@
 
 [[即將推出]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Reflection/CLK.Reflection.md)
 
-##[CLK Framework] CLK.Operation - 外部掛載的運轉環境
+##[CLK Framework] CLK.Operation - 功能模組的掛載環境
 
 [[即將推出]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Operation/CLK.Operation.md)
