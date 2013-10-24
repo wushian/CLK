@@ -1,8 +1,8 @@
-##[CLK Framework] CLK.Settings - 移除相依的參數模組
+#[CLK Framework] CLK.Settings - 移除相依的參數模組#
 
 
 
-##模組下載
+##模組下載##
 
 GitHub：[CLK](https://github.com/Clark159/CLK)
 
@@ -10,25 +10,23 @@ NuGet：[CLK](https://github.com/Clark159/CLK)、[CLK.Configuration](https://git
 
 
 
-##問題情景
+##問題情景##
 
 XXXXXXXXXXXXXXXXXXXXXX
 
 
 
-##解決方案
+##解決方案##
 
 XXXXXXXXXXXXXXXXXXXXXX
 
-###模組結構
+###模組結構###
 
-###模組物件
-
-###物件互動
+###物件互動###
 
 
 
-##使用範例
+##使用範例##
 
 ###No001 - 初始化模組
 

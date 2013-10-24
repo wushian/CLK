@@ -47,6 +47,16 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\CLK.Configuration\CLK.Configuration.csproj">
+      <Project>{D821CFE4-A1C8-4252-8929-4404155AD5DD}</Project>
+      <Name>CLK.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\CLK\CLK.csproj">
+      <Project>{55A100B9-E43E-4E90-A2D8-2B5E5EF31490}</Project>
+      <Name>CLK</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

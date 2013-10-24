@@ -21,20 +21,20 @@ namespace CLK.Configuration.Settings
             this.Initialize(configuration);
         }
 
-        public ConfigSettingContext(string configurationFilename)
+        public ConfigSettingContext(string configFilename)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(configurationFilename) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(configFilename) == true) throw new ArgumentNullException();
             
             #endregion
 
             // Require
-            if (System.IO.File.Exists(configurationFilename) == false) throw new System.IO.FileNotFoundException(string.Format("Filename:{0}", configurationFilename));
+            if (System.IO.File.Exists(configFilename) == false) throw new System.IO.FileNotFoundException(string.Format("Filename:{0}", configFilename));
 
             // ConfigurationFileMap
             ExeConfigurationFileMap configurationFileMap = new ExeConfigurationFileMap();
-            configurationFileMap.ExeConfigFilename = configurationFilename;
+            configurationFileMap.ExeConfigFilename = configFilename;
 
             // Configuration
             System.Configuration.Configuration configuration = ConfigurationManager.OpenMappedExeConfiguration(configurationFileMap, ConfigurationUserLevel.None);
