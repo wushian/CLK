@@ -1,6 +1,7 @@
 ##[CLK Framework] CLK.Settings - 移除相依的參數模組
 
 
+
 ##模組下載
 
 GitHub：[CLK](https://github.com/Clark159/CLK)
@@ -23,15 +24,17 @@ XXXXXXXXXXXXXXXXXXXXXX
 
 ###模組物件
 
-###模組互動
+###物件互動
 
 
 
 ##使用範例
 
-###讀取參數設定
+###No001 - 初始化模組
 
-###寫入參數設定
+###No002 - 讀取參數
 
-###更換儲存目標
+###No003 - 寫入參數
+
+###No004 - 更換儲存
 
