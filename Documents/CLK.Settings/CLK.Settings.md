@@ -1,7 +1,6 @@
 #[CLK Framework] CLK.Settings - 跨平台的參數存取模組#
 
 
-
 ##問題情景##
 
 開發功能模組的時候，常常免不了有一些參數(例如ConnectionString)，需要存放在Config檔(App.Config、Web.Config)。而.NET Framework也很貼心的提供System.Configuration命名空間裡的類別，用來幫助開發人員簡化存取Config檔的開發工作。但是當功能模組的開發，是以跨平台執行為目標來做設計的時候，因為不是每個平台都允許Config檔的存在，所以連帶的System.Configuration命名空間裡的類別，也並不支援跨平台的參考使用。
@@ -34,7 +33,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 
 ###模組下載###
 
-程式碼下載：[點此下載](https://github.com/Clark159/CLK)。
+程式碼下載：[由此進入GitHub後，點選右下角的「Download ZIP」按鈕下載。](https://github.com/Clark159/CLK)
 
 (開啟程式碼的時候，建議使用Visual Studio所提供的「大綱->摺疊至定義」功能來摺疊程式碼，以能得到較適合閱讀的排版樣式。)
 
