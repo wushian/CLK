@@ -12,16 +12,9 @@ namespace CLK.Settings.Samples.No003
         static void Main(string[] args)
         {
             // Create
-            SettingContext settingContext = new ConfigSettingContext();
-
+            SettingContext settingContext = Program.Create();
+            
             // List
-            Console.WriteLine("\nConnectionStrings");
-            foreach (string key in settingContext.ConnectionStrings.Keys)
-            {
-                string connectionString = settingContext.ConnectionStrings[key];
-                Console.WriteLine(connectionString);
-            }            
-
             Console.WriteLine("\nAppSettings");
             foreach (string key in settingContext.AppSettings.Keys)
             {
@@ -29,9 +22,25 @@ namespace CLK.Settings.Samples.No003
                 Console.WriteLine(argumentString);
             }     
 
+            Console.WriteLine("\nConnectionStrings");
+            foreach (string key in settingContext.ConnectionStrings.Keys)
+            {
+                string connectionString = settingContext.ConnectionStrings[key];
+                Console.WriteLine(connectionString);
+            }                                   
+
             // End
-            Console.WriteLine("\n\nPress enter to end...");
+            Console.WriteLine("\nPress enter to end...");
             Console.ReadLine();
+        }
+
+        static SettingContext Create()
+        {
+            // SettingContext
+            SettingContext settingContext = new ConfigSettingContext();
+
+            // Return
+            return settingContext;
         }
     }
 }

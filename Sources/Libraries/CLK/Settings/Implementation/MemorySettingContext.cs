@@ -19,5 +19,18 @@ namespace CLK.Settings
             // Initialize
             this.Initialize(appSettingRepository, connectionStringRepository);
         }
+
+        public MemorySettingContext(ISettingRepository appSettingRepository, ISettingRepository connectionStringRepository)
+        {
+            #region Contracts
+
+            if (appSettingRepository == null) throw new ArgumentNullException();
+            if (connectionStringRepository == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Initialize
+            this.Initialize(appSettingRepository, connectionStringRepository);
+        }
     }
 }

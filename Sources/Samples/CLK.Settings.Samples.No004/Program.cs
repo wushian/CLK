@@ -12,20 +12,25 @@ namespace CLK.Settings.Samples.No004
         static void Main(string[] args)
         {
             // Create
-            SettingContext settingContext = new ConfigSettingContext();
+            SettingContext settingContext = Program.Create();
 
-            // Get
-            Console.WriteLine("\nConnectionStrings");
-            string connectionString = settingContext.ConnectionStrings["Database01"];
-            Console.WriteLine(connectionString);
+            // Set           
+            settingContext.AppSettings["Argument04"] = "DDDDDDDDDDDDD";
 
-            Console.WriteLine("\nAppSettings");
-            string argumentString = settingContext.AppSettings["Argument01"];
-            Console.WriteLine(argumentString);
+            settingContext.ConnectionStrings["Database03"] = "Data Source=192.168.3.3;Initial Catalog=DB03";
 
             // End
-            Console.WriteLine("\n\nPress enter to end...");
+            Console.WriteLine("\nPress enter to end...");
             Console.ReadLine();
+        }
+
+        static SettingContext Create()
+        {
+            // SettingContext
+            SettingContext settingContext = new ConfigSettingContext();
+
+            // Return
+            return settingContext;
         }
     }
 }

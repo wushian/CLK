@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CLK.Settings
 {
-    internal sealed class MemorySettingRepository : ISettingRepository
+    public sealed class MemorySettingRepository : ISettingRepository
     {
         // Fields
         private readonly IDictionary<string, string> _dictionary = new Dictionary<string, string>();

@@ -12,11 +12,20 @@ namespace CLK.Settings.Samples.No001
         static void Main(string[] args)
         {
             // Create
-            SettingContext settingContext = new ConfigSettingContext();
+            SettingContext settingContext = Program.Create();
 
             // End
-            Console.WriteLine("\n\nPress enter to end...");
+            Console.WriteLine("\nPress enter to end...");
             Console.ReadLine();
+        }
+
+        static SettingContext Create()
+        {
+            // SettingContext
+            SettingContext settingContext = new ConfigSettingContext();
+
+            // Return
+            return settingContext;
         }
     }
 }
