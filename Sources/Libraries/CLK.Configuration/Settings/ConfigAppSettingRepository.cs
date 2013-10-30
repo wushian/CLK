@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Configuration.Settings
 {
-    internal sealed class ConfigAppSettingRepository : ISettingRepository
+    public sealed class ConfigAppSettingRepository : ISettingRepository
     {
         // Fields
         private readonly System.Configuration.Configuration _configuration = null;

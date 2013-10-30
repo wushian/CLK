@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CLK.Configuration.Settings;
 
 namespace CLK.Settings.Samples.No005
 {
@@ -13,20 +14,10 @@ namespace CLK.Settings.Samples.No005
             // Create
             SettingContext settingContext = Program.Create();
 
-            // List
-            Console.WriteLine("\nAppSettings");
-            foreach (string key in settingContext.AppSettings.Keys)
-            {
-                string argumentString = settingContext.AppSettings[key];
-                Console.WriteLine(argumentString);
-            }
+            // Set           
+            settingContext.AppSettings.Remove("Argument03");
 
-            Console.WriteLine("\nConnectionStrings");
-            foreach (string key in settingContext.ConnectionStrings.Keys)
-            {
-                string connectionString = settingContext.ConnectionStrings[key];
-                Console.WriteLine(connectionString);
-            }
+            settingContext.ConnectionStrings.Remove("Database02");
 
             // End
             Console.WriteLine("\nPress enter to end...");
@@ -35,19 +26,8 @@ namespace CLK.Settings.Samples.No005
 
         static SettingContext Create()
         {
-            // AppSettingRepository
-            MemorySettingRepository appSettingRepository = new MemorySettingRepository();
-            appSettingRepository.Add("Argument05", "XXXXXXXXXXXXX");
-            appSettingRepository.Add("Argument06", "YYYYYYYYYYYYY");
-            appSettingRepository.Add("Argument07", "ZZZZZZZZZZZZZ");
-
-            // ConnectionStringRepository
-            MemorySettingRepository connectionStringRepository = new MemorySettingRepository();
-            connectionStringRepository.Add("Database04", "Data Source=192.168.4.4;Initial Catalog=DB04;");
-            connectionStringRepository.Add("Database05", "Data Source=192.168.5.5;Initial Catalog=DB05;");  
-
             // SettingContext
-            SettingContext settingContext = new MemorySettingContext(appSettingRepository, connectionStringRepository);
+            SettingContext settingContext = new ConfigSettingContext();
 
             // Return
             return settingContext;

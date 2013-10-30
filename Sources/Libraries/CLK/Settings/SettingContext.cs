@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CLK.Settings
 {
-    public abstract partial class SettingContext
+    public partial class SettingContext
     {
         // Locator
         private static SettingContext _instance = null;
@@ -27,9 +27,26 @@ namespace CLK.Settings
         }
     }
 
-    public abstract partial class SettingContext
+    public partial class SettingContext
     {
-        // Constructors
+        // Constructors       
+        public SettingContext(ISettingRepository appSettingRepository, ISettingRepository connectionStringRepository)
+        {
+            #region Contracts
+
+            if (appSettingRepository == null) throw new ArgumentNullException();
+            if (connectionStringRepository == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Initialize
+            this.Initialize(appSettingRepository, connectionStringRepository);
+        }
+
+        protected SettingContext() { }
+
+
+        // Methods  
         protected void Initialize(ISettingRepository appSettingRepository, ISettingRepository connectionStringRepository)
         {
             #region Contracts

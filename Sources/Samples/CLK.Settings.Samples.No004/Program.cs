@@ -15,9 +15,9 @@ namespace CLK.Settings.Samples.No004
             SettingContext settingContext = Program.Create();
 
             // Set           
-            settingContext.AppSettings["Argument04"] = "DDDDDDDDDDDDD";
+            settingContext.AppSettings.Add("Argument04", "DDDDDDDDDDDDD");
 
-            settingContext.ConnectionStrings["Database03"] = "Data Source=192.168.3.3;Initial Catalog=DB03";
+            settingContext.ConnectionStrings.Add("Database03", "Data Source=192.168.3.3;Initial Catalog=DB03");
 
             // End
             Console.WriteLine("\nPress enter to end...");

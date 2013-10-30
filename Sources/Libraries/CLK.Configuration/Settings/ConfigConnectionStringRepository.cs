@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Configuration.Settings
 {
-    internal sealed class ConfigConnectionStringRepository : ISettingRepository
+    public sealed class ConfigConnectionStringRepository : ISettingRepository
     {
         // Fields
         private readonly System.Configuration.Configuration _configuration = null;
