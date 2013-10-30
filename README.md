@@ -1,4 +1,4 @@
-##[CLK Framework] CLK.Settings - 移除相依的參數模組
+##[CLK Framework] CLK.Settings - 跨平台的參數存取模組##
 
 [[繼續閱讀]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Settings/CLK.Settings.md)
 
