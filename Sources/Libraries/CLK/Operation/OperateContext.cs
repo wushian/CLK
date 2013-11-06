@@ -39,6 +39,12 @@ namespace CLK.Operation
             // Component
             _componentCollection = (from componentBroker in _componentBrokerCollection select componentBroker.NativeComponent).ToArray();
             if (_componentCollection == null) throw new InvalidOperationException();
+
+            // Initialize
+            foreach (ComponentBroker componentBroker in _componentBrokerCollection)
+            {
+                componentBroker.Initialize(_componentCollection, _componentWrapperCollection);
+            }
         }
 
 
@@ -50,13 +56,7 @@ namespace CLK.Operation
 
             // Start
             try
-            {
-                // Initialize
-                foreach (ComponentBroker componentBroker in _componentBrokerCollection)
-                {
-                    componentBroker.Initialize(_componentCollection, _componentWrapperCollection);
-                }
-
+            {                
                 // Start
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {

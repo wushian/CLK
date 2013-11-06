@@ -10,8 +10,52 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public class ConnectionProxy<TChannel>
-        where TChannel : class, IConnectionService
+    public abstract class ConnectionProxy
+    {
+        // Properties
+        public abstract bool IsConnected { get; }
+
+
+        // Methods
+        public abstract void Open();
+
+        public abstract void Close();
+
+
+        // Events
+        public event EventHandler Connected;
+        protected void OnConnected()
+        {
+            var handler = this.Connected;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler Disconnected;
+        protected void OnDisconnected()
+        {
+            var handler = this.Disconnected;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler Heartbeating;
+        protected void OnHeartbeating()
+        {
+            var handler = this.Heartbeating;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public class ConnectionProxy<TService> : ConnectionProxy
+        where TService : class, IConnectionService
     {
         // Fields
         private readonly object _syncRoot = new object();
@@ -19,31 +63,31 @@ namespace CLK.ServiceModel
         private int _heartbeatInterval = 5000;
 
         private int _reconnectInterval = 5000;
-                
+
 
         private bool _isClosed = true;
 
         private readonly ManualResetEvent _isClosedEvent = new ManualResetEvent(true);
-        
+
 
         private Thread _executeThread = null;
 
         private readonly ManualResetEvent _executeThreadEvent = new ManualResetEvent(true);
 
         private readonly AutoResetEvent _executeTriggerEvent = new AutoResetEvent(false);
-       
 
-        private readonly ChannelFactory<TChannel> _channelFactory = null;
-       
+
+        private readonly ChannelFactory<TService> _channelFactory = null;
+
         private IContextChannel _channel = null;
 
-        private TChannel _service = null;
+        private TService _service = null;
 
         private bool _isConnected = false;
-               
+
 
         // Constructors
-        public ConnectionProxy(ChannelFactory<TChannel> channelFactory)
+        public ConnectionProxy(ChannelFactory<TService> channelFactory)
         {
             #region Contracts
 
@@ -52,36 +96,11 @@ namespace CLK.ServiceModel
             #endregion
 
             // ChannelFactory     
-            _channelFactory = channelFactory;              
+            _channelFactory = channelFactory;
         }
 
 
-        // Properties
-        public TChannel Service
-        {
-            get
-            {
-                // Require
-                TChannel service = _service;
-                if (service == null) throw new CommunicationException();
-
-                // Return
-                return service;
-            }
-        }
-
-        public bool IsConnected
-        {
-            get
-            {
-                lock (_syncRoot)
-                {
-                    // Return
-                    return _isConnected;
-                }
-            }
-        }       
-
+        // Properties        
         public int HeartbeatInterval
         {
             get
@@ -106,11 +125,36 @@ namespace CLK.ServiceModel
                 if (0 >= value) value = Timeout.Infinite;
                 _reconnectInterval = value;
             }
+        }
+
+        public override bool IsConnected
+        {
+            get
+            {
+                lock (_syncRoot)
+                {
+                    // Return
+                    return _isConnected;
+                }
+            }
         }       
+
+        public TService Service
+        {
+            get
+            {
+                // Get
+                TService service = _service;
+                if (service == null) throw new CommunicationException();
+
+                // Return
+                return service;
+            }
+        }
 
 
         // Methods
-        public virtual void Open()
+        public override void Open()
         {
             // Require
             lock (_syncRoot)
@@ -130,7 +174,7 @@ namespace CLK.ServiceModel
             _executeThread.Start();
         }
 
-        public virtual void Close()
+        public override void Close()
         {
             // Require
             lock (_syncRoot)
@@ -148,7 +192,7 @@ namespace CLK.ServiceModel
             {
                 _channelFactory.Close();
             }
-            catch (Exception)
+            catch 
             {
                 _channelFactory.Abort();
             }
@@ -156,7 +200,7 @@ namespace CLK.ServiceModel
 
 
         private void ExecuteOperation()
-        {            
+        {
             try
             {
                 // WaitHandles
@@ -164,7 +208,7 @@ namespace CLK.ServiceModel
                 {
                     _isClosedEvent,
                     _executeTriggerEvent,
-                };                
+                };
 
                 // Execute
                 while (true)
@@ -201,7 +245,7 @@ namespace CLK.ServiceModel
         }
 
         private void ExecuteOperation_Connect()
-        {            
+        {
             // Require
             if (_service != null) return;
             if (_channel != null) return;
@@ -212,21 +256,25 @@ namespace CLK.ServiceModel
             // Connect
             try
             {
+                // Create
+                object channelObject = _channelFactory.CreateChannel();
+                if (channelObject == null) throw new InvalidOperationException();
+                if ((channelObject is TService) == false) throw new InvalidOperationException();
+                if ((channelObject is IContextChannel) == false) throw new InvalidOperationException();
+
                 // Service
-                _service = _channelFactory.CreateChannel();
-                if (_service == null) throw new InvalidOperationException();
-                if ((_service is IContextChannel) == false) throw new InvalidOperationException();
+                _service = channelObject as TService;
 
                 // Channel
-                _channel = _service as IContextChannel;
+                _channel = channelObject as IContextChannel;
                 _channel.Closed += this.Channel_Closed;
-                _channel.Faulted += this.Channel_Faulted;        
+                _channel.Faulted += this.Channel_Faulted;
                 _channel.Open();
 
                 // Result
                 executeResult = true;
             }
-            catch (Exception)
+            catch 
             {
                 // Result
                 executeResult = false;
@@ -247,14 +295,14 @@ namespace CLK.ServiceModel
             {
                 this.OnConnected();
             }
-        }        
+        }
 
         private void ExecuteOperation_Disconnect()
-        {           
+        {
             // Require
             if (_service == null) return;
             if (_channel == null) return;
-            if (_channel.State == CommunicationState.Opened && _isClosed == false) return;           
+            if (_channel.State == CommunicationState.Opened && _isClosed == false) return;
 
             // Result
             bool executeResult = false;
@@ -268,10 +316,10 @@ namespace CLK.ServiceModel
                 // Channel
                 _channel.Close();
                 _channel.Closed -= this.Channel_Closed;
-                _channel.Faulted -= this.Channel_Faulted;        
+                _channel.Faulted -= this.Channel_Faulted;
                 _channel = null;
             }
-            catch (Exception)
+            catch 
             {
                 // Service
                 _service = null;
@@ -279,18 +327,18 @@ namespace CLK.ServiceModel
                 // Channel
                 _channel.Abort();
                 _channel.Closed -= this.Channel_Closed;
-                _channel.Faulted -= this.Channel_Faulted;                
+                _channel.Faulted -= this.Channel_Faulted;
                 _channel = null;
             }
             finally
             {
                 // Result
-                executeResult = true;                              
+                executeResult = true;
             }
 
             // IsConnected
             if (executeResult == true)
-            {                
+            {
                 lock (_syncRoot)
                 {
                     if (_isConnected == false) return;
@@ -306,7 +354,7 @@ namespace CLK.ServiceModel
         }
 
         private void ExecuteOperation_Heartbeat()
-        {            
+        {
             // Require
             if (_service == null) return;
             if (_channel == null) return;
@@ -322,12 +370,12 @@ namespace CLK.ServiceModel
                 _service.Heartbeat();
 
                 // Result
-                executeResult = true;        
+                executeResult = true;
             }
-            catch (Exception)
+            catch 
             {
                 // Result
-                executeResult = false;        
+                executeResult = false;
             }
 
             // Notify
@@ -348,38 +396,40 @@ namespace CLK.ServiceModel
         private void Channel_Faulted(object sender, EventArgs e)
         {
             // Trigger
-            _executeTriggerEvent.Set();    
-        }        
+            _executeTriggerEvent.Set();
+        }
+    }
+
+    public class ConnectionProxy<TService, TCallback> : ConnectionProxy<TService>
+        where TService : class, IConnectionService
+        where TCallback : class
+    {
+        // Fields
+        private TCallback _callback = null;
 
 
-        // Events
-        public event EventHandler Connected;
-        private void OnConnected()
+        // Constructors
+        public ConnectionProxy(ChannelFactory<TService> channelFactory, TCallback callback)
+            : base(channelFactory)
         {
-            var handler = this.Connected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            #region Contracts
+
+            if (callback == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Callback     
+            _callback = callback;
         }
 
-        public event EventHandler Disconnected;
-        private void OnDisconnected()
-        {
-            var handler = this.Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
 
-        public event EventHandler Heartbeating;
-        private void OnHeartbeating()
+        // Properties
+        public TCallback Callback
         {
-            var handler = this.Heartbeating;
-            if (handler != null)
+            get
             {
-                handler(this, EventArgs.Empty);
+                // Return
+                return _callback;
             }
         }
     }

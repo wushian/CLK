@@ -210,7 +210,7 @@ namespace CLK.ComponentModel
                         {
                             handler(this, e);
                         }
-                        catch (Exception)
+                        catch 
                         {
                             handler(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         }
