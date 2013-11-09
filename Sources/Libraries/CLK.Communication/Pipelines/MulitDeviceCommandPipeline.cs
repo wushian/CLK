@@ -20,7 +20,7 @@ namespace CLK.Communication
             #endregion
 
             // Execute
-            this.Execute(commandTask);
+            commandTask.ExecuteCommandAsync();
         }
 
         protected override void Detach(DeviceCommandTask commandTask)

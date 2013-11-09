@@ -30,28 +30,6 @@ namespace CLK.Communication
 
         protected abstract void Detach(DeviceCommandTask commandTask);
 
-        protected void Execute(DeviceCommandTask commandTask)
-        {
-            #region Contracts
-
-            if (commandTask == null) throw new ArgumentException();
-
-            #endregion
-
-            WaitCallback executeDelegate = delegate(object state)
-            {
-                try
-                {
-                    commandTask.ExecuteCommandAsync();
-                }
-                catch (Exception ex)
-                {
-                    Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "ExecuteCommandAsync", "Exception", ex.Message));
-                }
-            };
-            ThreadPool.QueueUserWorkItem(executeDelegate);
-        }
-
 
         // Handlers
         private void CommandTask_ExecuteCommandEnded(DeviceCommandTask commandTask)

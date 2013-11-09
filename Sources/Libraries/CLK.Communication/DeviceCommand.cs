@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace CLK.Communication
 {
@@ -75,14 +76,30 @@ namespace CLK.Communication
 
 
         // Properties
+        protected abstract int RetryCount { get; }
+
         protected abstract int ExpireMillisecond { get; }
 
 
         // Methods       
         internal protected override void ApplyTimeTicked(long nowTicks)
         {
-            // Predicate 
-            Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
+            // Timeout 
+            Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> timeoutPredicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
+            {
+                if (existCommandTask.ExpireTime.Ticks <= nowTicks)
+                {
+                    if (existCommandTask.RetryCount <= 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            this.EndExecute(timeoutPredicate, DeviceCommand<TDeviceAddress, TRequest, TResponse>.DefaultTimeoutException);
+
+            // Retry
+            Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> retryPredicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
             {
                 if (existCommandTask.ExpireTime.Ticks <= nowTicks)
                 {
@@ -90,9 +107,7 @@ namespace CLK.Communication
                 }
                 return false;
             };
-
-            // EndExecute
-            this.EndExecute(predicate, DeviceCommand<TDeviceAddress, TRequest, TResponse>.DefaultTimeoutException);
+            this.RetryAllTask(retryPredicate);
         }
 
         internal protected override void Start()
@@ -154,7 +169,7 @@ namespace CLK.Communication
             #endregion
 
             // Create
-            var commandTask = new DeviceCommandTask<TDeviceAddress, TRequest, TResponse>(taskId, _localDeviceAddress, _remoteDeviceAddress, request, this.ExpireMillisecond);
+            var commandTask = new DeviceCommandTask<TDeviceAddress, TRequest, TResponse>(taskId, _localDeviceAddress, _remoteDeviceAddress, request, this.RetryCount, this.ExpireMillisecond);
 
             // Attach
             lock (_syncRoot)
@@ -247,6 +262,40 @@ namespace CLK.Communication
             return commandTaskCollection;
         }
 
+        private IEnumerable<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>> RetryAllTask(Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate)
+        {
+            #region Contracts
+
+            if (predicate == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Result
+            List<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>> commandTaskCollection = new List<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>>();
+
+            // Retry
+            lock (_syncRoot)
+            {
+                // Search 
+                foreach (DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask in _commandTaskCollection)
+                {
+                    if (predicate(existCommandTask) == true)
+                    {
+                        commandTaskCollection.Add(existCommandTask);
+                    }
+                }
+
+                // Execute
+                foreach (DeviceCommandTask<TDeviceAddress, TRequest, TResponse> commandTask in commandTaskCollection)
+                {
+                    commandTask.ExecuteCommandAsync();
+                }
+            }
+
+            // Return
+            return commandTaskCollection;
+        }
+
 
         protected void BeginExecute(Guid taskId, TRequest request)
         {
@@ -262,7 +311,18 @@ namespace CLK.Communication
             if (commandTask == null) throw new InvalidOperationException();
 
             // Post
-            _commandPipeline.Post(commandTask);
+            WaitCallback executeDelegate = delegate(object state)
+            {
+                try
+                {
+                    _commandPipeline.Post(commandTask);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "Post", "Exception", ex.Message));
+                }
+            };
+            ThreadPool.QueueUserWorkItem(executeDelegate);
         }
 
         protected void EndExecute(Guid taskId, TResponse response)
@@ -274,10 +334,7 @@ namespace CLK.Communication
 
             #endregion
 
-            // Result
-            DeviceCommandTask<TDeviceAddress, TRequest, TResponse> commandTask = null;
-
-            // Detach          
+            // Predicate
             Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
             {
                 if (existCommandTask.TaskId == taskId)
@@ -286,28 +343,13 @@ namespace CLK.Communication
                 }
                 return false;
             };
-            commandTask = this.DetachTask(predicate);
+
+            // Detach     
+            var commandTask = this.DetachTask(predicate);
             if (commandTask == null) return;
-
+            
             // EndExecute
-            try
-            {
-                // Create
-                var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(commandTask.TaskId, commandTask.LocalDeviceAddress, commandTask.RemoteDeviceAddress, commandTask.Request, response);
-
-                // Apply
-                this.ApplyExecute(eventArgs);
-
-                // Notify
-                this.OnExecuteCommandCompleted(eventArgs);
-
-                // End
-                commandTask.EndExecute(eventArgs);
-            }
-            catch (Exception ex)
-            {
-                Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "EndExecute", "Exception", ex.Message));
-            }
+            this.EndExecute(commandTask, new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(commandTask.TaskId, commandTask.LocalDeviceAddress, commandTask.RemoteDeviceAddress, commandTask.Request, response));
         }
 
         protected void EndExecute(Guid taskId, Exception error)
@@ -319,10 +361,7 @@ namespace CLK.Communication
 
             #endregion
 
-            // Result
-            DeviceCommandTask<TDeviceAddress, TRequest, TResponse> commandTask = null;
-
-            // Detach          
+            // Predicate
             Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
             {
                 if (existCommandTask.TaskId == taskId)
@@ -331,28 +370,13 @@ namespace CLK.Communication
                 }
                 return false;
             };
-            commandTask = this.DetachTask(predicate);
+
+            // Detach     
+            var commandTask = this.DetachTask(predicate);
             if (commandTask == null) return;
 
             // EndExecute
-            try
-            {
-                // Create
-                var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(commandTask.TaskId, commandTask.LocalDeviceAddress, commandTask.RemoteDeviceAddress, commandTask.Request, error);
-
-                // Apply
-                this.ApplyExecute(eventArgs);
-
-                // Notify
-                this.OnExecuteCommandCompleted(eventArgs);
-
-                // End
-                commandTask.EndExecute(eventArgs);
-            }
-            catch (Exception ex)
-            {
-                Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "EndExecute", "Exception", ex.Message));
-            }
+            this.EndExecute(commandTask, new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(commandTask.TaskId, commandTask.LocalDeviceAddress, commandTask.RemoteDeviceAddress, commandTask.Request, error));
         }
 
         private void EndExecute(Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate, Exception error)
@@ -364,34 +388,41 @@ namespace CLK.Communication
 
             #endregion
 
-            // Result
-            IEnumerable<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>> commandTaskCollection = null;
-
             // Detach 
-            commandTaskCollection = this.DetachAllTask(predicate);
+            var commandTaskCollection = this.DetachAllTask(predicate);
             if (commandTaskCollection == null) throw new InvalidOperationException();
 
             // EndExecute
             foreach (DeviceCommandTask<TDeviceAddress, TRequest, TResponse> commandTask in commandTaskCollection)
             {
-                try
-                {
-                    // Create
-                    var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(commandTask.TaskId, commandTask.LocalDeviceAddress, commandTask.RemoteDeviceAddress, commandTask.Request, error);
+                this.EndExecute(commandTask, new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(commandTask.TaskId, commandTask.LocalDeviceAddress, commandTask.RemoteDeviceAddress, commandTask.Request, error));
+            }
+        }
 
-                    // Apply
-                    this.ApplyExecute(eventArgs);
+        private void EndExecute(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> commandTask, ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse> eventArgs)
+        {
+            #region Contracts
 
-                    // Notify
-                    this.OnExecuteCommandCompleted(eventArgs);
+            if (commandTask == null) throw new ArgumentNullException();
+            if (eventArgs == null) throw new ArgumentNullException();
 
-                    // End
-                    commandTask.EndExecute(eventArgs);
-                }
-                catch (Exception ex)
-                {
-                    Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "EndExecute", "Exception", ex.Message));
-                }
+            #endregion
+
+            // EndExecute
+            try
+            {
+                // Apply
+                this.ApplyExecute(eventArgs);
+
+                // Notify
+                this.OnExecuteCommandCompleted(eventArgs);
+
+                // EndExecute
+                commandTask.EndExecute(eventArgs);
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "EndExecute", "Exception", ex.Message));
             }
         }
 

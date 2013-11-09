@@ -1,49 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CLK.Communication
 {
     public abstract class DeviceCommandTask
     {
-        // Fields
-        private bool _isExecuted = false;
+        // Fields        
+        private int _retryCount = int.MinValue;
+
+        private int _expireMillisecond = int.MinValue;
+
+        private DateTime _expireTime = DateTime.MaxValue;
 
 
         // Constructors
-        internal DeviceCommandTask(int expireMillisecond) 
+        internal DeviceCommandTask(int retryCount, int expireMillisecond) 
         {
-            // Arguments           
-            this.ExpireMillisecond = expireMillisecond;
+            // Require
+            if (retryCount <= 0) throw new InvalidOperationException();
+            if (expireMillisecond <= 0) throw new InvalidOperationException();
 
-            // Default
-            this.ExpireTime = DateTime.MaxValue;
+            // Arguments           
+            _retryCount = retryCount;
+            _expireMillisecond = expireMillisecond;   
         }
 
 
-        // Properties        
-        internal DateTime ExpireTime { get; private set; }
+        // Properties 
+        internal int RetryCount
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _retryCount;
+                }
+            }
+        }
 
-        private int ExpireMillisecond { get; set; }
-
+        internal DateTime ExpireTime
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _expireTime;
+                }
+            }
+        }
+             
 
         // Methods
         public void ExecuteCommandAsync()
         {
-            // Require
+            // Calculate
             lock (this)
             {
-                if (_isExecuted == true) return;
-                _isExecuted = true;
+                // Require
+                if (_retryCount <= 0) return;
+
+                // RetryCount                
+                _retryCount--;
+
+                // ExpireTime
+                _expireTime = DateTime.Now.AddMilliseconds(_expireMillisecond);
             }
 
-            // ExpireTime
-            this.ExpireTime = DateTime.Now.AddMilliseconds(this.ExpireMillisecond);
-
-            // Notify
-            this.BeginExecute();
+            // BeginExecute
+            WaitCallback executeDelegate = delegate(object state)
+            {
+                try
+                {
+                    this.BeginExecute();
+                }
+                catch (Exception ex)
+                {
+                    Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "BeginExecute", "Exception", ex.Message));
+                }
+            };
+            ThreadPool.QueueUserWorkItem(executeDelegate);
         }
 
         protected abstract void BeginExecute();
@@ -73,8 +113,8 @@ namespace CLK.Communication
         where TResponse : class
     {
         // Constructors
-        internal DeviceCommandTask(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request, int expireMillisecond)
-            : base(expireMillisecond)
+        internal DeviceCommandTask(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request, int retryCount, int expireMillisecond)
+            : base(retryCount, expireMillisecond)
         {
             #region Contracts
 

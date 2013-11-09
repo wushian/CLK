@@ -60,10 +60,10 @@
     <Compile Include="DeviceHost.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecuteCommandArrivedEventArgs.cs">
+    <Compile Include="EventArgs\ExecuteCommandArrivedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecuteCommandCompletedEventArgs.cs">
+    <Compile Include="EventArgs\ExecuteCommandCompletedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DeviceAddress.cs" />

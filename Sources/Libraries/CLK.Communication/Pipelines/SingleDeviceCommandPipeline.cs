@@ -84,7 +84,7 @@ namespace CLK.Communication
             }
 
             // Execute
-            if (commandTask != null) this.Execute(commandTask);
+            if (commandTask != null) commandTask.ExecuteCommandAsync();
         }
     }
 }
