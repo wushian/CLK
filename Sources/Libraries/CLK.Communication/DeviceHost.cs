@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace CLK.Communication
 {
-    public abstract class DeviceHost<TDeviceAddress> 
+    public abstract class DeviceHost<TDeviceAddress>
         where TDeviceAddress : DeviceAddress
     {
         // Fields
@@ -23,8 +23,8 @@ namespace CLK.Communication
 
         private readonly IDeviceCommandFactory<TDeviceAddress> _commandFactory = null;
 
-        private readonly PortableTimer _operateTimer = null;               
-        
+        private readonly PortableTimer _operateTimer = null;
+
 
         // Constructors
         public DeviceHost(TDeviceAddress localDeviceAddress, IDeviceCommandFactory<TDeviceAddress> commandFactory, PortableTimer operateTimer)
@@ -33,7 +33,7 @@ namespace CLK.Communication
 
             if (localDeviceAddress == null) throw new ArgumentNullException();
             if (commandFactory == null) throw new ArgumentNullException();
-            if (operateTimer == null) throw new ArgumentNullException();   
+            if (operateTimer == null) throw new ArgumentNullException();
 
             #endregion
 
@@ -58,7 +58,7 @@ namespace CLK.Communication
             try
             {
                 // Timer
-                _operateTimer.Ticked+=this.Timer_Ticked;
+                _operateTimer.Ticked += this.Timer_Ticked;
                 _operateTimer.Start();
 
                 // Open
@@ -126,6 +126,34 @@ namespace CLK.Communication
             return device;
         }
 
+        public IEnumerable<Device<TDeviceAddress>> FindAllDevice(Func<Device<TDeviceAddress>, bool> predicate)
+        {
+            #region Contracts
+
+            if (predicate == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Result
+            List<Device<TDeviceAddress>> deviceCollection = null;
+
+            // Search 
+            lock (_syncRoot)
+            {
+
+                foreach (Device<TDeviceAddress> existDevice in _deviceCollection)
+                {
+                    if (predicate(existDevice) == true)
+                    {
+                        deviceCollection.Add(existDevice);
+                    }
+                }
+            }
+
+            // Return
+            return deviceCollection;
+        }
+
         protected Device<TDeviceAddress> CreateDevice(TDeviceAddress remoteDeviceAddress)
         {
             #region Contracts
@@ -158,7 +186,7 @@ namespace CLK.Communication
                 // Events
                 device.DeviceDisposed += this.Device_DeviceDisposed;
             }
-                                   
+
             // Open
             device.Open();
 
@@ -168,7 +196,7 @@ namespace CLK.Communication
             // Return
             return device;
         }
-        
+
         private void DetachDevice(Device<TDeviceAddress> device)
         {
             #region Contracts
@@ -200,7 +228,7 @@ namespace CLK.Communication
 
             // Device
             lock (_syncRoot)
-            {                
+            {
                 foreach (Device<TDeviceAddress> device in _deviceCollection)
                 {
                     WaitCallback executeDelegate = delegate(object state)
