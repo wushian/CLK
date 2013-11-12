@@ -11,38 +11,27 @@ namespace CLK.Communication
     public abstract class DeviceCommandTask
     {
         // Fields        
-        private int _retryCount = int.MinValue;
+        private readonly int _expireMillisecond = int.MinValue;
 
-        private int _expireMillisecond = int.MinValue;
+        private int _retryCount = int.MinValue;        
 
         private DateTime _expireTime = DateTime.MaxValue;
 
 
         // Constructors
-        internal DeviceCommandTask(int retryCount, int expireMillisecond) 
+        internal DeviceCommandTask(int expireMillisecond, int retryCount) 
         {
-            // Require
-            if (retryCount <= 0) throw new InvalidOperationException();
+            // Require            
             if (expireMillisecond <= 0) throw new InvalidOperationException();
+            if (retryCount <= 0) throw new InvalidOperationException();
 
-            // Arguments           
+            // Arguments                       
+            _expireMillisecond = expireMillisecond;
             _retryCount = retryCount;
-            _expireMillisecond = expireMillisecond;   
         }
 
 
-        // Properties 
-        internal int RetryCount
-        {
-            get
-            {
-                lock (this)
-                {
-                    return _retryCount;
-                }
-            }
-        }
-
+        // Properties         
         internal DateTime ExpireTime
         {
             get
@@ -53,10 +42,21 @@ namespace CLK.Communication
                 }
             }
         }
+
+        internal int RetryCount
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _retryCount;
+                }
+            }
+        }
              
 
         // Methods
-        public void ExecuteCommandAsync()
+        internal void ExecuteCommandAsync()
         {
             // Calculate
             lock (this)
@@ -64,11 +64,11 @@ namespace CLK.Communication
                 // Require
                 if (_retryCount <= 0) return;
 
-                // RetryCount                
-                _retryCount--;
-
                 // ExpireTime
                 _expireTime = DateTime.Now.AddMilliseconds(_expireMillisecond);
+
+                // RetryCount                
+                _retryCount--;                
             }
 
             // BeginExecute
@@ -86,9 +86,13 @@ namespace CLK.Communication
             ThreadPool.QueueUserWorkItem(executeDelegate);
         }
 
-        protected abstract void BeginExecute();
+        internal virtual void BeginExecute()
+        {
+            // Notify
+            this.OnExecuteCommandBegan();
+        }
 
-        protected void EndExecute()
+        internal virtual void EndExecute()
         {
             // Notify
             this.OnExecuteCommandEnded();
@@ -96,6 +100,16 @@ namespace CLK.Communication
 
 
         // Events
+        internal event Action<DeviceCommandTask> ExecuteCommandBegan;
+        private void OnExecuteCommandBegan()
+        {
+            var handler = this.ExecuteCommandBegan;
+            if (handler != null)
+            {
+                handler(this);
+            }
+        }
+
         internal event Action<DeviceCommandTask> ExecuteCommandEnded;
         private void OnExecuteCommandEnded()
         {
@@ -113,8 +127,8 @@ namespace CLK.Communication
         where TResponse : class
     {
         // Constructors
-        internal DeviceCommandTask(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request, int retryCount, int expireMillisecond)
-            : base(retryCount, expireMillisecond)
+        internal DeviceCommandTask(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request, int expireMillisecond, int retryCount)
+            : base(expireMillisecond, retryCount)
         {
             #region Contracts
 
@@ -134,43 +148,67 @@ namespace CLK.Communication
 
 
         // Properties
-        internal Guid TaskId { get; private set; }
+        public Guid TaskId { get; private set; }
 
-        internal TDeviceAddress LocalDeviceAddress { get; private set; }
+        public TDeviceAddress LocalDeviceAddress { get; private set; }
 
-        internal TDeviceAddress RemoteDeviceAddress { get; private set; }
+        public TDeviceAddress RemoteDeviceAddress { get; private set; }
 
-        internal TRequest Request { get; private set; }   
+        public TRequest Request { get; private set; }   
 
 
         // Methods
-        protected override void BeginExecute()
+        internal override void BeginExecute()
         {
             // Create
-            ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest> eventArgs = new ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request);
+            var eventArgs = new ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request);
+
+            // Base
+            base.BeginExecute();     
 
             // Notify
-            this.OnExecuteCommandArrived(eventArgs);
+            this.OnExecuteCommandArrived(eventArgs);                
         }
 
-        internal void EndExecute(ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse> eventArgs)
+        internal void EndExecute(TResponse response)
         {
             #region Contracts
 
-            if (eventArgs == null) throw new ArgumentNullException();
+            if (response == null) throw new ArgumentNullException();
 
             #endregion
+
+            // Create
+            var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request, response);
+            
+            // Notify
+            this.OnExecuteCommandCompleted(eventArgs);
+
+            // Base
+            base.EndExecute();
+        }
+
+        internal void EndExecute(Exception error)
+        {
+            #region Contracts
+
+            if (error == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Create
+            var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request, error);
 
             // Notify
             this.OnExecuteCommandCompleted(eventArgs);
 
             // Base
-            this.EndExecute();            
+            base.EndExecute();
         }
 
 
         // Events
-        public event EventHandler<ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest>> ExecuteCommandArrived;
+        internal event EventHandler<ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest>> ExecuteCommandArrived;
         private void OnExecuteCommandArrived(ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest> eventArgs)
         {
             #region Contracts
@@ -186,7 +224,7 @@ namespace CLK.Communication
             }
         }
 
-        public event EventHandler<ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>> ExecuteCommandCompleted;
+        internal event EventHandler<ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>> ExecuteCommandCompleted;
         private void OnExecuteCommandCompleted(ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse> eventArgs)
         {
             #region Contracts

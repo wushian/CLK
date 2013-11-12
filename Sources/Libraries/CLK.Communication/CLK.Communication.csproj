@@ -40,37 +40,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\DeviceActiveCommand.cs" />
-    <Compile Include="Device.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DeviceCommand.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DeviceCommandFactory.cs" />
-    <Compile Include="DeviceCommandPipeline.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DeviceCommandTask.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Commands\DevicePassiveCommand.cs" />
-    <Compile Include="DeviceFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DeviceHost.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="EventArgs\ExecuteCommandArrivedEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="EventArgs\ExecuteCommandCompletedEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Device.cs" />
     <Compile Include="DeviceAddress.cs" />
+    <Compile Include="DeviceCommand.cs" />
+    <Compile Include="DeviceCommandFactory.cs" />
+    <Compile Include="DeviceCommandTask.cs" />
+    <Compile Include="DeviceFactory.cs" />
+    <Compile Include="DeviceHost.cs" />
+    <Compile Include="EventArgs\ExecuteCommandArrivedEventArgs.cs" />
+    <Compile Include="EventArgs\ExecuteCommandCompletedEventArgs.cs" />
     <Compile Include="Exceptions\DisconnectException.cs" />
+    <Compile Include="Messages\DeviceMessage.cs" />
+    <Compile Include="Pipelines\DeviceCommandPipeline.cs" />
     <Compile Include="Pipelines\MulitDeviceCommandPipeline.cs" />
     <Compile Include="Pipelines\SingleDeviceCommandPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategies\DeviceActiveStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CLK\CLK.csproj">

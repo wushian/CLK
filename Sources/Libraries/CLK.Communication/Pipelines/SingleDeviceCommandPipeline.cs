@@ -65,7 +65,7 @@ namespace CLK.Communication
             // Execute
             this.Execute();
         }
-
+        
         private void Execute()
         {
             // Result
@@ -84,7 +84,10 @@ namespace CLK.Communication
             }
 
             // Execute
-            if (commandTask != null) commandTask.ExecuteCommandAsync();
+            if (commandTask != null)
+            {
+                this.Execute(commandTask);
+            }
         }
     }
 }

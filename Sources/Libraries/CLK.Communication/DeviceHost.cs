@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace CLK.Communication
 {
-    public abstract class DeviceHost<TDeviceAddress>
+    public abstract class DeviceHost<TDeviceAddress>        
         where TDeviceAddress : DeviceAddress
     {
         // Fields
@@ -97,63 +97,6 @@ namespace CLK.Communication
         protected abstract void CloseHost();
 
 
-        public Device<TDeviceAddress> FindDevice(Func<Device<TDeviceAddress>, bool> predicate)
-        {
-            #region Contracts
-
-            if (predicate == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Result
-            Device<TDeviceAddress> device = null;
-
-            // Search 
-            lock (_syncRoot)
-            {
-
-                foreach (Device<TDeviceAddress> existDevice in _deviceCollection)
-                {
-                    if (predicate(existDevice) == true)
-                    {
-                        device = existDevice;
-                        break;
-                    }
-                }
-            }
-
-            // Return
-            return device;
-        }
-
-        public IEnumerable<Device<TDeviceAddress>> FindAllDevice(Func<Device<TDeviceAddress>, bool> predicate)
-        {
-            #region Contracts
-
-            if (predicate == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Result
-            List<Device<TDeviceAddress>> deviceCollection = null;
-
-            // Search 
-            lock (_syncRoot)
-            {
-
-                foreach (Device<TDeviceAddress> existDevice in _deviceCollection)
-                {
-                    if (predicate(existDevice) == true)
-                    {
-                        deviceCollection.Add(existDevice);
-                    }
-                }
-            }
-
-            // Return
-            return deviceCollection;
-        }
-
         protected Device<TDeviceAddress> CreateDevice(TDeviceAddress remoteDeviceAddress)
         {
             #region Contracts
@@ -217,6 +160,64 @@ namespace CLK.Communication
 
             // Notify
             this.OnDeviceDeparted(device);
+        }
+
+
+        public Device<TDeviceAddress> GetDevice(Func<Device<TDeviceAddress>, bool> predicate)
+        {
+            #region Contracts
+
+            if (predicate == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Result
+            Device<TDeviceAddress> device = null;
+
+            // Search 
+            lock (_syncRoot)
+            {
+
+                foreach (Device<TDeviceAddress> existDevice in _deviceCollection)
+                {
+                    if (predicate(existDevice) == true)
+                    {
+                        device = existDevice;
+                        break;
+                    }
+                }
+            }
+
+            // Return
+            return device;
+        }
+
+        public IEnumerable<Device<TDeviceAddress>> GetAllDevice(Func<Device<TDeviceAddress>, bool> predicate)
+        {
+            #region Contracts
+
+            if (predicate == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Result
+            List<Device<TDeviceAddress>> deviceCollection = null;
+
+            // Search 
+            lock (_syncRoot)
+            {
+
+                foreach (Device<TDeviceAddress> existDevice in _deviceCollection)
+                {
+                    if (predicate(existDevice) == true)
+                    {
+                        deviceCollection.Add(existDevice);
+                    }
+                }
+            }
+
+            // Return
+            return deviceCollection;
         }
 
 
