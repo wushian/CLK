@@ -1,20 +1,23 @@
 ﻿using CLK.Threading;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using CLK.Diagnostics;
 
 namespace CLK.Communication
 {
-    public abstract class DeviceCommand
+    public abstract class DeviceCommand<TDeviceAddress>
+        where TDeviceAddress : DeviceAddress
     {
         // Constructors
         internal DeviceCommand() { }
 
-
+        internal abstract void Initialize(IDeviceCommandStrategy<TDeviceAddress> commandStrategy);
+        
+        
         // Methods        
         internal abstract void ApplyTimeTicked(long nowTicks);
 
@@ -23,7 +26,7 @@ namespace CLK.Communication
         internal abstract void Stop();
     }
 
-    public abstract class DeviceCommand<TDeviceAddress, TRequest, TResponse> : DeviceCommand
+    public abstract class DeviceCommand<TDeviceAddress, TRequest, TResponse> : DeviceCommand<TDeviceAddress>
         where TDeviceAddress : DeviceAddress
         where TRequest : class
         where TResponse : class
@@ -56,9 +59,11 @@ namespace CLK.Communication
 
         private readonly DeviceCommandPipeline _commandPipeline = null;
 
+        private IDeviceCommandStrategy<TDeviceAddress, TRequest, TResponse> _commandStrategy = null;
+
 
         // Constructors
-        public DeviceCommand(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, DeviceCommandPipeline commandPipeline)
+        internal DeviceCommand(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, DeviceCommandPipeline commandPipeline)
         {
             #region Contracts
 
@@ -74,12 +79,28 @@ namespace CLK.Communication
             _commandPipeline = commandPipeline;
         }
 
+        internal override void Initialize(IDeviceCommandStrategy<TDeviceAddress> commandStrategy)
+        {
+            #region Contracts
+
+            if (commandStrategy == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Require
+            var currentCommandStrategy = commandStrategy as IDeviceCommandStrategy<TDeviceAddress, TRequest, TResponse>;
+            if (currentCommandStrategy == null) throw new InvalidOperationException();
+
+            // Strategy
+            _commandStrategy = currentCommandStrategy;
+        }
+
 
         // Properties
-        protected abstract int RetryCount { get; }
+        internal TDeviceAddress LocalDeviceAddress { get { return _localDeviceAddress; } }
 
-        protected abstract int ExpireMillisecond { get; }
-
+        internal TDeviceAddress RemoteDeviceAddress { get { return _remoteDeviceAddress; } }
+      
 
         // Methods       
         internal override void ApplyTimeTicked(long nowTicks)
@@ -118,6 +139,9 @@ namespace CLK.Communication
             // Start
             try
             {
+                // Require
+                if (_commandStrategy == null) throw new InvalidOperationException();
+
                 // Predicate 
                 Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
                 {
@@ -142,6 +166,9 @@ namespace CLK.Communication
             // Stop
             try
             {
+                // Require
+                if (_commandStrategy == null) throw new InvalidOperationException();
+
                 // Predicate 
                 Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate = delegate(DeviceCommandTask<TDeviceAddress, TRequest, TResponse> existCommandTask)
                 {
@@ -159,7 +186,7 @@ namespace CLK.Communication
         }
 
 
-        protected DeviceCommandTask<TDeviceAddress, TRequest, TResponse> CreateTask(Guid taskId, TRequest request)
+        internal DeviceCommandTask<TDeviceAddress, TRequest, TResponse> CreateTask(Guid taskId, TRequest request)
         {
             #region Contracts
 
@@ -169,7 +196,7 @@ namespace CLK.Communication
             #endregion
 
             // Create
-            var commandTask = new DeviceCommandTask<TDeviceAddress, TRequest, TResponse>(taskId, _localDeviceAddress, _remoteDeviceAddress, request, this.ExpireMillisecond, this.RetryCount);
+            var commandTask = new DeviceCommandTask<TDeviceAddress, TRequest, TResponse>(taskId, _localDeviceAddress, _remoteDeviceAddress, request, _commandStrategy.ExpireMillisecond, _commandStrategy.RetryCount);
 
             // Attach
             lock (_syncRoot)
@@ -300,7 +327,7 @@ namespace CLK.Communication
         }
 
 
-        protected void BeginExecute(Guid taskId, TRequest request)
+        internal void BeginExecute(Guid taskId, TRequest request)
         {
             #region Contracts
 
@@ -317,7 +344,7 @@ namespace CLK.Communication
             _commandPipeline.Post(commandTask);
         }
 
-        protected void EndExecute(Guid taskId, TResponse response)
+        internal void EndExecute(Guid taskId, TResponse response)
         {
             #region Contracts
 
@@ -344,7 +371,7 @@ namespace CLK.Communication
             commandTask.EndExecute(response);
         }
 
-        protected void EndExecute(Guid taskId, Exception error)
+        internal void EndExecute(Guid taskId, Exception error)
         {
             #region Contracts
 
@@ -371,7 +398,7 @@ namespace CLK.Communication
             commandTask.EndExecute(error);
         }
         
-        protected void EndExecute(Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate, Exception error)
+        private void EndExecute(Func<DeviceCommandTask<TDeviceAddress, TRequest, TResponse>, bool> predicate, Exception error)
         {
             #region Contracts
 
@@ -392,11 +419,6 @@ namespace CLK.Communication
         }
 
 
-        internal abstract void ApplyExecute(ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest> eventArgs);
-
-        internal abstract void ApplyExecute(ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse> eventArgs);
-
-
         // Handlers
         private void CommandTask_ExecuteCommandArrived(object sender, ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest> eventArgs)
         {
@@ -413,7 +435,7 @@ namespace CLK.Communication
                 if (_operateLock.IsStarted == false) throw new DisconnectException();
 
                 // Apply
-                this.ApplyExecute(eventArgs);
+                _commandStrategy.ApplyExecute(eventArgs);
             }
             catch (Exception error)
             {
@@ -428,7 +450,7 @@ namespace CLK.Communication
             }
             catch (Exception ex)
             {
-                Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "OnExecuteCommandArrived", "Exception", ex.Message));
+                DebugContext.Current.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "OnExecuteCommandArrived", "Exception", ex.Message));
             }
         }
 
@@ -447,7 +469,7 @@ namespace CLK.Communication
                 if (_operateLock.IsStarted == false) throw new DisconnectException();
 
                 // Apply
-                this.ApplyExecute(eventArgs);
+                _commandStrategy.ApplyExecute(eventArgs);
             }
             catch (Exception ex)
             {
@@ -461,7 +483,7 @@ namespace CLK.Communication
             }
             catch (Exception ex)
             {
-                Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "OnExecuteCommandCompleted", "Exception", ex.Message));
+                DebugContext.Current.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "OnExecuteCommandCompleted", "Exception", ex.Message));
             }
         }
 

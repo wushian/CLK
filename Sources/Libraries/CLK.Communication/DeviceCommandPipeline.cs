@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +9,10 @@ namespace CLK.Communication
 {
     public abstract class DeviceCommandPipeline
     {
+        // Constructors
+        public DeviceCommandPipeline() { }
+
+
         // Methods
         internal void Post(DeviceCommandTask commandTask)
         {

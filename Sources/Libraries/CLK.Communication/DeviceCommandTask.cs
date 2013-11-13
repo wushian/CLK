@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CLK.Diagnostics;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -80,7 +80,7 @@ namespace CLK.Communication
                 }
                 catch (Exception ex)
                 {
-                    Debug.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "BeginExecute", "Exception", ex.Message));
+                    DebugContext.Current.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "BeginExecute", "Exception", ex.Message));
                 }
             };
             ThreadPool.QueueUserWorkItem(executeDelegate);

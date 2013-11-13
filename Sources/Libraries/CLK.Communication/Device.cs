@@ -8,46 +8,50 @@ using System.Timers;
 
 namespace CLK.Communication
 {
-    public sealed class Device<TDeviceAddress> : IDisposable
+    public abstract class Device<TDeviceAddress> : IDisposable
         where TDeviceAddress : DeviceAddress
     {
         // Fields        
+        private readonly object _syncRoot = new object();
+
         private readonly PortableStarterStoperLock _operateLock = new PortableStarterStoperLock();
-                       
-        private readonly PortableTimer _operateTimer = null;
 
         private readonly TDeviceAddress _localDeviceAddress = null;
 
         private readonly TDeviceAddress _remoteDeviceAddress = null;
 
-        private readonly IEnumerable<DeviceCommand> _commandCollection = null;
+        private readonly IEnumerable<DeviceCommand<TDeviceAddress>> _commandCollection = null;
+
+        private bool _isDisposed = false;
+
+        private bool _isClosed = false;
 
         
         // Constructors
-        internal Device(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, IDeviceCommandFactory<TDeviceAddress> commandFactory, PortableTimer operateTimer = null)
+        public Device(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, IEnumerable<DeviceCommand<TDeviceAddress>> commandCollection)
         {
             #region Contracts
 
             if (localDeviceAddress == null) throw new ArgumentNullException();
             if (remoteDeviceAddress == null) throw new ArgumentNullException();
-            if (commandFactory == null) throw new ArgumentNullException();
+            if (commandCollection == null) throw new ArgumentNullException();           
 
             #endregion
 
             // Arguments   
             _localDeviceAddress = localDeviceAddress;
             _remoteDeviceAddress = remoteDeviceAddress;
-            _operateTimer = operateTimer;
-
-            // Create
-            _commandCollection = commandFactory.CreateAll(_localDeviceAddress, _remoteDeviceAddress);
-            if (_commandCollection == null) throw new InvalidOperationException();            
+            _commandCollection = commandCollection;
         }
 
         public void Dispose()
         {
-            // Close
-            this.Close();
+            // Flag
+            lock(_syncRoot)
+            {
+                if (_isDisposed == true) return;
+                _isDisposed = true;
+            }
 
             // Notify
             this.OnDeviceDisposed();                       
@@ -64,7 +68,7 @@ namespace CLK.Communication
         internal void ApplyTimeTicked(long nowTicks)
         {
             // Command
-            foreach (DeviceCommand command in _commandCollection)
+            foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
             {
                 command.ApplyTimeTicked(nowTicks);
             }
@@ -79,16 +83,9 @@ namespace CLK.Communication
             try
             {
                 // Command
-                foreach (DeviceCommand command in _commandCollection)
+                foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
                 {
                     command.Start();
-                }
-
-                // Timer
-                if (_operateTimer != null)
-                {
-                    _operateTimer.Ticked += this.Timer_Ticked;
-                    _operateTimer.Start();
                 }
             }
             finally
@@ -98,7 +95,7 @@ namespace CLK.Communication
             }
         }
 
-        private void Close()
+        internal void Close()
         {
             // EnterStopLock
             if (_operateLock.EnterStopLock() == false) return;
@@ -106,15 +103,16 @@ namespace CLK.Communication
             // Close
             try
             {
-                // Timer
-                if (_operateTimer != null)
+                // Flag
+                lock (_syncRoot)
                 {
-                    _operateTimer.Stop();
-                    _operateTimer.Ticked -= this.Timer_Ticked;
+                    if (_isClosed == true) return;
+                    _isClosed = true;
+                    _isDisposed = true;
                 }
 
                 // Command
-                foreach (DeviceCommand command in _commandCollection)
+                foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
                 {
                     command.Stop();
                 }
@@ -125,31 +123,23 @@ namespace CLK.Communication
                 _operateLock.ExitStopLock();
             }
         }
-        
-        
-        public TCommand GetCommand<TCommand>()
+
+
+        public TCommand GetCommand<TCommand>() where TCommand : DeviceCommand<TDeviceAddress>
         {
             // Command
             return _commandCollection.OfType<TCommand>().FirstOrDefault();
         }
         
-
-        // Handlers
-        private void Timer_Ticked(object sender, EventArgs e)
-        {
-            // Apply
-            this.ApplyTimeTicked(DateTime.Now.Ticks);
-        }
-
         
         // Events
-        internal event Action<Device<TDeviceAddress>> DeviceDisposed;
+        internal event Action<TDeviceAddress, TDeviceAddress> DeviceDisposed;
         private void OnDeviceDisposed()
         {
             var handler = this.DeviceDisposed;
             if (handler != null)
             {
-                handler(this);
+                handler(this.LocalDeviceAddress, this.RemoteDeviceAddress);
             }
         }
     }
