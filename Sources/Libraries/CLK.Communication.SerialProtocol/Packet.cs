@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Communication
+namespace CLK.Communication.SerialProtocol
 {
-    public sealed class DeviceMessage<TDeviceAddress, TContents>
-      where TDeviceAddress : DeviceAddress
+    public sealed class Packet<TDeviceAddress>
+        where TDeviceAddress : DeviceAddress
     {
         // Constructors
-        public DeviceMessage(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TContents contents)
+        public Packet(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, byte[] contents)
         {
             #region Contracts
 
@@ -20,18 +20,18 @@ namespace CLK.Communication
 
             #endregion
 
-            // Arguments   
+            // Arguments                
             this.LocalDeviceAddress = localDeviceAddress;
             this.RemoteDeviceAddress = remoteDeviceAddress;
             this.Contents = contents;
         }
 
 
-        // Properties
+        // Properties        
         public TDeviceAddress LocalDeviceAddress { get; private set; }
 
         public TDeviceAddress RemoteDeviceAddress { get; private set; }
 
-        public TContents Contents { get; private set; }
+        public byte[] Contents { get; private set; }
     }
 }
