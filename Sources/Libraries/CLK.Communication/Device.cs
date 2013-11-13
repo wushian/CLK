@@ -24,8 +24,6 @@ namespace CLK.Communication
 
         private bool _isDisposed = false;
 
-        private bool _isClosed = false;
-
         
         // Constructors
         public Device(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, IEnumerable<DeviceCommand<TDeviceAddress>> commandCollection)
@@ -82,6 +80,12 @@ namespace CLK.Communication
             // Open
             try
             {
+                // Flag
+                lock (_syncRoot)
+                {
+                    _isDisposed = false;
+                }
+                
                 // Command
                 foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
                 {
@@ -106,8 +110,6 @@ namespace CLK.Communication
                 // Flag
                 lock (_syncRoot)
                 {
-                    if (_isClosed == true) return;
-                    _isClosed = true;
                     _isDisposed = true;
                 }
 
