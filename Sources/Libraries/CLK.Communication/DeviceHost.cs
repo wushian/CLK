@@ -250,7 +250,6 @@ namespace CLK.Communication
             // Search 
             lock (_syncRoot)
             {
-
                 foreach (TDevice existDevice in _deviceCollection)
                 {
                     if (predicate(existDevice) == true)
@@ -315,8 +314,28 @@ namespace CLK.Communication
 
             #endregion
 
-            // Detach
-            this.DetachDevice(localDeviceAddress, remoteDeviceAddress);
+            // Result
+            TDevice device = null;
+
+            // Search 
+            Func<TDevice, bool> predicate = delegate(TDevice existDevice)
+            {
+                if (existDevice.LocalDeviceAddress.EqualAddress(localDeviceAddress) == true)
+                {
+                    if (existDevice.RemoteDeviceAddress.EqualAddress(remoteDeviceAddress) == true)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            device = this.GetDevice(predicate);
+
+            // Dispose
+            if (device != null)
+            {
+                device.Dispose();
+            }
         }
 
         private void DeviceInstance_DeviceDisposed(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress)
@@ -327,7 +346,7 @@ namespace CLK.Communication
             if (remoteDeviceAddress == null) throw new ArgumentNullException();
 
             #endregion
-
+                                    
             // Detach
             this.DetachDevice(localDeviceAddress, remoteDeviceAddress);
         }

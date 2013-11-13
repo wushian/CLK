@@ -79,13 +79,7 @@ namespace CLK.Communication
 
             // Open
             try
-            {
-                // Flag
-                lock (_syncRoot)
-                {
-                    _isDisposed = false;
-                }
-                
+            {                
                 // Command
                 foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
                 {
@@ -107,12 +101,6 @@ namespace CLK.Communication
             // Close
             try
             {
-                // Flag
-                lock (_syncRoot)
-                {
-                    _isDisposed = true;
-                }
-
                 // Command
                 foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
                 {
