@@ -31,6 +31,7 @@ namespace CLK.Network.Sockets
             // UdpClient
             _udpClient = new UdpClient(localEndPoint);
             _udpClient.Client.IOControl(-1744830452, new byte[] { 0, 0, 0, 0 }, null); // Fix : UDP Socket 10054 Error Code
+            _udpClient.Ttl = 255; // Fix : UDP Socket 10052 Error Code
 
             // ReceiveThread
             _receiveThread = new Thread(this.Receive);
