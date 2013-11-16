@@ -8,128 +8,182 @@ using System.Timers;
 
 namespace CLK.Communication
 {
-    public abstract class Device<TDeviceAddress> : IDisposable
-        where TDeviceAddress : DeviceAddress
+    public abstract class Device<TAddress> : IDisposable
+        where TAddress : DeviceAddress
     {
         // Fields        
         private readonly object _syncRoot = new object();
 
-        private readonly PortableStarterStoperLock _operateLock = new PortableStarterStoperLock();
+        private IDeviceStrategy<TAddress> _deviceStrategy = null;
+        
+        private IEnumerable<DeviceCommand<TAddress>> _commandCollection = null;
 
-        private readonly TDeviceAddress _localDeviceAddress = null;
+        private bool _isOpend = false;
 
-        private readonly TDeviceAddress _remoteDeviceAddress = null;
-
-        private readonly IEnumerable<DeviceCommand<TDeviceAddress>> _commandCollection = null;
+        private bool _isClosed = false;
 
         private bool _isDisposed = false;
 
         
         // Constructors
-        public Device(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, IEnumerable<DeviceCommand<TDeviceAddress>> commandCollection)
+        public Device() { }
+
+        internal void Initialize(IDeviceStrategy<TAddress> deviceStrategy)
         {
             #region Contracts
 
-            if (localDeviceAddress == null) throw new ArgumentNullException();
-            if (remoteDeviceAddress == null) throw new ArgumentNullException();
-            if (commandCollection == null) throw new ArgumentNullException();           
+            if (deviceStrategy == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Arguments   
-            _localDeviceAddress = localDeviceAddress;
-            _remoteDeviceAddress = remoteDeviceAddress;
-            _commandCollection = commandCollection;
+            // Strategy   
+            _deviceStrategy = deviceStrategy;
+
+            // Command
+            _commandCollection = this.CreateAllCommand();
+            if (_commandCollection == null) throw new InvalidOperationException();
+
+            // CommandStrategy
+            var commandStrategyCollection = deviceStrategy.GetAllCommandStrategy();
+            if (commandStrategyCollection == null) throw new InvalidOperationException();
+
+            // Initialize
+            foreach (DeviceCommand<TAddress> command in _commandCollection)
+            {
+                // Address
+                command.Initialize(_deviceStrategy.LocalAddress, _deviceStrategy.RemoteAddress);
+
+                // Strategy
+                foreach (IDeviceCommandStrategy<TAddress> commandStrategy in commandStrategyCollection)
+                {
+                    command.Initialize(commandStrategy);
+                }
+            }
         }
 
         public void Dispose()
         {
-            // Flag
-            lock(_syncRoot)
-            {
-                if (_isDisposed == true) return;
-                _isDisposed = true;
-            }
-
-            // Notify
-            this.OnDeviceDisposed();                       
+            // Close
+            this.Close();
         }
 
 
-        // Properties
-        public TDeviceAddress LocalDeviceAddress { get { return _localDeviceAddress; } }
+        // Properties        
+        public TAddress LocalAddress { get { return _deviceStrategy.LocalAddress; } }
 
-        public TDeviceAddress RemoteDeviceAddress { get { return _remoteDeviceAddress; } }
+        public TAddress RemoteAddress { get { return _deviceStrategy.RemoteAddress; } }
 
 
         // Methods
-        internal void ApplyTimeTicked(long nowTicks)
+        private void ApplyTimeTicked(long nowTicks)
         {
             // Command
-            foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
+            foreach (DeviceCommand<TAddress> command in _commandCollection)
             {
                 command.ApplyTimeTicked(nowTicks);
             }
         }
 
-        internal void Open()
+        private void Open()
         {
-            // EnterStartLock
-            if (_operateLock.EnterStartLock() == false) return;
+            // Flag
+            lock (_syncRoot)
+            {
+                if (_isOpend == true) return;
+                _isOpend = true;
+                _isDisposed = false;
+            }
+
+            // Require
+            if (_deviceStrategy == null) throw new InvalidOperationException();
+            if (_commandCollection == null) throw new InvalidOperationException();
+
+            // Command
+            foreach (DeviceCommand<TAddress> command in _commandCollection)
+            {
+                command.Start();
+            }
+
+            // Strategy
+            _deviceStrategy.Ticked += this.DeviceStrategy_Ticked;
+            _deviceStrategy.Start();
+
+            // Notify
+            this.OnDeviceOpened();
+        }
+
+        private void Close()
+        {
+            // Flag
+            lock (_syncRoot)
+            {
+                if (_isClosed == true) return;
+                _isClosed = true;
+                _isDisposed = true;
+            }
+                                    
+            // Strategy
+            _deviceStrategy.Stop();
+            _deviceStrategy.Ticked -= this.DeviceStrategy_Ticked;
+
+            // Command
+            foreach (DeviceCommand<TAddress> command in _commandCollection)
+            {
+                command.Stop();
+            }
+
+            // Notify
+            this.OnDeviceClosed();
+        }
+
+
+        public void Connect()
+        {
+            // Require
+            lock (_syncRoot)
+            {
+                if (_isDisposed == true) throw new ObjectDisposedException(this.GetType().Name);
+            }
 
             // Open
-            try
-            {                
-                // Command
-                foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
-                {
-                    command.Start();
-                }
-            }
-            finally
-            {
-                // ExitStartLock
-                _operateLock.ExitStartLock();
-            }
+            this.Open();
         }
-
-        internal void Close()
-        {
-            // EnterStopLock
-            if (_operateLock.EnterStopLock() == false) return;
-
-            // Close
-            try
-            {
-                // Command
-                foreach (DeviceCommand<TDeviceAddress> command in _commandCollection)
-                {
-                    command.Stop();
-                }
-            }
-            finally
-            {
-                // ExitStopLock
-                _operateLock.ExitStopLock();
-            }
-        }
-
-
-        public TCommand GetCommand<TCommand>() where TCommand : DeviceCommand<TDeviceAddress>
+        
+        public TCommand GetCommand<TCommand>() where TCommand : DeviceCommand<TAddress>
         {
             // Command
             return _commandCollection.OfType<TCommand>().FirstOrDefault();
         }
         
-        
-        // Events
-        internal event Action<TDeviceAddress, TDeviceAddress> DeviceDisposed;
-        private void OnDeviceDisposed()
+        protected abstract IEnumerable<DeviceCommand<TAddress>> CreateAllCommand();
+
+
+        // Handlers
+        private void DeviceStrategy_Ticked(long nowTicks)
         {
-            var handler = this.DeviceDisposed;
+            // Apply
+            this.ApplyTimeTicked(nowTicks);
+        }
+
+
+        // Events
+        internal event Action<TAddress, TAddress> DeviceOpened;
+        private void OnDeviceOpened()
+        {
+            var handler = this.DeviceOpened;
             if (handler != null)
             {
-                handler(this.LocalDeviceAddress, this.RemoteDeviceAddress);
+                handler(_deviceStrategy.LocalAddress, _deviceStrategy.RemoteAddress);
+            }
+        }
+
+        internal event Action<TAddress, TAddress> DeviceClosed;
+        private void OnDeviceClosed()
+        {
+            var handler = this.DeviceClosed;
+            if (handler != null)
+            {
+                handler(_deviceStrategy.LocalAddress, _deviceStrategy.RemoteAddress);
             }
         }
     }

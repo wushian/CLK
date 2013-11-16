@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace CLK.Communication
 {
-    public interface IDeviceActiveCommandStrategy<TDeviceAddress, TRequest, TResponse> : IDeviceCommandStrategy<TDeviceAddress, TRequest, TResponse>
-        where TDeviceAddress : DeviceAddress
+    public interface IDeviceActiveCommandStrategy<TAddress, TRequest, TResponse> : IDeviceCommandStrategy<TAddress, TRequest, TResponse>
+        where TAddress : DeviceAddress
         where TRequest : class
         where TResponse : class
     {
         // Events
-        event Action<Guid , TDeviceAddress , TDeviceAddress , TRequest, TResponse> ExecuteSucceedCompleted;
+        event Action<Guid , TAddress , TAddress , TRequest, TResponse> ExecuteSucceedCompleted;
 
-        event Action<Guid , TDeviceAddress , TDeviceAddress , TRequest, Exception> ExecuteFailCompleted;
+        event Action<Guid , TAddress , TAddress , TRequest, Exception> ExecuteFailCompleted;
     }
 }

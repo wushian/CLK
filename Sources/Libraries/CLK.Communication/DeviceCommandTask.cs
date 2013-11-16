@@ -121,28 +121,28 @@ namespace CLK.Communication
         }
     }
 
-    public sealed class DeviceCommandTask<TDeviceAddress, TRequest, TResponse> : DeviceCommandTask
-        where TDeviceAddress : DeviceAddress
+    public sealed class DeviceCommandTask<TAddress, TRequest, TResponse> : DeviceCommandTask
+        where TAddress : DeviceAddress
         where TRequest : class
         where TResponse : class
     {
         // Constructors
-        internal DeviceCommandTask(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request, int expireMillisecond, int retryCount)
+        internal DeviceCommandTask(Guid taskId, TAddress localAddress, TAddress remoteAddress, TRequest request, int expireMillisecond, int retryCount)
             : base(expireMillisecond, retryCount)
         {
             #region Contracts
 
             if (taskId == Guid.Empty) throw new ArgumentException();
-            if (localDeviceAddress == null) throw new ArgumentNullException();
-            if (remoteDeviceAddress == null) throw new ArgumentNullException();
+            if (localAddress == null) throw new ArgumentNullException();
+            if (remoteAddress == null) throw new ArgumentNullException();
             if (request == null) throw new ArgumentNullException();
 
             #endregion
 
             // Arguments    
             this.TaskId = taskId;
-            this.LocalDeviceAddress = localDeviceAddress;
-            this.RemoteDeviceAddress = remoteDeviceAddress;
+            this.LocalAddress = localAddress;
+            this.RemoteAddress = remoteAddress;
             this.Request = request;
         }
 
@@ -150,9 +150,9 @@ namespace CLK.Communication
         // Properties
         public Guid TaskId { get; private set; }
 
-        public TDeviceAddress LocalDeviceAddress { get; private set; }
+        public TAddress LocalAddress { get; private set; }
 
-        public TDeviceAddress RemoteDeviceAddress { get; private set; }
+        public TAddress RemoteAddress { get; private set; }
 
         public TRequest Request { get; private set; }   
 
@@ -161,7 +161,7 @@ namespace CLK.Communication
         internal override void BeginExecute()
         {
             // Create
-            var eventArgs = new ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request);
+            var eventArgs = new ExecuteCommandArrivedEventArgs<TAddress, TRequest>(this.TaskId, this.LocalAddress, this.RemoteAddress, this.Request);
 
             // Base
             base.BeginExecute();     
@@ -179,7 +179,7 @@ namespace CLK.Communication
             #endregion
 
             // Create
-            var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request, response);
+            var eventArgs = new ExecuteCommandCompletedEventArgs<TAddress, TRequest, TResponse>(this.TaskId, this.LocalAddress, this.RemoteAddress, this.Request, response);
             
             // Notify
             this.OnExecuteCommandCompleted(eventArgs);
@@ -197,7 +197,7 @@ namespace CLK.Communication
             #endregion
 
             // Create
-            var eventArgs = new ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>(this.TaskId, this.LocalDeviceAddress, this.RemoteDeviceAddress, this.Request, error);
+            var eventArgs = new ExecuteCommandCompletedEventArgs<TAddress, TRequest, TResponse>(this.TaskId, this.LocalAddress, this.RemoteAddress, this.Request, error);
 
             // Notify
             this.OnExecuteCommandCompleted(eventArgs);
@@ -208,8 +208,8 @@ namespace CLK.Communication
 
 
         // Events
-        internal event EventHandler<ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest>> ExecuteCommandArrived;
-        private void OnExecuteCommandArrived(ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest> eventArgs)
+        internal event EventHandler<ExecuteCommandArrivedEventArgs<TAddress, TRequest>> ExecuteCommandArrived;
+        private void OnExecuteCommandArrived(ExecuteCommandArrivedEventArgs<TAddress, TRequest> eventArgs)
         {
             #region Contracts
 
@@ -224,8 +224,8 @@ namespace CLK.Communication
             }
         }
 
-        internal event EventHandler<ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse>> ExecuteCommandCompleted;
-        private void OnExecuteCommandCompleted(ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse> eventArgs)
+        internal event EventHandler<ExecuteCommandCompletedEventArgs<TAddress, TRequest, TResponse>> ExecuteCommandCompleted;
+        private void OnExecuteCommandCompleted(ExecuteCommandCompletedEventArgs<TAddress, TRequest, TResponse> eventArgs)
         {
             #region Contracts
 

@@ -6,20 +6,20 @@ using System.Text;
 
 namespace CLK.Communication
 {
-    public sealed class ExecuteCommandCompletedEventArgs<TDeviceAddress, TRequest, TResponse> : AsyncCompletedEventArgs
-        where TDeviceAddress : DeviceAddress
+    public sealed class ExecuteCommandCompletedEventArgs<TAddress, TRequest, TResponse> : AsyncCompletedEventArgs
+        where TAddress : DeviceAddress
         where TRequest : class
         where TResponse : class
     {
         // Constructors
-        internal ExecuteCommandCompletedEventArgs(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, 
+        internal ExecuteCommandCompletedEventArgs(Guid taskId, TAddress localAddress, TAddress remoteAddress, 
                                                 TRequest request, TResponse response) : base(null, false, null)
         {
             #region Contracts
 
             if (taskId == Guid.Empty) throw new ArgumentException();
-            if (localDeviceAddress == null) throw new ArgumentNullException();
-            if (remoteDeviceAddress == null) throw new ArgumentNullException();          
+            if (localAddress == null) throw new ArgumentNullException();
+            if (remoteAddress == null) throw new ArgumentNullException();          
             if (request == null) throw new ArgumentNullException();
             if (response == null) throw new ArgumentNullException();
 
@@ -27,20 +27,20 @@ namespace CLK.Communication
 
             // Arguments
             this.TaskId = taskId;
-            this.LocalDeviceAddress = localDeviceAddress;
-            this.RemoteDeviceAddress = remoteDeviceAddress;           
+            this.LocalAddress = localAddress;
+            this.RemoteAddress = remoteAddress;           
             this.Request = request;
             this.Response = response;
         }
 
-        internal ExecuteCommandCompletedEventArgs(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, 
+        internal ExecuteCommandCompletedEventArgs(Guid taskId, TAddress localAddress, TAddress remoteAddress, 
                                                 TRequest request, Exception error) : base(error, true, null)
         {
             #region Contracts
                        
             if (taskId == Guid.Empty) throw new ArgumentException();
-            if (localDeviceAddress == null) throw new ArgumentNullException();
-            if (remoteDeviceAddress == null) throw new ArgumentNullException();    
+            if (localAddress == null) throw new ArgumentNullException();
+            if (remoteAddress == null) throw new ArgumentNullException();    
             if (request == null) throw new ArgumentNullException();
             if (error == null) throw new ArgumentNullException();
 
@@ -48,8 +48,8 @@ namespace CLK.Communication
 
             // Arguments
             this.TaskId = taskId;
-            this.LocalDeviceAddress = localDeviceAddress;
-            this.RemoteDeviceAddress = remoteDeviceAddress;   
+            this.LocalAddress = localAddress;
+            this.RemoteAddress = remoteAddress;   
             this.Request = request;
             this.Response = null;
         }
@@ -58,9 +58,9 @@ namespace CLK.Communication
         // Properties              
         public Guid TaskId { get; private set; }
 
-        public TDeviceAddress LocalDeviceAddress { get; private set; }
+        public TAddress LocalAddress { get; private set; }
 
-        public TDeviceAddress RemoteDeviceAddress { get; private set; }
+        public TAddress RemoteAddress { get; private set; }
 
         public TRequest Request { get; private set; }
 

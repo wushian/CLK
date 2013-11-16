@@ -39,17 +39,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Addresses\AnonymousAddress.cs" />
     <Compile Include="Commands\DeviceActiveCommand.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands\DevicePassiveCommand.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Device.cs" />
+    <Compile Include="Device.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DeviceAddress.cs" />
     <Compile Include="DeviceCommand.cs" />
     <Compile Include="DeviceCommandTask.cs" />
-    <Compile Include="DeviceHost.cs" />
+    <Compile Include="DeviceFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceHost.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="EventArgs\ExecuteCommandArrivedEventArgs.cs" />
     <Compile Include="EventArgs\ExecuteCommandCompletedEventArgs.cs" />
     <Compile Include="Exceptions\DisconnectException.cs" />
@@ -61,6 +69,8 @@
     <Compile Include="DeviceCommandStrategy.cs" />
     <Compile Include="Strategies\DevicePassiveCommandStrategy.cs" />
     <Compile Include="DeviceStrategy.cs" />
+    <Compile Include="DeviceHostStrategy.cs" />
+    <Compile Include="DeviceFactoryStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CLK\CLK.csproj">

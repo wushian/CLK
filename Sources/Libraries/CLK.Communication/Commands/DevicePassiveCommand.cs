@@ -7,11 +7,11 @@ using CLK.Threading;
 
 namespace CLK.Communication
 {
-    public class DevicePassiveCommand<TDeviceAddress, TRequest, TResponse, TStrategy> : DeviceCommand<TDeviceAddress, TRequest, TResponse>
-        where TDeviceAddress : DeviceAddress
+    public class DevicePassiveCommand<TAddress, TRequest, TResponse, TStrategy> : DeviceCommand<TAddress, TRequest, TResponse>
+        where TAddress : DeviceAddress
         where TRequest : class
         where TResponse : class
-        where TStrategy : class, IDevicePassiveCommandStrategy<TDeviceAddress, TRequest, TResponse>
+        where TStrategy : class, IDevicePassiveCommandStrategy<TAddress, TRequest, TResponse>
     {
         // Fields
         private readonly PortableStarterStoperLock _operateLock = new PortableStarterStoperLock();
@@ -20,9 +20,9 @@ namespace CLK.Communication
 
 
         // Constructors
-        public DevicePassiveCommand(TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, DeviceCommandPipeline commandPipeline) : base(localDeviceAddress, remoteDeviceAddress, commandPipeline) { }
+        public DevicePassiveCommand(DeviceCommandPipeline commandPipeline) : base(commandPipeline) { }
 
-        internal override void Initialize(IDeviceCommandStrategy<TDeviceAddress> commandStrategy)
+        internal override void Initialize(IDeviceCommandStrategy<TAddress> commandStrategy)
         {
             #region Contracts
 
@@ -38,7 +38,7 @@ namespace CLK.Communication
             _commandStrategy = currentCommandStrategy;
 
             // Base
-            base.Initialize(commandStrategy);
+            base.Initialize(_commandStrategy);
         }
         
 
@@ -54,11 +54,11 @@ namespace CLK.Communication
                 // Require
                 if (_commandStrategy == null) throw new InvalidOperationException();
 
-                // Strategy
-                _commandStrategy.ExecuteArrived += this.CommandStrategy_ExecuteArrived;
-
                 // Base
                 base.Start();
+
+                // Strategy
+                _commandStrategy.ExecuteArrived += this.CommandStrategy_ExecuteArrived;                
             }
             finally
             {
@@ -77,12 +77,12 @@ namespace CLK.Communication
             {
                 // Require
                 if (_commandStrategy == null) throw new InvalidOperationException();
+                                
+                // Strategy
+                _commandStrategy.ExecuteArrived -= this.CommandStrategy_ExecuteArrived;
 
                 // Base
                 base.Stop();
-
-                // Strategy
-                _commandStrategy.ExecuteArrived -= this.CommandStrategy_ExecuteArrived;
             }
             finally
             {
@@ -119,20 +119,20 @@ namespace CLK.Communication
 
 
         // Handlers
-        private void CommandStrategy_ExecuteArrived(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request)
+        private void CommandStrategy_ExecuteArrived(Guid taskId, TAddress localAddress, TAddress remoteAddress, TRequest request)
         {
             #region Contracts
 
             if (taskId == Guid.Empty) throw new ArgumentException();
-            if (localDeviceAddress == null) throw new ArgumentNullException();
-            if (remoteDeviceAddress == null) throw new ArgumentNullException();
+            if (localAddress == null) throw new ArgumentNullException();
+            if (remoteAddress == null) throw new ArgumentNullException();
             if (request == null) throw new ArgumentNullException();
 
             #endregion
 
             // Require
-            if (this.LocalDeviceAddress.EqualAddress(localDeviceAddress) == false) return;
-            if (this.RemoteDeviceAddress.EqualAddress(remoteDeviceAddress) == false) return;
+            if (this.LocalAddress.EqualAddress(localAddress) == false) return;
+            if (this.RemoteAddress.EqualAddress(remoteAddress) == false) return;
 
             // Begin
             this.BeginExecute(taskId, request);

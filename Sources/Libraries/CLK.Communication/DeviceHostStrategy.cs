@@ -6,24 +6,20 @@ using System.Threading.Tasks;
 
 namespace CLK.Communication
 {
-    public interface IDeviceStrategy<TAddress> 
+    public interface IDeviceHostStrategy<TAddress> 
         where TAddress : DeviceAddress
-    {
-        // Properties
-        TAddress LocalAddress { get; }
-
-        TAddress RemoteAddress { get; }
-
-
+    {        
         // Methods        
         void Start();
 
         void Stop();
 
-        IEnumerable<IDeviceCommandStrategy<TAddress>> GetAllCommandStrategy();
+        IDeviceStrategy<TAddress> GetDeviceStrategy(TAddress localAddress, TAddress remoteAddress);
 
 
         // Events
-        event Action<long> Ticked;
+        event Action<TAddress, TAddress> DeviceArrived;
+
+        event Action<TAddress, TAddress> DeviceDeparted;
     }
 }

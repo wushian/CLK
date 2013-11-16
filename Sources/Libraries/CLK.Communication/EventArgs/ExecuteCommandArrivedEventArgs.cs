@@ -6,26 +6,26 @@ using System.Text;
 
 namespace CLK.Communication
 {
-    public sealed class ExecuteCommandArrivedEventArgs<TDeviceAddress, TRequest> : EventArgs
-        where TDeviceAddress : DeviceAddress
+    public sealed class ExecuteCommandArrivedEventArgs<TAddress, TRequest> : EventArgs
+        where TAddress : DeviceAddress
         where TRequest : class
     {
         // Constructors
-        internal ExecuteCommandArrivedEventArgs(Guid taskId, TDeviceAddress localDeviceAddress, TDeviceAddress remoteDeviceAddress, TRequest request)
+        internal ExecuteCommandArrivedEventArgs(Guid taskId, TAddress localAddress, TAddress remoteAddress, TRequest request)
         {
             #region Contracts
 
             if (taskId == Guid.Empty) throw new ArgumentException();
-            if (localDeviceAddress == null) throw new ArgumentNullException();
-            if (remoteDeviceAddress == null) throw new ArgumentNullException();          
+            if (localAddress == null) throw new ArgumentNullException();
+            if (remoteAddress == null) throw new ArgumentNullException();          
             if (request == null) throw new ArgumentNullException();
 
             #endregion
 
             // Arguments
             this.TaskId = taskId;
-            this.LocalDeviceAddress = localDeviceAddress;
-            this.RemoteDeviceAddress = remoteDeviceAddress;           
+            this.LocalAddress = localAddress;
+            this.RemoteAddress = remoteAddress;           
             this.Request = request;
         }
 
@@ -33,9 +33,9 @@ namespace CLK.Communication
         // Properties       
         public Guid TaskId { get; private set; }
 
-        public TDeviceAddress LocalDeviceAddress { get; private set; }
+        public TAddress LocalAddress { get; private set; }
 
-        public TDeviceAddress RemoteDeviceAddress { get; private set; }
+        public TAddress RemoteAddress { get; private set; }
 
         public TRequest Request { get; private set; }
     }
