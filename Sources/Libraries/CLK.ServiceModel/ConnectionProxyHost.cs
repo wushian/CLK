@@ -10,102 +10,27 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionProxyHost
+    public interface IConnectionProxyHost
     {
         // Properties
-        public abstract bool IsConnected { get; }
+        bool IsConnected { get; }
 
 
         // Methods
-        public abstract void Open();
+        void Open();
 
-        public abstract void Close();
+        void Close();
 
 
         // Events
-        public event EventHandler Connected;
-        protected void OnConnected()
-        {
-            var handler = this.Connected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
+        event EventHandler Connected;
 
-        public event EventHandler Disconnected;
-        protected void OnDisconnected()
-        {
-            var handler = this.Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
+        event EventHandler Disconnected;
 
-        public event EventHandler Heartbeating;
-        protected void OnHeartbeating()
-        {
-            var handler = this.Heartbeating;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
+        event EventHandler Heartbeating;
+    }    
 
-
-        // ConnectedPredicate
-        public static Func<IEnumerable<ConnectionProxy>, bool> CreateOneConnectedPredicate()
-        {
-            return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
-            {
-                foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
-                {
-                    if (connectionProxy.IsConnected == true)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            };
-        }
-
-        public static Func<IEnumerable<ConnectionProxy>, bool> CreateAllConnectedPredicate()
-        {
-            return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
-            {
-                foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
-                {
-                    if (connectionProxy.IsConnected == false)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            };
-        }
-    }
-
-    public class ConnectionProxyHost<TService> : GenericConnectionProxyHost<ConnectionProxy<TService>>
-        where TService : class, IConnectionService
-    {
-         // Constructors
-        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService>> connectionProxyCollection) : base(connectionProxyCollection) { }
-
-        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService>> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> isConnectedPredicate) : base(connectionProxyCollection, isConnectedPredicate) { }
-    }
-
-    public class ConnectionProxyHost<TService, TCallback> : GenericConnectionProxyHost<ConnectionProxy<TService, TCallback>>
-        where TService : class, IConnectionService
-        where TCallback : class
-    {
-        // Constructors
-        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService, TCallback>> connectionProxyCollection) : base(connectionProxyCollection) { }
-
-        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService, TCallback>> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> isConnectedPredicate) : base(connectionProxyCollection, isConnectedPredicate) { }
-    }
-    
-    public abstract class GenericConnectionProxyHost<TConnectionProxy> : ConnectionProxyHost
+    public abstract class ConnectionProxyHostBase<TConnectionProxy> : IConnectionProxyHost
         where TConnectionProxy : ConnectionProxy
     {
         // Fields
@@ -119,7 +44,7 @@ namespace CLK.ServiceModel
 
 
         // Constructors
-        public GenericConnectionProxyHost(IEnumerable<TConnectionProxy> connectionProxyCollection)
+        internal ConnectionProxyHostBase(IEnumerable<TConnectionProxy> connectionProxyCollection)
         {
             #region Contracts
 
@@ -134,7 +59,7 @@ namespace CLK.ServiceModel
             _isConnectedPredicate = ConnectionProxyHost.CreateOneConnectedPredicate();
         }
 
-        public GenericConnectionProxyHost(IEnumerable<TConnectionProxy> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> isConnectedPredicate)
+        internal ConnectionProxyHostBase(IEnumerable<TConnectionProxy> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> isConnectedPredicate)
         {
             #region Contracts
 
@@ -152,7 +77,7 @@ namespace CLK.ServiceModel
 
 
         // Properties
-        public override bool IsConnected
+        public bool IsConnected
         {
             get
             {
@@ -165,7 +90,7 @@ namespace CLK.ServiceModel
 
 
         // Methods
-        public override void Open()
+        public void Open()
         {
             // ConnectionProxyCollection
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
@@ -177,7 +102,7 @@ namespace CLK.ServiceModel
             }
         }
 
-        public override void Close()
+        public void Close()
         {
             // ConnectionProxyCollection
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
@@ -220,7 +145,7 @@ namespace CLK.ServiceModel
             if (executeDelegate == null) throw new ArgumentNullException();
 
             #endregion
-            
+
             // ConnectionProxyCollection
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
             {
@@ -232,7 +157,7 @@ namespace CLK.ServiceModel
                     // Return
                     return;
                 }
-                catch 
+                catch
                 {
                     // Nothing
 
@@ -250,7 +175,7 @@ namespace CLK.ServiceModel
             if (executeDelegate == null) throw new ArgumentNullException();
 
             #endregion
-            
+
             // ConnectionProxyCollection
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
             {
@@ -262,7 +187,7 @@ namespace CLK.ServiceModel
                     // Return
                     return result;
                 }
-                catch 
+                catch
                 {
                     // Nothing
 
@@ -320,7 +245,7 @@ namespace CLK.ServiceModel
                     // Add
                     resultCollection.Add(result);
                 }
-                catch 
+                catch
                 {
                     // Throw
                     throw;
@@ -360,5 +285,90 @@ namespace CLK.ServiceModel
             // Notify
             this.OnHeartbeating();
         }
+
+
+        // Events
+        public event EventHandler Connected;
+        private void OnConnected()
+        {
+            var handler = this.Connected;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler Disconnected;
+        private void OnDisconnected()
+        {
+            var handler = this.Disconnected;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler Heartbeating;
+        private void OnHeartbeating()
+        {
+            var handler = this.Heartbeating;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
     }    
+
+    public class ConnectionProxyHost<TService> : ConnectionProxyHostBase<ConnectionProxy<TService>>
+        where TService : class, IConnectionService
+    {
+         // Constructors
+        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService>> connectionProxyCollection) : base(connectionProxyCollection) { }
+
+        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService>> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> isConnectedPredicate) : base(connectionProxyCollection, isConnectedPredicate) { }
+    }
+
+    public class ConnectionProxyHost<TService, TCallback> : ConnectionProxyHostBase<ConnectionProxy<TService, TCallback>>
+        where TService : class, IConnectionService
+        where TCallback : class
+    {
+        // Constructors
+        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService, TCallback>> connectionProxyCollection) : base(connectionProxyCollection) { }
+
+        public ConnectionProxyHost(IEnumerable<ConnectionProxy<TService, TCallback>> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> isConnectedPredicate) : base(connectionProxyCollection, isConnectedPredicate) { }
+    }
+
+    public static class ConnectionProxyHost
+    {
+        // ConnectedPredicate
+        public static Func<IEnumerable<ConnectionProxy>, bool> CreateOneConnectedPredicate()
+        {
+            return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
+            {
+                foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
+                {
+                    if (connectionProxy.IsConnected == true)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            };
+        }
+
+        public static Func<IEnumerable<ConnectionProxy>, bool> CreateAllConnectedPredicate()
+        {
+            return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
+            {
+                foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
+                {
+                    if (connectionProxy.IsConnected == false)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            };
+        }
+    }
 }
