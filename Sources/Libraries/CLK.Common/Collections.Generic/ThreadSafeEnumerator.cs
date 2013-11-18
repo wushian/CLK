@@ -11,7 +11,7 @@ namespace CLK.Collections.Generic
         // Fields         
         private readonly object _syncRoot = new object();
 
-        private readonly PortableReaderWriterLock _readerWriterLock = null;
+        private readonly CommonReaderWriterLock _readerWriterLock = null;
 
         private readonly IEnumerator<T> _component = null;                
 
@@ -19,7 +19,7 @@ namespace CLK.Collections.Generic
 
 
         // Constructors
-        public ThreadSafeEnumerator(PortableReaderWriterLock readerWriterLock, Func<IEnumerator<T>> getEnumeratorDelegate)
+        public ThreadSafeEnumerator(CommonReaderWriterLock readerWriterLock, Func<IEnumerator<T>> getEnumeratorDelegate)
         {
             #region Contracts
                         

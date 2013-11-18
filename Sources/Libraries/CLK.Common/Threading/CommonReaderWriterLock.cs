@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace CLK.Threading
 {
-    public class PortableReaderWriterLock : IDisposable
+    public class CommonReaderWriterLock : IDisposable
     {
         // Fields
         private readonly ReaderWriterLockSlim _readerWriterLock = null;
@@ -15,13 +15,13 @@ namespace CLK.Threading
 
 
         // Constructors
-        public PortableReaderWriterLock()
+        public CommonReaderWriterLock()
         {
             // Lock
             _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         }
 
-        public PortableReaderWriterLock(LockRecursionPolicy lockRecursionPolicy)
+        public CommonReaderWriterLock(LockRecursionPolicy lockRecursionPolicy)
         {
             // Lock
             _readerWriterLock = new ReaderWriterLockSlim(lockRecursionPolicy);
