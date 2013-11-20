@@ -11,7 +11,7 @@ namespace CLK.ServiceModel
         where TService : class, IConnectionService
     {
         // Constructors
-        internal ConnectionServiceHost(ServiceHost serviceHost) : base(serviceHost) { }
+        public ConnectionServiceHost(ServiceHost serviceHost) : base(serviceHost) { }
 
 
         // Properties
@@ -29,7 +29,7 @@ namespace CLK.ServiceModel
         where TCallback : class
     {
         // Constructors
-        internal ConnectionServiceHost(ServiceHost serviceHost) : base(serviceHost) { }
+        public ConnectionServiceHost(ServiceHost serviceHost) : base(serviceHost) { }
 
 
         // Properties
