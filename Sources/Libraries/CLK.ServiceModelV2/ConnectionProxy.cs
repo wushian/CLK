@@ -28,7 +28,7 @@ namespace CLK.ServiceModel
 
         // Events
         public event EventHandler Connected;
-        protected void OnConnected()
+        internal void OnConnected()
         {
             var handler = this.Connected;
             if (handler != null)
@@ -38,7 +38,7 @@ namespace CLK.ServiceModel
         }
 
         public event EventHandler Disconnected;
-        protected void OnDisconnected()
+        internal void OnDisconnected()
         {
             var handler = this.Disconnected;
             if (handler != null)
@@ -48,7 +48,7 @@ namespace CLK.ServiceModel
         }
 
         public event EventHandler Heartbeating;
-        protected void OnHeartbeating()
+        internal void OnHeartbeating()
         {
             var handler = this.Heartbeating;
             if (handler != null)
@@ -102,7 +102,7 @@ namespace CLK.ServiceModel
 
         }
 
-        protected ConnectionProxy(ChannelFactory<TService> channelFactory)
+        internal ConnectionProxy(ChannelFactory<TService> channelFactory)
         {
             #region Contracts
 
