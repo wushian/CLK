@@ -9,6 +9,10 @@ namespace CLK.ServiceModel
     public abstract class Connection<TService>
         where TService : class, IConnectionService
     {
+        // Constructors
+        internal Connection() { }
+
+
         // Properties    
         public abstract TService Service { get; }
     }
@@ -17,6 +21,10 @@ namespace CLK.ServiceModel
         where TService : class, IConnectionService
         where TCallback : class
     {
+        // Constructors
+        internal Connection() { }
+
+
         // Properties    
         public abstract TService Service { get; }
 

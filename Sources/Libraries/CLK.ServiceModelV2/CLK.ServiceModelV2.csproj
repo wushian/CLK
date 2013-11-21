@@ -40,13 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection.cs" />
-    <Compile Include="ConnectionHost.cs" />
+    <Compile Include="Cores\Connection.cs" />
+    <Compile Include="Cores\ConnectionHost.cs" />
     <Compile Include="ConnectionProxy.cs" />
     <Compile Include="ConnectionProxyHost.cs" />
-    <Compile Include="ConnectionServiceResource.cs" />
+    <Compile Include="Cores\ConnectionProxy.cs" />
+    <Compile Include="Cores\ConnectionServiceResource.cs" />
     <Compile Include="ConnectionService.cs" />
     <Compile Include="ConnectionServiceHost.cs" />
+    <Compile Include="Cores\ConnectionProxyHost.cs" />
+    <Compile Include="Cores\ConnectionService.cs" />
+    <Compile Include="Cores\ConnectionServiceHost.cs" />
     <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
     <Compile Include="IConnectionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -10,54 +10,6 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionProxy
-    {
-        // Properties
-        public abstract bool IsConnected { get; }
-
-
-        // Constructors
-        internal ConnectionProxy() { }
-
-
-        // Methods
-        public abstract void Open();
-
-        public abstract void Close();
-
-
-        // Events
-        public event EventHandler Connected;
-        internal void OnConnected()
-        {
-            var handler = this.Connected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler Disconnected;
-        internal void OnDisconnected()
-        {
-            var handler = this.Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler Heartbeating;
-        internal void OnHeartbeating()
-        {
-            var handler = this.Heartbeating;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-    }
-
     public class ConnectionProxy<TService> : ConnectionProxy
         where TService : class, IConnectionService
     {
