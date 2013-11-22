@@ -36,15 +36,41 @@ namespace CLK.Operation
             _componentWrapperCollection = componentWrapperRepository.GetAllComponentWrapper();
             if (_componentWrapperCollection == null) throw new InvalidOperationException();
 
-            // Component
-            _componentCollection = (from componentBroker in _componentBrokerCollection select componentBroker.NativeComponent).ToArray();
-            if (_componentCollection == null) throw new InvalidOperationException();
-
-            // Initialize
-            foreach (ComponentBroker componentBroker in _componentBrokerCollection)
+            // Compose
+            int targetCount = _componentBrokerCollection.Count();
+            int currentCount = -1;
+            while (true)
             {
-                componentBroker.Initialize(_componentCollection, _componentWrapperCollection);
+                // Result
+                int successCount = 0;
+
+                // Initialize
+                foreach (ComponentBroker componentBroker in _componentBrokerCollection)
+                {
+                    if (componentBroker.Component == null)
+                    {
+                        componentBroker.Initialize(_componentBrokerCollection, _componentWrapperCollection);
+                    }
+                }
+
+                // Count
+                foreach (ComponentBroker componentBroker in _componentBrokerCollection)
+                {
+                    if (componentBroker.Component != null)
+                    {
+                        successCount++;
+                    }
+                }
+
+                // End
+                if (successCount == currentCount) throw new InvalidOperationException();
+                if (successCount >= targetCount) break;
+                currentCount = successCount;                
             }
+
+            // Component
+            _componentCollection = (from componentBroker in _componentBrokerCollection select componentBroker.Component).ToArray();
+            if (_componentCollection == null) throw new InvalidOperationException();
         }
 
 

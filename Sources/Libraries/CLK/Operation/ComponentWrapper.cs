@@ -12,35 +12,53 @@ namespace CLK.Operation
 
 
         // Methods
-        internal abstract IEnumerable<TResource> Create<TResource>(object component) where TResource : class;
+        internal abstract bool CanCreate<TResource>(Type sourceType);
+
+        internal abstract IEnumerable<TResource> Create<TResource>(object source) where TResource : class;
     }
 
     public abstract class ComponentWrapper<TSource, TResult> : ComponentWrapper
         where TSource : class
-         where TResult : class
+        where TResult : class
     {
         // Constructor         
         public ComponentWrapper() { }
 
 
         // Methods
-        internal override IEnumerable<TResource> Create<TResource>(object component) 
+        internal override bool CanCreate<TResource>(Type sourceType)
         {
             #region Contracts
 
-            if (component == null) throw new ArgumentNullException();
+            if (sourceType == null) throw new ArgumentNullException();
 
             #endregion
 
             // Require       
-            if (typeof(TResource) != typeof(TResult)) return null;
+            if (typeof(TResult) != typeof(TResource)) return false;
+            if (sourceType != typeof(TSource)) return false;
+
+            // Return
+            return true;
+        }
+
+        internal override IEnumerable<TResource> Create<TResource>(object source)
+        {
+            #region Contracts
+
+            if (source == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Require       
+            if (typeof(TResult) != typeof(TResource)) return null;
 
             // Source
-            TSource source = component as TSource;
-            if (source == null) return null;
+            TSource typedSource = source as TSource;
+            if (typedSource == null) return null;
 
             // Create
-            IEnumerable<TResult> resultCollection = this.Create(source);
+            IEnumerable<TResult> resultCollection = this.Create(typedSource);
             if (resultCollection == null) return null;
 
             // Return
