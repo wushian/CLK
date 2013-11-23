@@ -1,38 +1,73 @@
-﻿using System;
+﻿using CLK.Diagnostics;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CLK.Threading
 {
-    public abstract class PortableTimer
+    public sealed class PortableTimer : IDisposable
     {
+        // Fields
+        private readonly ManualResetEvent _executeThreadEvent = new ManualResetEvent(false);
+
+        private readonly Action _callback = null;
+
+        private readonly int _interval = 0;
+
+
         // Constructors
-        public PortableTimer(int interval)
+        public PortableTimer(Action callback, int interval)
         {
+            #region Contracts
+
+            if (callback == null) throw new ArgumentNullException();            
+
+            #endregion
+
+            // Require
+            if (interval<=0 ) throw new ArgumentException();
+
             // Arguments
-            this.Interval = interval;
+            _callback = callback;
+            _interval = interval;
+
+            // Begin
+            Task.Factory.StartNew(this.Execute);
+        }
+
+        public void Dispose()
+        {
+            // End
+            _executeThreadEvent.Set();
         }
 
 
-        // Properties  
-        public int Interval { get; private set; }
-
-
         // Methods
-        public abstract void Start();
-
-        public abstract void Stop();
-
-
-        // Events
-        public event EventHandler Ticked;
-        protected void OnTicked()
-        {
-            var handler = this.Ticked;
-            if (handler != null)
+        private void Execute()
+        {            
+            while (true)
             {
-                handler(this, EventArgs.Empty);
+                // Wait
+                if (_executeThreadEvent.WaitOne(_interval) == true)
+                {
+                    return;
+                }
+
+                // Execute
+                try
+                {
+                    // Callback
+                    _callback();
+                }
+                catch (Exception ex)
+                {
+                    // Fail
+                    DebugContext.Current.Fail(string.Format("Action:{0}, State:{1}, Message:{2}", "Callback", "Exception", ex.Message));
+                }
             }
         }
     }

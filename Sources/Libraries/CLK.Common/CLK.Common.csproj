@@ -60,8 +60,7 @@
     <Compile Include="Collections.Generic\ThreadSafeEnumerator.cs" />
     <Compile Include="Collections.Generic\ThreadSafeList.cs" />
     <Compile Include="Threading\BlockingQueue.cs" />
-    <Compile Include="Threading\CommonReaderWriterLock.cs" />
-    <Compile Include="Threading\CommonTimer.cs" />
+    <Compile Include="Threading\PortableReaderWriterLock.cs" />
     <Compile Include="Threading\STASynchronizationContext.cs" />
     <Compile Include="Threading\STAThread.cs" />
   </ItemGroup>
