@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99 Libraries", "99 Libraries", "{77B5B35B-C09D-4A36-86DB-BB48A4C640AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 CLK.Settings", "01 CLK.Settings", "{0964F5FF-4306-49C9-B777-6F7D2A5E05BD}"
