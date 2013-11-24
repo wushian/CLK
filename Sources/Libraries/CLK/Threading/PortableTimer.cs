@@ -1,9 +1,5 @@
 ﻿using CLK.Diagnostics;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,12 +20,12 @@ namespace CLK.Threading
         {
             #region Contracts
 
-            if (callback == null) throw new ArgumentNullException();            
+            if (callback == null) throw new ArgumentNullException();
 
             #endregion
 
             // Require
-            if (interval<=0 ) throw new ArgumentException();
+            if (interval <= 0) throw new ArgumentException();
 
             // Arguments
             _callback = callback;
@@ -48,7 +44,7 @@ namespace CLK.Threading
 
         // Methods
         private void Execute()
-        {            
+        {
             while (true)
             {
                 // Wait

@@ -12,5 +12,5 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded" Unloaded="PhoneApplicationPage_Unloaded">
-    <TextBlock x:Name="TextBlock001" FontSize="48" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="123" />
+    <TextBlock x:Name="TextBlock001" FontSize="48" VerticalAlignment="Center"  HorizontalAlignment="Center" />
 </phone:PhoneApplicationPage>
