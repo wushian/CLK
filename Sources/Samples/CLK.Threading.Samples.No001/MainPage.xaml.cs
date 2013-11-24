@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 namespace CLK.Threading.Samples.No001
 {
@@ -46,7 +35,7 @@ namespace CLK.Threading.Samples.No001
                 if (_operateTimer != null) return;
 
                 // Begin
-                _operateTimer = new PortableTimer(this.Timer_Ticked, 900);
+                _operateTimer = new PortableTimer(this.Timer_Ticked, 500);
             }
         }
 

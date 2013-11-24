@@ -103,7 +103,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 
 ##使用範例##
 
-###No001 - 建立模組###
+###CLK.Settings.Samples.No001 - 建立模組###
 
 在使用SettingContext物件之前，必須先取得系統所使用的SettingContext物件，在本篇中統一透過生成函式來提供SettingContext物件。例如下列範例中的生成函式，會建立一個SettingContext物件的子類別：ConfigSettingContext物件，這個ConfigSettingContext物件會轉接Config檔的參數存取功能，用以提供系統來存取Config檔中的參數設定。
 
@@ -118,7 +118,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
             return settingContext;
         }
 
-###No002 - 讀取參數###
+###CLK.Settings.Samples.No002 - 讀取參數###
 
 - 建立模組    
 
@@ -172,7 +172,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 
 	![使用範例02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Settings/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B02.png)
 
-###No003 - 列舉參數###
+###CLK.Settings.Samples.No003 - 列舉參數###
 
 - 建立模組    
 
@@ -232,7 +232,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 
 	![使用範例03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Settings/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B03.png)
 
-###No004 - 新增參數###
+###CLK.Settings.Samples.No004 - 新增參數###
 
 - 建立模組    
 
@@ -296,7 +296,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 		  <add name="Database03" connectionString="Data Source=192.168.3.3;Initial Catalog=DB03" />
 		</connectionStrings>  
 
-###No005 - 移除參數###
+###CLK.Settings.Samples.No005 - 移除參數###
 
 - 建立模組    
 
@@ -356,7 +356,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 		  <add name="Database01" connectionString="Data Source=192.168.1.1;Initial Catalog=DB01;" />
 		</connectionStrings>  
 
-###No006 - 更換來源###
+###CLK.Settings.Samples.No006 - 更換來源###
 
 只要更換生成函式所提供的SettingContext物件，就可以更換系統所使用的參數設定來源。例如下列範例中的生成函式，改為會建立一個SettingContext物件的子類別：MemorySettingContext物件，這個MemorySettingContext物件，會在記憶體中建立一個參數集合物件來存放參數設定，用以提供系統來存取記憶體中的參數設定。
 

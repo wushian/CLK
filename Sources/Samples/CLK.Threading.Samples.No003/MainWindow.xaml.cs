@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Windows;
-using Microsoft.Phone.Controls;
 using System.Threading;
+using System.Windows;
 
-namespace CLK.Threading.Samples.No002
+namespace CLK.Threading.Samples.No003
 {
-    public partial class MainPage : PhoneApplicationPage
+    public partial class MainWindow : Window
     {
         // Fields
         private readonly object _syncRoot = new object();
@@ -16,7 +15,7 @@ namespace CLK.Threading.Samples.No002
 
 
         // Constructors
-        public MainPage()
+        public MainWindow()
         {
             // Base
             this.InitializeComponent();
@@ -27,7 +26,7 @@ namespace CLK.Threading.Samples.No002
 
 
         // Handlers
-        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             lock (_syncRoot)
             {
@@ -39,7 +38,7 @@ namespace CLK.Threading.Samples.No002
             }
         }
 
-        private void PhoneApplicationPage_Unloaded(object sender, RoutedEventArgs e)
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             lock (_syncRoot)
             {
