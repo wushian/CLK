@@ -14,10 +14,8 @@
     <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <FileUpgradeFlags></FileUpgradeFlags>
+    <UpgradeBackupLocation></UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -51,7 +49,6 @@
     <Compile Include="Diagnostics\DebugProvider.cs" />
     <Compile Include="Diagnostics\Implementation\PortableDebugContext.cs" />
     <Compile Include="Diagnostics\Implementation\PortableDebugProvider.cs" />
-    <Compile Include="Generic\ConvertMapper.cs" />
     <Compile Include="Operation\ComponentBroker.cs" />
     <Compile Include="Operation\ComponentBrokerRepository.cs" />
     <Compile Include="Operation\ComponentWrapper.cs" />

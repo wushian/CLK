@@ -47,7 +47,7 @@ namespace CLK.Operation
                 // Initialize
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {
-                    if (componentBroker.Component == null)
+                    if (componentBroker.NativeComponent == null)
                     {
                         componentBroker.Initialize(_componentBrokerCollection, _componentWrapperCollection);
                     }
@@ -56,7 +56,7 @@ namespace CLK.Operation
                 // Count
                 foreach (ComponentBroker componentBroker in _componentBrokerCollection)
                 {
-                    if (componentBroker.Component != null)
+                    if (componentBroker.NativeComponent != null)
                     {
                         successCount++;
                     }
@@ -69,7 +69,7 @@ namespace CLK.Operation
             }
 
             // Component
-            _componentCollection = (from componentBroker in _componentBrokerCollection select componentBroker.Component).ToArray();
+            _componentCollection = (from componentBroker in _componentBrokerCollection select componentBroker.NativeComponent).ToArray();
             if (_componentCollection == null) throw new InvalidOperationException();
         }
 

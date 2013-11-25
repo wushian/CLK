@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02B25CB5-EB57-47E0-914A-5DD44EA93C7D}</ProjectGuid>
+    <ProjectGuid>{E51C3FED-E9CE-4426-9C2C-943DFD8486D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CLK.Common</RootNamespace>
-    <AssemblyName>CLK.Common</AssemblyName>
+    <RootNamespace>CLK.ServiceModel</RootNamespace>
+    <AssemblyName>CLK.ServiceModelV3</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -39,35 +40,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentModel.Exploring\Component.cs" />
-    <Compile Include="ComponentModel.Exploring\ComponentCollection.cs" />
-    <Compile Include="ComponentModel.Exploring\ComponentHost.cs" />
-    <Compile Include="ComponentModel.Exploring\ExploreContext.cs" />
-    <Compile Include="ComponentModel\IObservableCollection.cs" />
-    <Compile Include="ComponentModel\NativeObservableCollection.cs" />
-    <Compile Include="ComponentModel\SynchronizationObservableCollection.cs" />
-    <Compile Include="ComponentModel\ThreadSafeObservableCollection.cs" />
-    <Compile Include="ComponentModel.Pooling\ResourcePool.cs" />
-    <Compile Include="ComponentModel.Pooling\ResourceRecord.cs" />
-    <Compile Include="Generic\ConvertMapper.cs" />
-    <Compile Include="Network.Sockets\MutualUdpClient.cs" />
-    <Compile Include="Network.Sockets\RouteUdpClient.cs" />
-    <Compile Include="Network.Sockets\RouteUdpClientPool.cs" />
-    <Compile Include="Network.Sockets\RouteUdpPacket.cs" />
-    <Compile Include="Network\Utilities\NetworkInterfaceUtility.cs" />
+    <Compile Include="ConnectionProxyCallbackAgent.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionHost.cs" />
+    <Compile Include="ConnectionProxy.cs" />
+    <Compile Include="ConnectionProxyHost.cs" />
+    <Compile Include="ConnectionService.cs" />
+    <Compile Include="ConnectionServiceHost.cs" />
+    <Compile Include="ConnectionServiceResource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConnectionServiceMediator.cs" />
+    <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
+    <Compile Include="IConnectionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Collections.Generic\ThreadSafeCollection.cs" />
-    <Compile Include="Collections.Generic\ThreadSafeEnumerable.cs" />
-    <Compile Include="Collections.Generic\ThreadSafeEnumerator.cs" />
-    <Compile Include="Collections.Generic\ThreadSafeList.cs" />
-    <Compile Include="Threading\BlockingQueue.cs" />
-    <Compile Include="Threading\PortableReaderWriterLock.cs" />
-    <Compile Include="Threading\STASynchronizationContext.cs" />
-    <Compile Include="Threading\STAThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CLK\CLK.csproj">
-      <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
+      <Project>{55A100B9-E43E-4E90-A2D8-2B5E5EF31490}</Project>
       <Name>CLK</Name>
     </ProjectReference>
   </ItemGroup>
