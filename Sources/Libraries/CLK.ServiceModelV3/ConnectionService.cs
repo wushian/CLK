@@ -15,6 +15,8 @@ namespace CLK.ServiceModel
 
         private readonly ServiceHostBase _serviceHost = null;
 
+        private readonly IContextChannel _channel = null;
+
         private readonly ConnectionServiceMediator _serviceMediator = null;
 
         private bool _isConnected = true;
@@ -26,9 +28,13 @@ namespace CLK.ServiceModel
             // Require
             if (OperationContext.Current == null) throw new InvalidOperationException();
             if (OperationContext.Current.Host == null) throw new InvalidOperationException();
+            if (OperationContext.Current.Channel == null) throw new InvalidOperationException();   
 
             // ServiceHost
             _serviceHost = OperationContext.Current.Host;
+
+            // Channel
+            _channel = OperationContext.Current.Channel;
 
             // ServiceMediator
             _serviceMediator = this.GetResource<ConnectionServiceMediator>();
@@ -46,9 +52,12 @@ namespace CLK.ServiceModel
                 if (_isConnected == false) return;
                 _isConnected = false;
             }
-
+                        
             // Notify
             this.OnDisconnected();
+
+            // Channel
+            _channel.Abort();
         }
 
 
@@ -121,7 +130,7 @@ namespace CLK.ServiceModel
     }
 
     [ServiceBehavior(UseSynchronizationContext = false, IncludeExceptionDetailInFaults = true)]
-    public abstract class ConnectionService<TService, TCallback> : ConnectionService, IConnectionService
+    public abstract class ConnectionService<TService, TCallback> : ConnectionService<TService>
         where TService : class, IConnectionService
         where TCallback : class
     {
@@ -129,10 +138,6 @@ namespace CLK.ServiceModel
         public ConnectionService()
             : base()
         {
-            // Require
-            if (OperationContext.Current == null) throw new InvalidOperationException();
-            if (OperationContext.Current.Channel == null) throw new InvalidOperationException();
-
             // Callback
             this.Callback = OperationContext.Current.GetCallbackChannel<TCallback>();
             if (this.Callback == null) throw new InvalidOperationException();
@@ -141,13 +146,5 @@ namespace CLK.ServiceModel
 
         // Propertie
         public TCallback Callback { get; private set; }
-
-
-        // Methods  
-        void IConnectionService.Heartbeat()
-        {
-            // Nothing
-
-        }
     }
 }

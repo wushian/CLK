@@ -7,47 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
-{
-    public static class ConnectionProxyHost
-    {
-        // ConnectedPredicate
-        public static Func<IEnumerable<ConnectionProxy>, bool> OneConnectedPredicate
-        {
-            get
-            {
-                return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
-                {
-                    foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
-                    {
-                        if (connectionProxy.IsConnected == true)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
-            }
-        }
-
-        public static Func<IEnumerable<ConnectionProxy>, bool> AllConnectedPredicate
-        {
-            get
-            {
-                return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
-                {
-                    foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
-                    {
-                        if (connectionProxy.IsConnected == false)
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-                };
-            }
-        }
-    }
-
+{    
     public abstract class ConnectionProxyHost<TConnectionProxy> : ConnectionHost<TConnectionProxy>
         where TConnectionProxy : ConnectionProxy
     {
@@ -193,5 +153,45 @@ namespace CLK.ServiceModel
                 handler(this, EventArgs.Empty);
             }
         }
-    }    
+    }
+
+    public static class ConnectionProxyHost
+    {
+        // ConnectedPredicate
+        public static Func<IEnumerable<ConnectionProxy>, bool> OneConnectedPredicate
+        {
+            get
+            {
+                return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
+                {
+                    foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
+                    {
+                        if (connectionProxy.IsConnected == true)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+            }
+        }
+
+        public static Func<IEnumerable<ConnectionProxy>, bool> AllConnectedPredicate
+        {
+            get
+            {
+                return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
+                {
+                    foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
+                    {
+                        if (connectionProxy.IsConnected == false)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+            }
+        }
+    }
 }
