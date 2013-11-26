@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionProxyCallbackAgent.cs" />
+    <Compile Include="ConnectionProxyMediator.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionHost.cs" />
     <Compile Include="ConnectionProxy.cs" />

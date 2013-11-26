@@ -42,7 +42,7 @@ namespace CLK.ServiceModel
 
 
         // Methods
-        internal void AttachConnection(TConnection connection)
+        protected virtual void Attach(TConnection connection)
         {
             #region Contracts
 
@@ -52,21 +52,15 @@ namespace CLK.ServiceModel
 
             lock (_syncObject)
             {
-                // Require
-                if (_connectionList.Contains(connection) == true) return;
-
                 // Refresh
                 _connectionCollection = null;
 
                 // Add
                 _connectionList.Add(connection);
-
-                // Notify
-                this.OnAttached(connection);
             }
         }
 
-        internal void DetachConnection(TConnection connection)
+        protected virtual void Detach(TConnection connection)
         {
             #region Contracts
 
@@ -76,17 +70,11 @@ namespace CLK.ServiceModel
 
             lock (_syncObject)
             {
-                // Require
-                if (_connectionList.Contains(connection) == false) return;
-
                 // Refresh
                 _connectionCollection = null;
                                 
                 // Remove
                 _connectionList.Remove(connection);
-
-                // Notify
-                this.OnDetached(connection);
             }
         }
 
@@ -254,40 +242,6 @@ namespace CLK.ServiceModel
 
             // Return
             return resultCollection;
-        }
-
-
-        // Events
-        protected event TypedEventHandler<TConnection> Attached;
-        private void OnAttached(TConnection connection)
-        {
-            #region Contracts
-
-            if (connection == null) throw new ArgumentNullException();
-
-            #endregion
-
-            var handler = this.Attached;
-            if (handler != null)
-            {
-                handler(connection, EventArgs.Empty);
-            }
-        }
-
-        protected event TypedEventHandler<TConnection> Detached;
-        private void OnDetached(TConnection connection)
-        {
-            #region Contracts
-
-            if (connection == null) throw new ArgumentNullException();
-
-            #endregion
-
-            var handler = this.Detached;
-            if (handler != null)
-            {
-                handler(connection, EventArgs.Empty);
-            }
         }
     }
 }

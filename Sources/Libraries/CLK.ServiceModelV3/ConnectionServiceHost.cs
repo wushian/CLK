@@ -17,7 +17,7 @@ namespace CLK.ServiceModel
                
 
         // Constructors
-        internal ConnectionServiceHost(ServiceHost serviceHost)
+        public ConnectionServiceHost(ServiceHost serviceHost)
         {
             #region Contracts
 
@@ -36,7 +36,7 @@ namespace CLK.ServiceModel
                         
 
         // Methods
-        public void Open()
+        public virtual void Open()
         {
             // AttachResource
             this.AttachResource(this);
@@ -45,7 +45,7 @@ namespace CLK.ServiceModel
             _serviceHost.Open();
         }
 
-        public void Close()
+        public virtual void Close()
         {
             // ServiceHost
             _serviceHost.Abort();
@@ -95,7 +95,7 @@ namespace CLK.ServiceModel
             if (connectionService == null) return;
 
             // Attach
-            this.AttachConnection(connectionService);
+            this.Attach(connectionService);
         }
 
         private void ConnectionService_Connected(object sender, EventArgs e)
@@ -112,7 +112,7 @@ namespace CLK.ServiceModel
             if (connectionService == null) return;
 
             // Detach
-            this.DetachConnection(connectionService);
+            this.Detach(connectionService);
         }
     }
 }

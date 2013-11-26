@@ -22,7 +22,7 @@ namespace CLK.ServiceModel
 
 
         // Constructors        
-        internal ConnectionProxyHost(IEnumerable<TConnectionProxy> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> connectedPredicate)
+        public ConnectionProxyHost(IEnumerable<TConnectionProxy> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> connectedPredicate)
         {
             #region Contracts
 
@@ -40,7 +40,7 @@ namespace CLK.ServiceModel
             // Attach
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
             {
-                this.AttachConnection(connectionProxy);
+                this.Attach(connectionProxy);
             }
         }
 
@@ -59,7 +59,7 @@ namespace CLK.ServiceModel
 
 
         // Methods
-        public void Open()
+        public virtual void Open()
         {
             // Open
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
@@ -70,7 +70,7 @@ namespace CLK.ServiceModel
             }
         }
 
-        public void Close()
+        public virtual void Close()
         {
             // Close
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)

@@ -398,24 +398,48 @@ namespace CLK.ServiceModel
         where TService : class, IConnectionService
         where TCallback : class
     {
+        // Fields
+        private readonly ConnectionProxyMediator<TService, TCallback> _mediator = null;
+
+
         // Constructors
-        public ConnectionProxy(ConnectionProxyCallbackAgent<TCallback> callback, Binding binding, EndpointAddress adress)
-            : base(new DuplexChannelFactory<TService>(callback, binding, adress))
+        public ConnectionProxy(ConnectionProxyMediator<TService, TCallback> mediator, Binding binding, EndpointAddress adress)
+            : base(new DuplexChannelFactory<TService>(mediator, binding, adress))
         {
             #region Contracts
 
-            if (callback == null) throw new ArgumentNullException();
+            if (mediator == null) throw new ArgumentNullException();
             if (binding == null) throw new ArgumentNullException();
             if (adress == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Callback     
-            callback.Initialize(this.Callback);
+            // Arguments
+            _mediator = mediator;
+        }
+        
+
+        // Methods
+        public override void Open()
+        {
+            // Mediator    
+            TCallback callback = this as TCallback;
+            if (callback == null) throw new InvalidOperationException();
+            _mediator.Attach(callback);
+
+            // Base
+            base.Open();
         }
 
+        public override void Close()
+        {
+            // Base
+            base.Close();
 
-        // Properties
-        protected abstract TCallback Callback { get; }
+            // Mediator  
+            TCallback callback = this as TCallback;
+            if (callback == null) throw new InvalidOperationException();
+            _mediator.Detach(callback);
+        }
     }
 }

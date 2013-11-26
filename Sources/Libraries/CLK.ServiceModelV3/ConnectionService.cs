@@ -40,8 +40,8 @@ namespace CLK.ServiceModel
             _serviceMediator = this.GetResource<ConnectionServiceMediator>();
             if (_serviceMediator == null) throw new InvalidOperationException();
 
-            // Notify
-            this.OnConnected();
+            // Open
+            this.Open();
         }
 
         public void Dispose()
@@ -52,9 +52,9 @@ namespace CLK.ServiceModel
                 if (_isConnected == false) return;
                 _isConnected = false;
             }
-                        
-            // Notify
-            this.OnDisconnected();
+
+            // Close
+            this.Close();
 
             // Channel
             _channel.Abort();
@@ -75,7 +75,20 @@ namespace CLK.ServiceModel
         }       
 
 
-        // Methods      
+        // Methods     
+        protected virtual void Open()
+        {
+            // Notify
+            this.OnConnected();
+        }
+
+        protected virtual void Close()
+        {
+            // Notify
+            this.OnDisconnected();
+        }
+
+
         protected TResource GetResource<TResource>() where TResource : class
         {
             // Resource
@@ -113,7 +126,6 @@ namespace CLK.ServiceModel
         }
     }
 
-    [ServiceBehavior(UseSynchronizationContext = false, IncludeExceptionDetailInFaults = true)]
     public abstract class ConnectionService<TService> : ConnectionService, IConnectionService
         where TService : class, IConnectionService
     {
@@ -129,7 +141,6 @@ namespace CLK.ServiceModel
         }
     }
 
-    [ServiceBehavior(UseSynchronizationContext = false, IncludeExceptionDetailInFaults = true)]
     public abstract class ConnectionService<TService, TCallback> : ConnectionService<TService>
         where TService : class, IConnectionService
         where TCallback : class

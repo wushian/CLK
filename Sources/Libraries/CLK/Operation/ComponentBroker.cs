@@ -160,11 +160,11 @@ namespace CLK.Operation
             if (argument01Collection == null) throw new InvalidOperationException();
 
             // Component
-            this.Component = this.Create(argument01Collection);
+            this.Component = this.CreateInstance(argument01Collection);
             if (this.Component == null) throw new InvalidOperationException();
         }
 
-        protected abstract TComponent Create(IEnumerable<T1> argument01Collection);
+        protected abstract TComponent CreateInstance(IEnumerable<T1> argument01Collection);
     }
 
     public abstract class ComponentBroker<TComponent, T1, T2> : ComponentBroker<TComponent>
@@ -199,11 +199,11 @@ namespace CLK.Operation
             if (argument02Collection == null) throw new InvalidOperationException();
 
             // Component
-            this.Component = this.Create(argument01Collection, argument02Collection);
+            this.Component = this.CreateInstance(argument01Collection, argument02Collection);
             if (this.Component == null) throw new InvalidOperationException();
         }
 
-        protected abstract TComponent Create(IEnumerable<T1> argument01Collection, IEnumerable<T2> argument02Collection);
+        protected abstract TComponent CreateInstance(IEnumerable<T1> argument01Collection, IEnumerable<T2> argument02Collection);
     }
 
     public abstract class ComponentBroker<TComponent, T1, T2, T3> : ComponentBroker<TComponent>
@@ -244,10 +244,10 @@ namespace CLK.Operation
             if (argument03Collection == null) throw new InvalidOperationException();
 
             // Component
-            this.Component = this.Create(argument01Collection, argument02Collection, argument03Collection);
+            this.Component = this.CreateInstance(argument01Collection, argument02Collection, argument03Collection);
             if (this.Component == null) throw new InvalidOperationException();
         }
 
-        protected abstract TComponent Create(IEnumerable<T1> argument01Collection, IEnumerable<T2> argument02Collection, IEnumerable<T3> argument03Collection);
+        protected abstract TComponent CreateInstance(IEnumerable<T1> argument01Collection, IEnumerable<T2> argument02Collection, IEnumerable<T3> argument03Collection);
     }
 }
