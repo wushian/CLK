@@ -7,9 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
-{    
-    public abstract class ConnectionProxyHost<TConnectionProxy> : ConnectionHost<TConnectionProxy>
-        where TConnectionProxy : ConnectionProxy
+{ 
+    public abstract class ConnectionProxyHost<TConnectionProxy, TService> : ConnectionHost<TConnectionProxy>
+        where TConnectionProxy : ConnectionProxy<TService>
+        where TService : class, IConnectionService
     {
         // Fields
         private readonly object _syncObject = new object();
@@ -30,7 +31,7 @@ namespace CLK.ServiceModel
             if (connectedPredicate == null) throw new ArgumentNullException();
 
             #endregion
-                        
+
             // ConnectionProxyCollection
             _connectionProxyCollection = connectionProxyCollection;
 
@@ -63,7 +64,7 @@ namespace CLK.ServiceModel
         {
             // Open
             foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
-            {                
+            {
                 connectionProxy.Connected += this.ConnectionProxy_Connected;
                 connectionProxy.Disconnected += this.ConnectionProxy_Disconnected;
                 connectionProxy.Open();
@@ -153,6 +154,15 @@ namespace CLK.ServiceModel
                 handler(this, EventArgs.Empty);
             }
         }
+    }
+
+    public abstract class ConnectionProxyHost<TConnectionProxy, TService, TCallback> : ConnectionProxyHost<TConnectionProxy, TService>
+        where TConnectionProxy : ConnectionProxy<TService, TCallback>, TCallback
+        where TService : class, IConnectionService
+        where TCallback : class
+    {
+        // Constructors        
+        public ConnectionProxyHost(IEnumerable<TConnectionProxy> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> connectedPredicate) : base(connectionProxyCollection, connectedPredicate) { }
     }
 
     public static class ConnectionProxyHost

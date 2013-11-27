@@ -17,7 +17,7 @@ namespace CLK.ServiceModel
 
 
         // Properties
-        public abstract bool IsConnected { get; }        
+        public abstract bool IsConnected { get; }
 
 
         // Methods
@@ -56,7 +56,7 @@ namespace CLK.ServiceModel
 
         private readonly Binding _binding = null;
 
-        private readonly EndpointAddress _adress = null;
+        private readonly string _adress = null;
 
         private int _heartbeatInterval = 5000;
 
@@ -85,12 +85,12 @@ namespace CLK.ServiceModel
 
 
         // Constructors
-        public ConnectionProxy(Binding binding, EndpointAddress adress)
+        public ConnectionProxy(Binding binding, string adress) : base()
         {
             #region Contracts
 
             if (binding == null) throw new ArgumentNullException();
-            if (adress == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(adress) == true) throw new ArgumentNullException();
 
             #endregion
 
@@ -99,17 +99,17 @@ namespace CLK.ServiceModel
             _adress = adress;
         }
 
-        internal virtual ChannelFactory<TService> CreateChannelFactory(Binding binding, EndpointAddress adress)
+        internal virtual ChannelFactory<TService> CreateChannelFactory(Binding binding, string adress)
         {
             #region Contracts
 
             if (binding == null) throw new ArgumentNullException();
-            if (adress == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(adress) == true) throw new ArgumentNullException();
 
             #endregion
 
             // Return
-            return new ChannelFactory<TService>(binding, adress);
+            return new ChannelFactory<TService>(binding, new EndpointAddress(adress));
         }
 
 
@@ -390,7 +390,7 @@ namespace CLK.ServiceModel
 
             }
         }
-                
+
 
         // Handlers
         private void Channel_Closed(object sender, EventArgs e)
@@ -411,23 +411,23 @@ namespace CLK.ServiceModel
         where TCallback : class
     {
         // Constructors
-        public ConnectionProxy(Binding binding, EndpointAddress adress) : base(binding, adress)
+        public ConnectionProxy(Binding binding, string adress) : base(binding, adress)
         {
             // Require
             if (typeof(TCallback).IsAssignableFrom(this.GetType()) == false) throw new InvalidOperationException();
         }
 
-        internal override ChannelFactory<TService> CreateChannelFactory(Binding binding, EndpointAddress adress)
+        internal override ChannelFactory<TService> CreateChannelFactory(Binding binding, string adress)
         {
             #region Contracts
 
             if (binding == null) throw new ArgumentNullException();
-            if (adress == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(adress) == true) throw new ArgumentNullException();
 
             #endregion
 
             // Return
-            return new DuplexChannelFactory<TService>(this, binding, adress);
+            return new DuplexChannelFactory<TService>(this, binding, new EndpointAddress(adress));
         }
     }
 }

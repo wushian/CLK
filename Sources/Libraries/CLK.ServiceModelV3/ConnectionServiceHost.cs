@@ -8,39 +8,36 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionServiceHost<TConnectionService> : ConnectionHost<TConnectionService>
-        where TConnectionService : ConnectionService
+    public abstract class ConnectionServiceHost<TConnectionService, TService> : ConnectionHost<TConnectionService>
+        where TConnectionService : ConnectionService<TService>, TService
+        where TService : class, IConnectionService
     {
         // Fields   
         private readonly ServiceHost _serviceHost = null;
 
         private readonly ConnectionServiceMediator _serviceMediator = null;
-               
+
 
         // Constructors
-        public ConnectionServiceHost(Type contract, Binding binding, string address)
+        public ConnectionServiceHost(Binding binding, string address)
         {
             #region Contracts
 
-            if (contract == null) throw new ArgumentNullException();
             if (binding == null) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(address) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // Require
-            if (contract.IsAssignableFrom(typeof(TConnectionService)) == false) throw new InvalidOperationException();
-
             // ServiceHost
             _serviceHost = new ServiceHost(typeof(TConnectionService));
-            _serviceHost.AddServiceEndpoint(contract, binding, address);
+            _serviceHost.AddServiceEndpoint(typeof(TService), binding, address);
 
             // ServiceMediator
             _serviceMediator = new ConnectionServiceMediator();
             _serviceMediator.Connected += this.ConnectionService_Connected;
             _serviceMediator.Disconnected += this.ConnectionService_Disconnected;
         }
-                        
+
 
         // Methods
         public virtual void Open()
@@ -60,7 +57,7 @@ namespace CLK.ServiceModel
             // DetachResource
             this.DetachResource(_serviceMediator);
         }
-        
+
 
         protected void AttachResource(object resource)
         {
@@ -81,7 +78,7 @@ namespace CLK.ServiceModel
             if (resource == null) throw new ArgumentNullException();
 
             #endregion
-                        
+
             // Resource
             ConnectionServiceResource.Current.DetachResource(_serviceHost, resource);
         }
@@ -121,5 +118,14 @@ namespace CLK.ServiceModel
             // Detach
             this.Detach(connectionService);
         }
+    }
+
+    public abstract class ConnectionServiceHost<TConnectionService, TService, TCallback> : ConnectionServiceHost<TConnectionService, TService>
+        where TConnectionService : ConnectionService<TService, TCallback>, TService
+        where TService : class, IConnectionService
+        where TCallback : class
+    {
+        // Constructors
+        public ConnectionServiceHost(Binding binding, string address) : base(binding, address) { }
     }
 }
