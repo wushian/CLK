@@ -54,6 +54,10 @@ namespace CLK.ServiceModel
         // Fields
         private readonly object _syncRoot = new object();
 
+        private readonly Binding _binding = null;
+
+        private readonly EndpointAddress _adress = null;
+
         private int _heartbeatInterval = 5000;
 
         private int _reconnectInterval = 5000;
@@ -71,7 +75,7 @@ namespace CLK.ServiceModel
         private readonly AutoResetEvent _executeTriggerEvent = new AutoResetEvent(false);
 
 
-        private readonly ChannelFactory<TService> _channelFactory = null;
+        private ChannelFactory<TService> _channelFactory = null;
 
         private IContextChannel _channel = null;
 
@@ -82,7 +86,6 @@ namespace CLK.ServiceModel
 
         // Constructors
         public ConnectionProxy(Binding binding, EndpointAddress adress)
-            : this(new ChannelFactory<TService>(binding, adress))
         {
             #region Contracts
 
@@ -91,18 +94,22 @@ namespace CLK.ServiceModel
 
             #endregion
 
+            // Arguments
+            _binding = binding;
+            _adress = adress;
         }
 
-        internal ConnectionProxy(ChannelFactory<TService> channelFactory)
+        internal virtual ChannelFactory<TService> CreateChannelFactory(Binding binding, EndpointAddress adress)
         {
             #region Contracts
 
-            if (channelFactory == null) throw new ArgumentNullException();
+            if (binding == null) throw new ArgumentNullException();
+            if (adress == null) throw new ArgumentNullException();
 
             #endregion
 
-            // ChannelFactory     
-            _channelFactory = channelFactory;
+            // Return
+            return new ChannelFactory<TService>(binding, adress);
         }
 
 
@@ -171,6 +178,8 @@ namespace CLK.ServiceModel
             }
 
             // ChannelFactory 
+            if (_channelFactory == null) _channelFactory = this.CreateChannelFactory(_binding, _adress);
+            if (_channelFactory == null) throw new InvalidOperationException();
             _channelFactory.Open();
 
             // ExecuteThread
@@ -194,13 +203,16 @@ namespace CLK.ServiceModel
             _executeThreadEvent.WaitOne();
 
             // ChannelFactory 
-            try
+            if (_channelFactory != null)
             {
-                _channelFactory.Close();
-            }
-            catch
-            {
-                _channelFactory.Abort();
+                try
+                {
+                    _channelFactory.Close();
+                }
+                catch
+                {
+                    _channelFactory.Abort();
+                }
             }
         }
 
@@ -378,7 +390,7 @@ namespace CLK.ServiceModel
 
             }
         }
-
+                
 
         // Handlers
         private void Channel_Closed(object sender, EventArgs e)
@@ -398,48 +410,24 @@ namespace CLK.ServiceModel
         where TService : class, IConnectionService
         where TCallback : class
     {
-        // Fields
-        private readonly ConnectionProxyMediator<TService, TCallback> _mediator = null;
-
-
         // Constructors
-        public ConnectionProxy(ConnectionProxyMediator<TService, TCallback> mediator, Binding binding, EndpointAddress adress)
-            : base(new DuplexChannelFactory<TService>(mediator, binding, adress))
+        public ConnectionProxy(Binding binding, EndpointAddress adress) : base(binding, adress)
+        {
+            // Require
+            if (typeof(TCallback).IsAssignableFrom(this.GetType()) == false) throw new InvalidOperationException();
+        }
+
+        internal override ChannelFactory<TService> CreateChannelFactory(Binding binding, EndpointAddress adress)
         {
             #region Contracts
 
-            if (mediator == null) throw new ArgumentNullException();
             if (binding == null) throw new ArgumentNullException();
             if (adress == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Arguments
-            _mediator = mediator;
-        }
-        
-
-        // Methods
-        public override void Open()
-        {
-            // Mediator    
-            TCallback callback = this as TCallback;
-            if (callback == null) throw new InvalidOperationException();
-            _mediator.Attach(callback);
-
-            // Base
-            base.Open();
-        }
-
-        public override void Close()
-        {
-            // Base
-            base.Close();
-
-            // Mediator  
-            TCallback callback = this as TCallback;
-            if (callback == null) throw new InvalidOperationException();
-            _mediator.Detach(callback);
+            // Return
+            return new DuplexChannelFactory<TService>(this, binding, adress);
         }
     }
 }

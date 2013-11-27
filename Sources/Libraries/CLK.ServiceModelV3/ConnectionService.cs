@@ -40,11 +40,11 @@ namespace CLK.ServiceModel
             _serviceMediator = this.GetResource<ConnectionServiceMediator>();
             if (_serviceMediator == null) throw new InvalidOperationException();
 
-            // Open
-            this.Open();
+            // Notify
+            _serviceMediator.OnConnected(this);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             // IsConnected
             lock (_syncRoot)
@@ -53,8 +53,8 @@ namespace CLK.ServiceModel
                 _isConnected = false;
             }
 
-            // Close
-            this.Close();
+            // Notify
+            _serviceMediator.OnDisconnected(this);
 
             // Channel
             _channel.Abort();
@@ -75,54 +75,11 @@ namespace CLK.ServiceModel
         }       
 
 
-        // Methods     
-        protected virtual void Open()
-        {
-            // Notify
-            this.OnConnected();
-        }
-
-        protected virtual void Close()
-        {
-            // Notify
-            this.OnDisconnected();
-        }
-
-
+        // Methods   
         protected TResource GetResource<TResource>() where TResource : class
         {
             // Resource
             return ConnectionServiceResource.Current.GetResource<TResource>(_serviceHost);
-        }
-
-
-        // Events
-        public event EventHandler Connected;
-        private void OnConnected()
-        {
-            // Notify
-            _serviceMediator.OnConnected(this);
-
-            // Handler
-            var handler = this.Connected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler Disconnected;
-        private void OnDisconnected()
-        {
-            // Notify
-            _serviceMediator.OnDisconnected(this);
-
-            // Handler
-            var handler = this.Disconnected;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
         }
     }
 
@@ -130,7 +87,12 @@ namespace CLK.ServiceModel
         where TService : class, IConnectionService
     {
         // Constructors
-        public ConnectionService() : base() { }
+        public ConnectionService()
+            : base()
+        {
+            // Require
+            if (typeof(TService).IsAssignableFrom(this.GetType()) == false) throw new InvalidOperationException();
+        }
 
 
         // Methods  

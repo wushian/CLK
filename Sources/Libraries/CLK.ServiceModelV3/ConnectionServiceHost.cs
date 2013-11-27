@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,16 +18,22 @@ namespace CLK.ServiceModel
                
 
         // Constructors
-        public ConnectionServiceHost(ServiceHost serviceHost)
+        public ConnectionServiceHost(Type contract, Binding binding, string address)
         {
             #region Contracts
 
-            if (serviceHost == null) throw new ArgumentNullException();
+            if (contract == null) throw new ArgumentNullException();
+            if (binding == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(address) == true) throw new ArgumentNullException();
 
             #endregion
 
+            // Require
+            if (contract.IsAssignableFrom(typeof(TConnectionService)) == false) throw new InvalidOperationException();
+
             // ServiceHost
-            _serviceHost = serviceHost;
+            _serviceHost = new ServiceHost(typeof(TConnectionService));
+            _serviceHost.AddServiceEndpoint(contract, binding, address);
 
             // ServiceMediator
             _serviceMediator = new ConnectionServiceMediator();
@@ -39,7 +46,7 @@ namespace CLK.ServiceModel
         public virtual void Open()
         {
             // AttachResource
-            this.AttachResource(this);
+            this.AttachResource(_serviceMediator);
 
             // ServiceHost
             _serviceHost.Open();
@@ -51,7 +58,7 @@ namespace CLK.ServiceModel
             _serviceHost.Abort();
 
             // DetachResource
-            this.DetachResource(this);
+            this.DetachResource(_serviceMediator);
         }
         
 
