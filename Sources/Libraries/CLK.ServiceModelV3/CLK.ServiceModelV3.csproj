@@ -51,7 +51,7 @@
     </Compile>
     <Compile Include="ConnectionServiceMediator.cs" />
     <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
-    <Compile Include="IConnectionService.cs" />
+    <Compile Include="Contracts\IConnectionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

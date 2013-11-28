@@ -85,7 +85,7 @@ namespace CLK.ServiceModel
 
 
         // Constructors
-        public ConnectionProxy(Binding binding, string adress) : base()
+        public ConnectionProxy(Binding binding, string adress)
         {
             #region Contracts
 
@@ -411,7 +411,8 @@ namespace CLK.ServiceModel
         where TCallback : class
     {
         // Constructors
-        public ConnectionProxy(Binding binding, string adress) : base(binding, adress)
+        public ConnectionProxy(Binding binding, string adress)
+            : base(binding, adress)
         {
             // Require
             if (typeof(TCallback).IsAssignableFrom(this.GetType()) == false) throw new InvalidOperationException();

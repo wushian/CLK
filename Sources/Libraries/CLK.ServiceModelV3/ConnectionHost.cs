@@ -79,7 +79,7 @@ namespace CLK.ServiceModel
         }
 
 
-        public void Execute(Action<TConnection> executeDelegate)
+        public void ExecuteOne(Action<TConnection> executeDelegate)
         {
             #region Contracts
 
@@ -109,7 +109,7 @@ namespace CLK.ServiceModel
             throw new ExecuteIgnoredException();
         }
 
-        public TResult Execute<TResult>(Func<TConnection, TResult> executeDelegate)
+        public TResult ExecuteOne<TResult>(Func<TConnection, TResult> executeDelegate)
         {
             #region Contracts
 
@@ -139,7 +139,7 @@ namespace CLK.ServiceModel
             throw new ExecuteIgnoredException();
         }
 
-        public TResult Execute<TResult>(Func<TConnection, TResult> executeDelegate, Func<TResult, bool> finishPredicate)
+        public TResult ExecuteOne<TResult>(Func<TConnection, TResult> executeDelegate, Func<TResult, bool> finishPredicate)
         {
             #region Contracts
 
