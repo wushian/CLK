@@ -11,7 +11,7 @@ namespace CLK.Collections.Generic
     public class ThreadSafeEnumerable<T> : IEnumerable<T>, IDisposable
     {
         // Fields         
-        private readonly CommonReaderWriterLock _readerWriterLock = new CommonReaderWriterLock();
+        private readonly PortableReaderWriterLock _readerWriterLock = new PortableReaderWriterLock();
 
         private readonly IEnumerable<T> _component = null;       
 
