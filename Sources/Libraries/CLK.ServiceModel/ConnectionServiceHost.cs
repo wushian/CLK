@@ -2,34 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionServiceHost
+    public abstract class ConnectionServiceHost<TConnectionService> : ConnectionHost<TConnectionService>
+        where TConnectionService : ConnectionService, new()
     {
         // Fields   
         private readonly ServiceHost _serviceHost = null;
+
+        private readonly ConnectionServiceMediator _serviceMediator = null;
                
 
         // Constructors
-        public ConnectionServiceHost(ServiceHost serviceHost)
+        public ConnectionServiceHost(Type contract, Binding binding, string address)
         {
             #region Contracts
 
-            if (serviceHost == null) throw new ArgumentNullException();
+            if (contract == null) throw new ArgumentNullException();
+            if (binding == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(address) == true) throw new ArgumentNullException();
 
             #endregion
 
             // ServiceHost
-            _serviceHost = serviceHost;
+            _serviceHost = new ServiceHost(typeof(TConnectionService));
+            _serviceHost.AddServiceEndpoint(contract, binding, address);
+
+            // ServiceMediator
+            _serviceMediator = new ConnectionServiceMediator();
+            _serviceMediator.Connected += this.ConnectionService_Connected;
+            _serviceMediator.Disconnected += this.ConnectionService_Disconnected;
         }
-        
+                        
 
         // Methods
         public virtual void Open()
-        {                      
+        {
+            // AttachResource
+            this.AttachResource(_serviceMediator);
+
             // ServiceHost
             _serviceHost.Open();
         }
@@ -38,31 +53,72 @@ namespace CLK.ServiceModel
         {
             // ServiceHost
             _serviceHost.Abort();
+
+            // DetachResource
+            this.DetachResource(_serviceMediator);
         }
+        
 
-
-        protected void AttachServiceProvider(ConnectionServiceProvider serviceProvider)
+        protected void AttachResource(object resource)
         {
             #region Contracts
 
-            if (serviceProvider == null) throw new ArgumentNullException();
+            if (resource == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Locator
-            ConnectionServiceProviderLocator.Current.AttachServiceProvider(_serviceHost, serviceProvider);
+            // Resource
+            ConnectionServiceResource.Current.AttachResource(_serviceHost, resource);
         }
 
-        protected void DetachServiceProvider(ConnectionServiceProvider serviceProvider)
+        protected void DetachResource(object resource)
         {
             #region Contracts
 
-            if (serviceProvider == null) throw new ArgumentNullException();
+            if (resource == null) throw new ArgumentNullException();
+
+            #endregion
+                        
+            // Resource
+            ConnectionServiceResource.Current.DetachResource(_serviceHost, resource);
+        }
+
+
+        // Handlers
+        private void ConnectionService_Connected(object sender, EventArgs e)
+        {
+            #region Contracts
+
+            if (sender == null) throw new ArgumentException();
+            if (e == null) throw new ArgumentException();
 
             #endregion
 
-            // Locator
-            ConnectionServiceProviderLocator.Current.DetachServiceProvider(_serviceHost, serviceProvider);
+            // Require
+            TConnectionService connectionService = sender as TConnectionService;
+            if (connectionService == null) return;
+
+            // Attach
+            this.Attach(connectionService);
+        }
+
+        private void ConnectionService_Disconnected(object sender, EventArgs e)
+        {
+            #region Contracts
+
+            if (sender == null) throw new ArgumentException();
+            if (e == null) throw new ArgumentException();
+
+            #endregion
+
+            // Require
+            TConnectionService connectionService = sender as TConnectionService;
+            if (connectionService == null) return;
+
+           
+
+            // Detach
+            this.Detach(connectionService);
         }
     }
 }

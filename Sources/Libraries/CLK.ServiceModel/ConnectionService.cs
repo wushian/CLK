@@ -7,37 +7,57 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
-{
-    [ServiceBehavior(UseSynchronizationContext = false, IncludeExceptionDetailInFaults = true)]
-    public abstract class ConnectionService : IConnectionService
+{     
+    public abstract class ConnectionService : Connection, IDisposable
     {
         // Fields
-        private readonly object _syncRoot = new object();
+        private readonly object _syncRoot = new object();        
 
         private readonly ServiceHostBase _serviceHost = null;
 
         private readonly IContextChannel _channel = null;
 
-        private bool _isConnected = false;
+        private readonly ConnectionServiceMediator _serviceMediator = null;
+
+        private bool _isConnected = true;
 
 
         // Constructors
-        public ConnectionService()
+        internal ConnectionService()
         {
             // Require
             if (OperationContext.Current == null) throw new InvalidOperationException();
             if (OperationContext.Current.Host == null) throw new InvalidOperationException();
-            if (OperationContext.Current.Channel == null) throw new InvalidOperationException();            
-
-            // IsConnected
-            _isConnected = true;
+            if (OperationContext.Current.Channel == null) throw new InvalidOperationException();   
 
             // ServiceHost
             _serviceHost = OperationContext.Current.Host;
 
             // Channel
             _channel = OperationContext.Current.Channel;
-            _channel.Closed += this.Channel_Closed;   
+
+            // ServiceMediator
+            _serviceMediator = this.GetResource<ConnectionServiceMediator>();
+            if (_serviceMediator == null) throw new InvalidOperationException();
+
+            // Notify
+            _serviceMediator.OnConnected(this);
+        }
+
+        public virtual void Dispose()
+        {
+            // IsConnected
+            lock (_syncRoot)
+            {
+                if (_isConnected == false) return;
+                _isConnected = false;
+            }
+
+            // Notify
+            _serviceMediator.OnDisconnected(this);
+
+            // Channel
+            _channel.Abort();
         }
 
 
@@ -52,90 +72,52 @@ namespace CLK.ServiceModel
                     return _isConnected;
                 }
             }
-        }      
+        }       
 
 
-        // Methods               
-        protected ConnectionServiceProvider GetServiceProvider()
+        // Methods   
+        protected TResource GetResource<TResource>() where TResource : class
         {
-            // Locator
-            ConnectionServiceProvider serviceProvider = this.GetServiceProvider<ConnectionServiceProvider>();
-            if (serviceProvider == null) serviceProvider = new ConnectionServiceProvider();
+            // Resource
+            return ConnectionServiceResource.Current.GetResource<TResource>(_serviceHost);
+        }
+    }
 
-            // Return
-            return serviceProvider;
+    public abstract class ConnectionService<TService> : ConnectionService, IConnectionService
+        where TService : class, IConnectionService
+    {
+        // Constructors
+        public ConnectionService()
+            : base()
+        {
+            // Require
+            if (typeof(TService).IsAssignableFrom(this.GetType()) == false) throw new InvalidOperationException();
         }
 
-        protected TServiceProvider GetServiceProvider<TServiceProvider>()
-           where TServiceProvider : ConnectionServiceProvider
-        {
-            // Locator
-            return ConnectionServiceProviderLocator.Current.GetServiceProvider<TServiceProvider>(_serviceHost);
-        }
-        
 
+        // Methods  
         void IConnectionService.Heartbeat()
         {
-            // Notify
-            this.OnHeartbeating(this, EventArgs.Empty);
-        }
-    
+            // Nothing
 
-        // Handlers
-        private void Channel_Closed(object sender, EventArgs e)
+        }
+    }
+
+    public abstract class ConnectionService<TService, TCallback> : ConnectionService<TService>
+        where TService : class, IConnectionService
+        where TCallback : class
+    {
+        // Constructors
+        public ConnectionService()
+            : base()
         {
-            #region Contracts
-
-            if (sender == null) throw new ArgumentNullException();
-            if (e == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // _isConnected
-            lock (_syncRoot)
-            {
-                if (_isConnected == false) return;
-                _isConnected = false;
-            }
-
-            // Notify
-            this.OnDisconnected(sender, e);
+            // Callback
+            this.Callback = OperationContext.Current.GetCallbackChannel<TCallback>();
+            if (this.Callback == null) throw new InvalidOperationException();
         }
 
 
-        // Events
-        public event EventHandler Disconnected;
-        private void OnDisconnected(object sender, EventArgs e)
-        {
-            #region Contracts
-
-            if (sender == null) throw new ArgumentNullException();
-            if (e == null) throw new ArgumentNullException();
-
-            #endregion
-
-            var handler = this.Disconnected;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        public event EventHandler Heartbeating;
-        private void OnHeartbeating(object sender, EventArgs e)
-        {
-            #region Contracts
-
-            if (sender == null) throw new ArgumentNullException();
-            if (e == null) throw new ArgumentNullException();
-
-            #endregion
-
-            var handler = this.Heartbeating;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
+        // Propertie
+        public TCallback Callback { get; private set; }
     }
 }

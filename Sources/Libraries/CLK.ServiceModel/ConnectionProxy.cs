@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionProxy
+    public abstract class ConnectionProxy : Connection
     {
-        // Properties
-        public abstract bool IsConnected { get; }
-
-
         // Constructors
         internal ConnectionProxy() { }
+
+
+        // Properties
+        public abstract bool IsConnected { get; }
 
 
         // Methods
@@ -28,7 +28,7 @@ namespace CLK.ServiceModel
 
         // Events
         public event EventHandler Connected;
-        protected void OnConnected()
+        internal void OnConnected()
         {
             var handler = this.Connected;
             if (handler != null)
@@ -38,7 +38,7 @@ namespace CLK.ServiceModel
         }
 
         public event EventHandler Disconnected;
-        protected void OnDisconnected()
+        internal void OnDisconnected()
         {
             var handler = this.Disconnected;
             if (handler != null)
@@ -46,23 +46,17 @@ namespace CLK.ServiceModel
                 handler(this, EventArgs.Empty);
             }
         }
-
-        public event EventHandler Heartbeating;
-        protected void OnHeartbeating()
-        {
-            var handler = this.Heartbeating;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
     }
 
-    public class ConnectionProxy<TService> : ConnectionProxy
+    public abstract class ConnectionProxy<TService> : ConnectionProxy
         where TService : class, IConnectionService
     {
         // Fields
         private readonly object _syncRoot = new object();
+
+        private readonly Binding _binding = null;
+
+        private readonly string _adress = null;
 
         private int _heartbeatInterval = 5000;
 
@@ -81,7 +75,7 @@ namespace CLK.ServiceModel
         private readonly AutoResetEvent _executeTriggerEvent = new AutoResetEvent(false);
 
 
-        private readonly ChannelFactory<TService> _channelFactory = null;
+        private ChannelFactory<TService> _channelFactory = null;
 
         private IContextChannel _channel = null;
 
@@ -91,27 +85,31 @@ namespace CLK.ServiceModel
 
 
         // Constructors
-        public ConnectionProxy(Binding binding, EndpointAddress adress) : this(new ChannelFactory<TService>(binding, adress)) 
+        public ConnectionProxy(Binding binding, string adress)
         {
             #region Contracts
 
             if (binding == null) throw new ArgumentNullException();
-            if (adress == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(adress) == true) throw new ArgumentNullException();
 
             #endregion
 
+            // Arguments
+            _binding = binding;
+            _adress = adress;
         }
 
-        protected ConnectionProxy(ChannelFactory<TService> channelFactory)
+        internal virtual ChannelFactory<TService> CreateChannelFactory(Binding binding, string adress)
         {
             #region Contracts
 
-            if (channelFactory == null) throw new ArgumentNullException();
+            if (binding == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(adress) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // ChannelFactory     
-            _channelFactory = channelFactory;
+            // Return
+            return new ChannelFactory<TService>(binding, new EndpointAddress(adress));
         }
 
 
@@ -152,7 +150,7 @@ namespace CLK.ServiceModel
                     return _isConnected;
                 }
             }
-        }       
+        }
 
         public TService Service
         {
@@ -180,6 +178,8 @@ namespace CLK.ServiceModel
             }
 
             // ChannelFactory 
+            if (_channelFactory == null) _channelFactory = this.CreateChannelFactory(_binding, _adress);
+            if (_channelFactory == null) throw new InvalidOperationException();
             _channelFactory.Open();
 
             // ExecuteThread
@@ -203,13 +203,16 @@ namespace CLK.ServiceModel
             _executeThreadEvent.WaitOne();
 
             // ChannelFactory 
-            try
+            if (_channelFactory != null)
             {
-                _channelFactory.Close();
-            }
-            catch 
-            {
-                _channelFactory.Abort();
+                try
+                {
+                    _channelFactory.Close();
+                }
+                catch
+                {
+                    _channelFactory.Abort();
+                }
             }
         }
 
@@ -289,7 +292,7 @@ namespace CLK.ServiceModel
                 // Result
                 executeResult = true;
             }
-            catch 
+            catch
             {
                 // Result
                 executeResult = false;
@@ -334,7 +337,7 @@ namespace CLK.ServiceModel
                 _channel.Faulted -= this.Channel_Faulted;
                 _channel = null;
             }
-            catch 
+            catch
             {
                 // Service
                 _service = null;
@@ -375,28 +378,16 @@ namespace CLK.ServiceModel
             if (_channel == null) return;
             if (_channel.State != CommunicationState.Opened) return;
 
-            // Result
-            bool executeResult = false;
-
             // Heartbeat            
             try
             {
                 // Service
                 _service.Heartbeat();
-
-                // Result
-                executeResult = true;
             }
-            catch 
+            catch
             {
-                // Result
-                executeResult = false;
-            }
+                // Nothing
 
-            // Notify
-            if (executeResult == true)
-            {
-                this.OnHeartbeating();
             }
         }
 
@@ -415,39 +406,29 @@ namespace CLK.ServiceModel
         }
     }
 
-    public class ConnectionProxy<TService, TCallback> : ConnectionProxy<TService>
+    public abstract class ConnectionProxy<TService, TCallback> : ConnectionProxy<TService>
         where TService : class, IConnectionService
         where TCallback : class
     {
-        // Fields
-        private TCallback _callback = null;
-
-
         // Constructors
-        public ConnectionProxy(TCallback callback, Binding binding, EndpointAddress adress)
-            : base(new DuplexChannelFactory<TService>(callback, binding, adress))
+        public ConnectionProxy(Binding binding, string adress)
+            : base(binding, adress)
+        {
+            // Require
+            if (typeof(TCallback).IsAssignableFrom(this.GetType()) == false) throw new InvalidOperationException();
+        }
+
+        internal override ChannelFactory<TService> CreateChannelFactory(Binding binding, string adress)
         {
             #region Contracts
 
-            if (callback == null) throw new ArgumentNullException();
             if (binding == null) throw new ArgumentNullException();
-            if (adress == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(adress) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // Callback     
-            _callback = callback;
-        }
-
-
-        // Properties
-        public TCallback Callback
-        {
-            get
-            {
-                // Return
-                return _callback;
-            }
+            // Return
+            return new DuplexChannelFactory<TService>(this, binding, new EndpointAddress(adress));
         }
     }
 }

@@ -40,15 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionServiceHost.cs" />
-    <Compile Include="ConnectionServiceProvider.cs" />
-    <Compile Include="ConnectionServiceProviderLocator.cs" />
-    <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
-    <Compile Include="IConnectionService.cs" />
-    <Compile Include="ConnectionService.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionHost.cs" />
     <Compile Include="ConnectionProxy.cs" />
     <Compile Include="ConnectionProxyHost.cs" />
+    <Compile Include="ConnectionService.cs" />
+    <Compile Include="ConnectionServiceHost.cs" />
+    <Compile Include="ConnectionServiceMediator.cs" />
+    <Compile Include="ConnectionServiceResource.cs" />
+    <Compile Include="Contracts\IConnectionService.cs" />
+    <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CLK\CLK.csproj">
