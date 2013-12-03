@@ -6,7 +6,12 @@ using CLK.Collections;
 
 namespace CLK.Reflection
 {
-    internal sealed class ReflectBuilderRepository : IStoreProvider<string, ReflectBuilder>
+    internal interface IReflectBuilderRepository : IStoreProvider<string, ReflectBuilder>
+    {
+
+    }
+
+    internal sealed class ReflectBuilderRepository : IReflectBuilderRepository
     {
         // Fields        
         private readonly IReflectRepository _repository = null;
@@ -30,53 +35,7 @@ namespace CLK.Reflection
         }
 
 
-        // Methods
-        private ReflectBuilder ToBuilder(ReflectSetting setting)
-        {
-            #region Contracts
-
-            if (setting == null) throw new ArgumentNullException();
-
-            #endregion            
-
-            // Type
-            Type type = Type.GetType(setting.BuilderType);
-            if (type == null) throw new InvalidOperationException(string.Format("Fail to create type:{0}", setting.BuilderType));
-
-            // Builder
-            ReflectBuilder builder = Activator.CreateInstance(type) as ReflectBuilder;
-            if (type == null) throw new InvalidOperationException(string.Format("Fail to create instance:{0}", setting.BuilderType));
-
-            // Parameters
-            foreach (string parameterKey in setting.Parameters.Keys)
-            {
-                builder.Parameters.Add(parameterKey, setting.Parameters[parameterKey]);
-            }
-
-            // Return
-            return builder;
-        }
-
-        private ReflectSetting ToSetting(ReflectBuilder builder)
-        {
-            #region Contracts
-
-            if (builder == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Create
-            ReflectSetting setting = new ReflectSetting(builder.GetType().AssemblyQualifiedName);
-            foreach (string parameterKey in builder.Parameters.Keys)
-            {
-                setting.Parameters.Add(parameterKey, builder.Parameters[parameterKey]);
-            }
-
-            // Return
-            return setting;
-        }
-
-
+        // Methods        
         public void Add(string entityName, ReflectBuilder builder)
         {
             #region Contracts
@@ -113,6 +72,12 @@ namespace CLK.Reflection
             // Repository
             return _repository.ContainsSetting(_sectionName, entityName);
         }
+                
+        public IEnumerable<string> GetAllKey()
+        {
+            // Repository
+            return _repository.GetAllEntityName(_sectionName);
+        }
 
         public ReflectBuilder GetValue(string entityName)
         {
@@ -130,10 +95,50 @@ namespace CLK.Reflection
             return this.ToBuilder(setting);
         }
 
-        public IEnumerable<string> GetAllKey()
+
+        private ReflectBuilder ToBuilder(ReflectSetting setting)
         {
-            // Repository
-            return _repository.GetAllEntityName(_sectionName);
+            #region Contracts
+
+            if (setting == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Type
+            Type type = Type.GetType(setting.BuilderType);
+            if (type == null) throw new InvalidOperationException(string.Format("Fail to create type:{0}", setting.BuilderType));
+
+            // Builder
+            ReflectBuilder builder = Activator.CreateInstance(type) as ReflectBuilder;
+            if (type == null) throw new InvalidOperationException(string.Format("Fail to create instance:{0}", setting.BuilderType));
+
+            // Parameters
+            foreach (string parameterKey in setting.Parameters.Keys)
+            {
+                builder.Parameters.Add(parameterKey, setting.Parameters[parameterKey]);
+            }
+
+            // Return
+            return builder;
+        }
+
+        private ReflectSetting ToSetting(ReflectBuilder builder)
+        {
+            #region Contracts
+
+            if (builder == null) throw new ArgumentNullException();
+
+            #endregion
+
+            // Create
+            ReflectSetting setting = new ReflectSetting(builder.GetType().AssemblyQualifiedName);
+            foreach (string parameterKey in builder.Parameters.Keys)
+            {
+                setting.Parameters.Add(parameterKey, builder.Parameters[parameterKey]);
+            }
+
+            // Return
+            return setting;
         }
     }
 }

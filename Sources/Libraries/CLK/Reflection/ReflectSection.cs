@@ -28,8 +28,10 @@ namespace CLK.Reflection
             _repository = repository;
             _sectionName = sectionName;
 
-            // Default        
-            this.ReflectBuilders = new StoreDictionary<string, ReflectBuilder>(new ReflectBuilderRepository(repository, sectionName));
+            // ReflectBuilderDictionary        
+            IReflectBuilderRepository reflectBuilderRepository = null;
+            reflectBuilderRepository = new ReflectBuilderRepository(repository, sectionName);
+            this.ReflectBuilders = new ReflectBuilderDictionary(reflectBuilderRepository);
         }
 
 
@@ -70,6 +72,6 @@ namespace CLK.Reflection
             }
         }
 
-        public StoreDictionary<string, ReflectBuilder> ReflectBuilders { get; private set; }
+        public ReflectBuilderDictionary ReflectBuilders { get; private set; }
     }
 }

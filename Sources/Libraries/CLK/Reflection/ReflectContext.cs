@@ -50,8 +50,11 @@ namespace CLK.Reflection
             _reflectContext = this;
             _settingContext = settingContext;
 
-            // Default        
-            this.ReflectSections = new ReflectSectionDictionary(reflectRepository);
+            // ReflectSectionDictionary
+            IReflectSectionRepository reflectSectionRepository = null;
+            reflectSectionRepository = new ReflectSectionRepository(reflectRepository);
+            reflectSectionRepository = new CacheReflectSectionRepository(reflectSectionRepository);
+            this.ReflectSections = new ReflectSectionDictionary(reflectSectionRepository);
         }
 
 
@@ -148,7 +151,7 @@ namespace CLK.Reflection
             // Section
             ReflectSection section = this.ReflectSections[sectionName];
             if (section == null) return new TEntity[0];
-                 
+
             // Create
             List<TEntity> entityList = new List<TEntity>();
             foreach (string entityName in section.ReflectBuilders.Keys)
@@ -156,7 +159,7 @@ namespace CLK.Reflection
                 entityList.Add(this.CreateEntity<TEntity>(section, entityName));
             }
             return entityList;
-        }               
+        }
     }
 
     public interface IReflectContext

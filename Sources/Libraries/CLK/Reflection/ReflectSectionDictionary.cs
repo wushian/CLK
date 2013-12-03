@@ -9,24 +9,20 @@ namespace CLK.Reflection
     public sealed class ReflectSectionDictionary
     {
         // Fields        
-        private readonly IReflectRepository _repository = null;       
-                        
-        private string _cacheSectionName = null;
-
-        private ReflectSection _cacheSectionInstance = null;
+        private readonly IReflectSectionRepository _repository = null;  
 
 
         // Constructors
-        internal ReflectSectionDictionary(IReflectRepository repository)
+        internal ReflectSectionDictionary(IReflectSectionRepository repository) 
         {
             #region Contracts
-
+                        
             if (repository == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Arguments
-            _repository = repository;
+            // Arguments            
+            _repository = repository;       
         }
 
 
@@ -36,7 +32,7 @@ namespace CLK.Reflection
             get
             {
                 // Repository
-                return _repository.GetAllSectionName();
+                return _repository.GetAllKey();
             }
         }
 
@@ -44,27 +40,8 @@ namespace CLK.Reflection
         {
             get
             {
-                // Require
-                if (string.IsNullOrEmpty(key) == true) throw new ArgumentNullException();
-
-                // Create
-                if (_cacheSectionName != key)
-                {
-                    if (_repository.ContainsSection(key) == false)
-                    {
-                        this.Add(key);
-                    }
-                }
-
-                // Cache
-                if (_cacheSectionName != key)
-                {
-                    _cacheSectionName = key;
-                    _cacheSectionInstance = new ReflectSection(_repository, key);
-                }
-                
-                // Return
-                return _cacheSectionInstance;
+                // Repository
+                return _repository.GetValue(key);
             }
         }
 
@@ -79,8 +56,7 @@ namespace CLK.Reflection
             #endregion
 
             // Repository
-            _repository.RemoveSection(key);
-            _repository.AddSection(key);
+            _repository.Add(key);
         }
 
         public bool Remove(string key)
@@ -92,10 +68,10 @@ namespace CLK.Reflection
             #endregion
 
             // Require
-            if (_repository.ContainsSection(key) == false) return false;
+            if (_repository.ContainsKey(key) == false) return false;
 
             // Repository
-            _repository.RemoveSection(key);
+            _repository.Remove(key);
 
             // Return
             return true;
@@ -110,7 +86,7 @@ namespace CLK.Reflection
             #endregion
 
             // Repository
-            return _repository.ContainsSection(key);
+            return _repository.ContainsKey(key);
         }
     }
 }
