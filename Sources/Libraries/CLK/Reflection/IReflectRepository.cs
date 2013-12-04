@@ -8,32 +8,32 @@ namespace CLK.Reflection
     public interface IReflectRepository
     {
         // Methods
-        void AddSection(string sectionName);
+        void AddGroup(string groupName);
 
-        void RemoveSection(string sectionName);
+        void RemoveGroup(string groupName);
 
-        bool ContainsSection(string sectionName);
+        bool ContainsGroup(string groupName);
 
-        IEnumerable<string> GetAllSectionName();
+        IEnumerable<string> GetAllGroupName();
                         
                 
-        void AddSetting(string sectionName, string entityName, ReflectSetting setting);
+        void AddSetting(string groupName, string entityName, ReflectSetting setting);
 
-        void RemoveSetting(string sectionName, string entityName);
+        void RemoveSetting(string groupName, string entityName);
 
-        bool ContainsSetting(string sectionName, string entityName);                 
+        bool ContainsSetting(string groupName, string entityName);                 
 
-        IEnumerable<string> GetAllEntityName(string sectionName);
+        IEnumerable<string> GetAllEntityName(string groupName);
 
-        ReflectSetting GetSetting(string sectionName, string entityName);     
+        ReflectSetting GetSetting(string groupName, string entityName);     
 
 
-        void AddDefaultEntityName(string sectionName, string entityName);
+        void AddDefaultEntityName(string groupName, string entityName);
 
-        void RemoveDefaultEntityName(string sectionName);
+        void RemoveDefaultEntityName(string groupName);
 
-        bool ContainsDefaultEntityName(string sectionName);
+        bool ContainsDefaultEntityName(string groupName);
 
-        string GetDefaultEntityName(string sectionName);
+        string GetDefaultEntityName(string groupName);
     }
 }

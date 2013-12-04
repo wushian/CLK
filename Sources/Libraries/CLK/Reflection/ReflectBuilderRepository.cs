@@ -16,22 +16,22 @@ namespace CLK.Reflection
         // Fields        
         private readonly IReflectRepository _repository = null;
 
-        private readonly string _sectionName = null;        
+        private readonly string _groupName = null;        
 
 
         // Constructors
-        public ReflectBuilderRepository(IReflectRepository repository, string sectionName)
+        public ReflectBuilderRepository(IReflectRepository repository, string groupName)
         {
             #region Contracts
                         
             if (repository == null) throw new ArgumentNullException();
-            if (string.IsNullOrEmpty(sectionName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(groupName) == true) throw new ArgumentNullException();
 
             #endregion
 
             // Arguments            
             _repository = repository;
-            _sectionName = sectionName;
+            _groupName = groupName;
         }
 
 
@@ -46,7 +46,7 @@ namespace CLK.Reflection
             #endregion
             
             // Repository
-            _repository.AddSetting(_sectionName, entityName, this.ToSetting(builder));
+            _repository.AddSetting(_groupName, entityName, this.ToSetting(builder));
         }
 
         public void Remove(string entityName)
@@ -58,7 +58,7 @@ namespace CLK.Reflection
             #endregion
 
             // Repository
-            _repository.RemoveSetting(_sectionName, entityName);
+            _repository.RemoveSetting(_groupName, entityName);
         }
 
         public bool ContainsKey(string entityName)
@@ -70,13 +70,13 @@ namespace CLK.Reflection
             #endregion
 
             // Repository
-            return _repository.ContainsSetting(_sectionName, entityName);
+            return _repository.ContainsSetting(_groupName, entityName);
         }
                 
         public IEnumerable<string> GetAllKey()
         {
             // Repository
-            return _repository.GetAllEntityName(_sectionName);
+            return _repository.GetAllEntityName(_groupName);
         }
 
         public ReflectBuilder GetValue(string entityName)
@@ -88,7 +88,7 @@ namespace CLK.Reflection
             #endregion
 
             // Repository
-            ReflectSetting setting = _repository.GetSetting(_sectionName, entityName);
+            ReflectSetting setting = _repository.GetSetting(_groupName, entityName);
             if (setting == null) return null;
 
             // Return

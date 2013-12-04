@@ -50,30 +50,30 @@ namespace CLK.Reflection
             _reflectContext = this;
             _settingContext = settingContext;
 
-            // ReflectSectionDictionary
-            IReflectSectionRepository reflectSectionRepository = null;
-            reflectSectionRepository = new ReflectSectionRepository(reflectRepository);
-            reflectSectionRepository = new CacheReflectSectionRepository(reflectSectionRepository);
-            this.ReflectSections = new ReflectSectionDictionary(reflectSectionRepository);
+            // ReflectGroupDictionary
+            IReflectGroupRepository reflectGroupRepository = null;
+            reflectGroupRepository = new ReflectGroupRepository(reflectRepository);
+            reflectGroupRepository = new CacheReflectGroupRepository(reflectGroupRepository);
+            this.ReflectGroups = new ReflectGroupDictionary(reflectGroupRepository);
         }
 
 
         // Properties
-        public ReflectSectionDictionary ReflectSections { get; private set; }
+        public ReflectGroupDictionary ReflectGroups { get; private set; }
 
 
         // Methods        
-        private TEntity CreateEntity<TEntity>(ReflectSection section, string entityName) where TEntity : class
+        private TEntity CreateEntity<TEntity>(ReflectGroup group, string entityName) where TEntity : class
         {
             #region Contracts
 
-            if (section == null) throw new ArgumentNullException();
+            if (group == null) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(entityName) == true) throw new ArgumentNullException();
 
             #endregion
 
             // Builder
-            ReflectBuilder builder = section.ReflectBuilders[entityName];
+            ReflectBuilder builder = group.ReflectBuilders[entityName];
             if (builder == null) throw new InvalidOperationException(string.Format("Fail to Get Builder:{0}", entityName));
 
             // EntityObject
@@ -103,60 +103,60 @@ namespace CLK.Reflection
             return entity;
         }
 
-        public TEntity CreateEntity<TEntity>(string sectionName) where TEntity : class
+        public TEntity CreateEntity<TEntity>(string groupName) where TEntity : class
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(sectionName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(groupName) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // Section
-            ReflectSection section = this.ReflectSections[sectionName];
-            if (section == null) throw new InvalidOperationException(string.Format("Fail to Get Section:{0}", sectionName));
+            // Group
+            ReflectGroup group = this.ReflectGroups[groupName];
+            if (group == null) throw new InvalidOperationException(string.Format("Fail to Get Group:{0}", groupName));
 
             // EntityName
-            string entityName = section.DefaultEntityName;
-            if (string.IsNullOrEmpty(entityName) == true) throw new InvalidOperationException(string.Format("Fail to Get DefaultEntityName:{0}", sectionName));
+            string entityName = group.DefaultEntityName;
+            if (string.IsNullOrEmpty(entityName) == true) throw new InvalidOperationException(string.Format("Fail to Get DefaultEntityName:{0}", groupName));
 
             // Create
-            return this.CreateEntity<TEntity>(section, entityName);
+            return this.CreateEntity<TEntity>(group, entityName);
         }
 
-        public TEntity CreateEntity<TEntity>(string sectionName, string entityName) where TEntity : class
+        public TEntity CreateEntity<TEntity>(string groupName, string entityName) where TEntity : class
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(sectionName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(groupName) == true) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(entityName) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // Section
-            ReflectSection section = this.ReflectSections[sectionName];
-            if (section == null) throw new InvalidOperationException(string.Format("Fail to Get Section:{0}", sectionName));
+            // Group
+            ReflectGroup group = this.ReflectGroups[groupName];
+            if (group == null) throw new InvalidOperationException(string.Format("Fail to Get Group:{0}", groupName));
 
             // Create
-            return this.CreateEntity<TEntity>(section, entityName);
+            return this.CreateEntity<TEntity>(group, entityName);
         }
 
-        public IEnumerable<TEntity> CreateAllEntity<TEntity>(string sectionName) where TEntity : class
+        public IEnumerable<TEntity> CreateAllEntity<TEntity>(string groupName) where TEntity : class
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(sectionName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(groupName) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // Section
-            ReflectSection section = this.ReflectSections[sectionName];
-            if (section == null) return new TEntity[0];
+            // Group
+            ReflectGroup group = this.ReflectGroups[groupName];
+            if (group == null) return new TEntity[0];
 
             // Create
             List<TEntity> entityList = new List<TEntity>();
-            foreach (string entityName in section.ReflectBuilders.Keys)
+            foreach (string entityName in group.ReflectBuilders.Keys)
             {
-                entityList.Add(this.CreateEntity<TEntity>(section, entityName));
+                entityList.Add(this.CreateEntity<TEntity>(group, entityName));
             }
             return entityList;
         }
@@ -165,10 +165,10 @@ namespace CLK.Reflection
     public interface IReflectContext
     {
         // Methods
-        TEntity CreateEntity<TEntity>(string sectionName) where TEntity : class;
+        TEntity CreateEntity<TEntity>(string groupName) where TEntity : class;
 
-        TEntity CreateEntity<TEntity>(string sectionName, string entityName) where TEntity : class;
+        TEntity CreateEntity<TEntity>(string groupName, string entityName) where TEntity : class;
 
-        IEnumerable<TEntity> CreateAllEntity<TEntity>(string sectionName) where TEntity : class;
+        IEnumerable<TEntity> CreateAllEntity<TEntity>(string groupName) where TEntity : class;
     }
 }

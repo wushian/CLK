@@ -6,31 +6,31 @@ using CLK.Collections;
 
 namespace CLK.Reflection
 {
-    public sealed class ReflectSection
+    public sealed class ReflectGroup
     {
         // Fields        
         private readonly IReflectRepository _repository = null;
 
-        private readonly string _sectionName = null;
+        private readonly string _groupName = null;
 
 
         // Constructors
-        internal ReflectSection(IReflectRepository repository, string sectionName)
+        internal ReflectGroup(IReflectRepository repository, string groupName)
         {
             #region Contracts
                        
             if (repository == null) throw new ArgumentNullException();
-            if (string.IsNullOrEmpty(sectionName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(groupName) == true) throw new ArgumentNullException();
 
             #endregion
 
             // Arguments            
             _repository = repository;
-            _sectionName = sectionName;
+            _groupName = groupName;
 
             // ReflectBuilderDictionary        
             IReflectBuilderRepository reflectBuilderRepository = null;
-            reflectBuilderRepository = new ReflectBuilderRepository(repository, sectionName);
+            reflectBuilderRepository = new ReflectBuilderRepository(repository, groupName);
             this.ReflectBuilders = new ReflectBuilderDictionary(reflectBuilderRepository);
         }
 
@@ -41,17 +41,17 @@ namespace CLK.Reflection
             get
             {
                 // Require
-                if (_repository.ContainsDefaultEntityName(_sectionName) == false) return string.Empty;
+                if (_repository.ContainsDefaultEntityName(_groupName) == false) return string.Empty;
 
                 // Repository
-                return _repository.GetDefaultEntityName(_sectionName);
+                return _repository.GetDefaultEntityName(_groupName);
             }
             set
             {
                 // Require     
                 if (string.IsNullOrEmpty(value) == true)
                 {
-                    if (_repository.ContainsSetting(_sectionName, value) == false)
+                    if (_repository.ContainsSetting(_groupName, value) == false)
                     {
                         throw new InvalidOperationException();
                     }
@@ -61,13 +61,13 @@ namespace CLK.Reflection
                 if (string.IsNullOrEmpty(value) == false)
                 {
                     // Add
-                    _repository.RemoveDefaultEntityName(_sectionName);
-                    _repository.AddDefaultEntityName(_sectionName, value);
+                    _repository.RemoveDefaultEntityName(_groupName);
+                    _repository.AddDefaultEntityName(_groupName, value);
                 }
                 else
                 {
                     // Remove
-                    _repository.RemoveDefaultEntityName(_sectionName);                    
+                    _repository.RemoveDefaultEntityName(_groupName);                    
                 }                              
             }
         }

@@ -14,10 +14,8 @@
     <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <FileUpgradeFlags></FileUpgradeFlags>
+    <UpgradeBackupLocation></UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -66,9 +64,9 @@
     <Compile Include="Reflection\ReflectContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Reflection\ReflectSection.cs" />
-    <Compile Include="Reflection\ReflectSectionRepository.cs" />
-    <Compile Include="Reflection\ReflectSectionDictionary.cs" />
+    <Compile Include="Reflection\ReflectGroup.cs" />
+    <Compile Include="Reflection\ReflectGroupRepository.cs" />
+    <Compile Include="Reflection\ReflectGroupDictionary.cs" />
     <Compile Include="Reflection\ReflectSetting.cs" />
     <Compile Include="Reflection\ReflectBuilderDictionary.cs" />
     <Compile Include="Settings\Implementation\MemorySettingContext.cs" />

@@ -6,14 +6,14 @@ using CLK.Collections;
 
 namespace CLK.Reflection
 {
-    public sealed class ReflectSectionDictionary
+    public sealed class ReflectGroupDictionary
     {
         // Fields        
-        private readonly IReflectSectionRepository _repository = null;  
+        private readonly IReflectGroupRepository _repository = null;  
 
 
         // Constructors
-        internal ReflectSectionDictionary(IReflectSectionRepository repository) 
+        internal ReflectGroupDictionary(IReflectGroupRepository repository) 
         {
             #region Contracts
                         
@@ -36,7 +36,7 @@ namespace CLK.Reflection
             }
         }
 
-        public ReflectSection this[string key]
+        public ReflectGroup this[string key]
         {
             get
             {
