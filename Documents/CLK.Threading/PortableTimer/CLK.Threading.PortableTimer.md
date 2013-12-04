@@ -3,7 +3,7 @@
 
 ##問題情景##
 
-開發應用程式的時候，免不了需要加入一些定時執行的設計，例如說：定時更新畫面資料、定時檢查資料庫內容、定時檢查通訊是否斷線...等等。而.NET Framework也很貼心的提供三種不同的Timer類別，用來幫助開發人員設計出定時執行的功能模組。
+開發應用程式的時候，免不了需要加入一些定時執行的功能設計，例如說：定時更新畫面資料、定時檢查資料庫內容、定時檢查通訊是否斷線...等等。而.NET Framework也很貼心的提供三種不同的Timer類別，用來幫助開發人員設計出定時執行的功能模組。
 
 .NET Framework提供的三種Timer類別，可以參考Bill叔的部落格：
 
@@ -24,12 +24,14 @@
 
 處理跨平台的定時執行功能，其實解決方案很簡單，只要建立一個跨平台的Timer類別，用來提供定時執行的功能，就可以滿足這個設計需求。
 
+而建立Timer類別最簡單的設計，就是開啟一條獨立的執行緒，透過這個執行緒定時去執行Callback函式，這就完成了Timer類別的功能設計。但是因為.NET Framework中所提供的System.Threading.Thread並不支援跨平台使用。所以執行緒的建立工作，必須改為可以跨平台使用的System.Threading.Tasks.Task來建立執行緒，這樣才能符合跨平台的開發需求。
+
+使用跨平台的System.Threading.Tasks.Task類別來建立的執行緒，並且使用這個執行緒來定時執行Callback函式，這就完成了跨平台Timer類別的功能設計。
+
 
 ##模組設計##
 
-建立Timer類別最簡單的設計，就是開啟一條獨立的執行緒，透過這個執行緒定時去執行Callback函式，這就完成了Timer類別的功能設計。但是因為.NET Framework中所提供的System.Threading.Thread並不支援跨平台使用。所以執行緒的建立工作，必須改為可以跨平台使用的System.Threading.Tasks.Task來建立執行緒，這樣才能符合跨平台的開發需求。
-
-使用跨平台的System.Threading.Tasks.Task類別來建立的執行緒，並且使用這個執行緒來定時執行Callback函式，這就完成了跨平台Timer類別的功能設計。
+CLK.Threading.PortableTimer是一個跨平台的Timer類別。在開發跨平台功能模組時，使用CLK.Threading.PortableTimer能夠幫助開發人員，簡化定時執行功能的開發工作。
 
 ###模組下載###
 
