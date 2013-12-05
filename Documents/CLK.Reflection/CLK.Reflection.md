@@ -25,16 +25,15 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 選擇讀取Config生成物件這個種類來做為解決方案的設計方向之後，就需要開始思考Config的結構設計。
 
-- 從.NET中提供反射生成的機制去分析，可以發現在.NET中只要透過「型別的組件限定名稱([AssemblyQualifiedName](http://msdn.microsoft.com/library/system.type.assemblyqualifiedname.ASPX))」，就可以反射生成型別(Type)；然後再使用[Activator.CreateInstance](http://msdn.microsoft.com/library/system.activator.createinstance.aspx)這個方法，就可以反射生成出對應的實體(Entity)。以此為基礎、搭配XML概念，可以設計出下列的Config結構：每個可以被反射生成的實體(Entity)，在Config裡使用一個標籤來定義；並且標籤的屬性裡需要存放物件的AssemblyQualifiedName，來做為反射生成的必要參數。
+- 從.NET中提供反射生成的機制去分析，可以發現在.NET中只要透過「型別的組件限定名稱([AssemblyQualifiedName](http://msdn.microsoft.com/library/system.type.assemblyqualifiedname.ASPX))」，就可以反射生成型別(Type)；然後再使用[Activator.CreateInstance](http://msdn.microsoft.com/library/system.activator.createinstance.aspx)這個方法，就可以反射生成出對應的實體(Entity)。以此為基礎該念、搭配XML概念，可以設計出下列的Config結構：每個可以被反射生成的實體，在Config結構裡使用一個標籤來定義；並且這個實體標籤的屬性裡，需要存放類別的AssemblyQualifiedName，來做為反射生成的必要參數。
 
 		<entity type="NamespaceName.ClassName, AssemblyName" />
 
-- 每個可以被反射生成的實體(Entity)，或多或少會需要定義一些各自的參數(Parameter)，例如說：反射生成一個SqlRepository類別,就會需要一個連線字串的參數。為了這個使用情景，所以需要為Config結構加入參數(Parameter)的概念：每個可以被反射生成的實體(Entity)，能夠包含一個到多個的參數(Parameter)。
-
+- 每個被反射生成的實體(Entity)，或多或少會需要定義一些各自的參數(Parameter)，例如說：反射生成一個SqlRepository類別,就會需要一個資料庫連線字串的參數。為了這個使用情景，所以為Config結構加入參數的概念：每個可以被反射生成的實體標籤，能夠包含一個到多個的參數屬性。
 
 		<entity type="NamespaceName.ClassName, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
 
-- 某些使用情景，不單只需要反射生成一個的實體，而是需要生成一組的實體集合，這時候就需要為Config結構加入群組(Group)的概念：Config中使用一個標籤用來定義群組(Group)，這個群組裡包含了許多可以被反射生成的實體(Entity)。
+- 在某些系統中，不單只需要反射生成一個實體來使用，而是需要生成一組實體集合，例如說：資料彙整的系統，就需要一次取得所有提供資料的Repository物件集合來使用。為了滿足這個使用情景，所以需要為Config結構加入群組(Group)的概念：Config中使用一個標籤用來定義群組，這個群組標籤裡包含了許多可以被反射生成的實體標籤，同群組標籤內的實體標籤能夠被反射生成為一組實體集合。
 
 		<group>
 		  <add type="NamespaceName.ClassNameA, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
@@ -42,19 +41,13 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 		  <add type="NamespaceName.ClassNameC, AssemblyName" ParameterD="DDD" />
 		</group>
 
-- 加入了群組概念之後再回頭檢視，會發現目前的Config結構無法滿足，反射生成一個的實體這樣的使用情景,因為從Config結構無法得知該生成哪個實體。這時可以為群組裡的每個實體加上實體名稱(Name)參數，並且在群組中加入預設實體名稱(Default)參數，當需要反射生成一個實體的情景，使用群組中的預設實體名稱，就可以反射生成實體名稱對應的實體；而需要生成一組實體集合的情景，在目前的Config結構中，依然可以正常的運作。
+- 加入了群組的概念之後再回頭檢視，會發現目前的Config結構無法滿足，反射生成一個實體這樣的使用情景,因為從Config結構無法得知該生成哪個實體。這時可以為群組裡的每個實體加上實體名稱(Name)參數用來識別每個實體，並且在群組中加入預設實體名稱(Default)參數，當需要反射生成一個實體的情景，對照群組中的預設實體名稱，就可以反射生成實體名稱對應的實體；而需要生成一組實體集合的情景，在目前的Config結構設計中，依然可以正常的運作。
 
 		<group default="XXX">
 		  <add name="XXX" type="NamespaceName.ClassNameA, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
 		  <add name="YYY" type="NamespaceName.ClassNameB, AssemblyName" ParameterC="CCC" />
 		  <add name="ZZZ" type="NamespaceName.ClassNameC, AssemblyName" ParameterD="DDD" />
 		</group>
-
-
-
-
-
-
 
 
 ###領域模型###
