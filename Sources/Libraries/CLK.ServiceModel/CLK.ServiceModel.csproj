@@ -49,6 +49,7 @@
     <Compile Include="ConnectionServiceMediator.cs" />
     <Compile Include="ConnectionServiceResource.cs" />
     <Compile Include="Contracts\IConnectionService.cs" />
+    <Compile Include="Extensions\ExceptionTransformExtension.cs" />
     <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

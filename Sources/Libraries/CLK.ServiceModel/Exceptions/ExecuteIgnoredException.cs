@@ -8,7 +8,7 @@ namespace CLK.ServiceModel
 {
     public sealed class ExecuteIgnoredException : Exception
     {
-        public ExecuteIgnoredException() : base("ExecuteIgnored") { }
+        public ExecuteIgnoredException() : base("Execute Ignored") { }
 
         public ExecuteIgnoredException(string message) : base(message) { }
 

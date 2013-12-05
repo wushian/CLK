@@ -44,9 +44,13 @@ namespace CLK.Reflection
             if (builder == null) throw new ArgumentNullException();
 
             #endregion
-            
+
+            // Setting
+            ReflectSetting setting = builder.ToSetting();
+            if (setting == null) throw new InvalidOperationException();
+
             // Repository
-            _repository.AddSetting(_groupName, entityName, this.ToSetting(builder));
+            _repository.AddSetting(_groupName, entityName, setting);
         }
 
         public void Remove(string entityName)
@@ -87,58 +91,16 @@ namespace CLK.Reflection
 
             #endregion
 
-            // Repository
+            // Setting
             ReflectSetting setting = _repository.GetSetting(_groupName, entityName);
             if (setting == null) return null;
 
-            // Return
-            return this.ToBuilder(setting);
-        }
-
-
-        private ReflectBuilder ToBuilder(ReflectSetting setting)
-        {
-            #region Contracts
-
-            if (setting == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Type
-            Type type = Type.GetType(setting.BuilderType);
-            if (type == null) throw new InvalidOperationException(string.Format("Fail to create type:{0}", setting.BuilderType));
-
             // Builder
-            ReflectBuilder builder = Activator.CreateInstance(type) as ReflectBuilder;
-            if (type == null) throw new InvalidOperationException(string.Format("Fail to create instance:{0}", setting.BuilderType));
-
-            // Parameters
-            foreach (string parameterKey in setting.Parameters.Keys)
-            {
-                builder.Parameters.Add(parameterKey, setting.Parameters[parameterKey]);
-            }
+            ReflectBuilder builder = setting.ToBuilder();
+            if (builder == null) throw new InvalidOperationException();
 
             // Return
             return builder;
-        }
-
-        private ReflectSetting ToSetting(ReflectBuilder builder)
-        {
-            #region Contracts
-
-            if (builder == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Create
-            ReflectSetting setting = new ReflectSetting(builder.GetType().AssemblyQualifiedName);
-            foreach (string parameterKey in builder.Parameters.Keys)
-            {
-                setting.Parameters.Add(parameterKey, builder.Parameters[parameterKey]);
-            }
-
-            // Return
-            return setting;
         }
     }
 }
