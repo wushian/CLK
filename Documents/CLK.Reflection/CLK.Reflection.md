@@ -111,19 +111,21 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 	![物件模型02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B02.png)
 
-- 再來為進出系統邊界的物件，加入套用DDD設計中的Repository，用來定義出系統邊界物件、以及隔離系統與DAL層的相依。在這其中IGroupRepository介面封裝Group類別進出系統邊界的職責、IBuilderRepository介面封裝Builder類別進出系統邊界的職責。
-
-	而Group類別與Builder類別之間的關聯，在這個步驟之後會改為透過IBuilderRepository介面，來操作Group類別所包含的Builder類別。
+- 再來為進出系統邊界的物件，加入套用DDD設計中的Repository模式，用來定義出系統邊界物件、以及隔離系統與DAL層的相依。在這其中IGroupRepository介面封裝Group類別進出系統邊界的職責、IBuilderRepository介面封裝Builder類別進出系統邊界的職責。	
 
     ![物件模型03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B03.png)
 
+- 而Group類別與Builder類別之間的關聯，在設計出IBuilderRepository介面之後，就可以設計為Group類別使用IBuilderRepository介面，來操作Group類別所包含的Builder類別。
+
+    ![物件模型04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B04.png)
+
 - 為了抽換邊界物件的便利性，將系統中IGroupRepository、IBuilderRepository這兩個邊界物件套用設計模式的Facade模式，來整合兩個邊界物件成為一個IRepository。並且套用設計模式中的Adapter模式，來實作GroupRepository、BuilderRepository用以提供系統內部使用。
 
-	![物件模型04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B04.png)
+	![物件模型05](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B05.png)
 
 - 最後讓使用DI模組的開發人員能夠更簡單的使用，為物件模型套用DDD設計中的Service模式，將各種物件交互運作來反射生成實體的這個職責，封裝成為一個Context類別提供開發人員使用。而在設計這個Context類別的同時，也套用了設計模式的Facade模式，讓Context類別成為DI模組的窗口，用來提供開發人員操作DI模組內的各種物件。  
 
-    ![物件模型05](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B05.png)
+    ![物件模型06](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B06.png)
 
 
 ##模組設計##
