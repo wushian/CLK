@@ -121,7 +121,7 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 	![物件模型04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B04.png)
 
-- 最後讓使用DI模組的開發人員能夠更簡單的使用，為物件模型套用DDD設計中的Service模式，來將需要各種物件交互運作，才能完成反射生成實體的這個職責，封裝成為一個Context類別。而在設計這個Context類別的同時，也套用了設計模式的Facade模式，讓Context類別成為DI模組的窗口，用來提供開發人員操作DI模組內的各種物件。
+- 最後讓使用DI模組的開發人員能夠更簡單的使用，為物件模型套用DDD設計中的Service模式，將各種物件交互運作來反射生成實體的這個職責，封裝成為一個Context類別提供開發人員使用。而在設計這個Context類別的同時，也套用了設計模式的Facade模式，讓Context類別成為DI模組的窗口，用來提供開發人員操作DI模組內的各種物件。  
 
     ![物件模型05](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B05.png)
 
@@ -147,6 +147,30 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 ##使用範例##
 
-###CLK.Settings.Samples.No001 - 建立模組###
+###CLK.Reflection.Samples.No001 - 建立模組###
 
-###CLK.Settings.Samples.No002 - 讀取參數###
+在使用ReflectContext物件之前，必須先取得系統所使用的ReflectContext物件，在範例中統一透過生成函式來提供ReflectContext物件。例如下列範例中的生成函式，會建立一個ReflectContext物件的子類別：ConfigReflectContext物件，這個ConfigReflectContext物件會讀取Config檔中的相關設定內容，用以提供系統使用DI模組的反射生成功能來完成依賴注入的開發工作。
+
+- 建立模組    
+
+        static ReflectContext Create()
+        {
+            // ReflectContext
+            ReflectContext reflectContext = new ConfigReflectContext();
+
+            // Return
+            return reflectContext;
+        }
+
+###CLK.Reflection.Samples.No002 - 生成預設物件###
+
+###CLK.Reflection.Samples.No003 - 生成指定物件###
+
+###CLK.Reflection.Samples.No004 - 生成物件集合###
+
+###CLK.Reflection.Samples.No005 - 生成巢狀物件###
+
+###CLK.Reflection.Samples.No006 - 讀取連線字串###
+
+###CLK.Reflection.Samples.No007 - 生成巢狀設定###
+
