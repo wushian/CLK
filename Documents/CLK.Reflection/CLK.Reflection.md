@@ -69,21 +69,21 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 - DI模組包含許多群組(Group)。
 
-		<圖>
+	![領域模型01](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E9%A0%98%E5%9F%9F%E6%A8%A1%E5%9E%8B01.png)
 
 - 每個群組包含許多實體(Entity)。
  
-		<圖>
+	![領域模型02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E9%A0%98%E5%9F%9F%E6%A8%A1%E5%9E%8B02.png)
 
 - 每個實體包含許多參數(Parameter)。
 
-		<圖>
+	![領域模型03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E9%A0%98%E5%9F%9F%E6%A8%A1%E5%9E%8B03.png)
 
 - 領域模型分析到這邊，需要加入一個額外設計考量：DI模組生成的實體(Entity)，是否應該設計為POCO([Martin Fowler - POJO](http://www.martinfowler.com/bliki/POJO.html))。將實體設計為POCO的優點，是讓實體不相依於DI模組；而缺點則是需要複雜的反射生成機制來取得建構子、注入建構參數，最終才能生成實體物件。
 
  	很顯然的，DI模組生成的實體不應該相依於DI模組。但是為了不引入複雜的反射生成機制，在這個階段需要為DI模組加入建構者(Builder)概念：DI模組不直接反射生成實體(Entity)，而是反射生成建構者(Builder)，再由建構者去剖析參數(Parameter)，呼叫建構子來建立實體。加入建構者(Builder)概念後，就可以免除在DI模組中引入複雜的反射生成機制，而依然可以生成設計為POCO的實體物件。
 
-    	<圖>
+	![領域模型04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E9%A0%98%E5%9F%9F%E6%A8%A1%E5%9E%8B04.png)
 
 - 在領域模型中加入建構者(Builder)概念之後，需要回過頭去設計Config結構，為Config結構加入建構者(Builder)的概念：將群組標籤內的代表實體的標籤，更改設計為代表建構者的標籤。群組標籤內的建構者標籤能夠被反射生成為建構者，透過建構者去剖析參數、呼叫建構子，就可以生成實體物件。
 
@@ -103,21 +103,27 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 設計完領域模型之後，就可以依照這個模型，來設計DI模組的物件模型。
 
-- 首先將領域模型，套用DDD設計中的Entity模式、Value Object模式，來決定進出系統邊界的物件單位。
+- 首先將領域模型，套用DDD設計中的Entity模式，來決定進出系統邊界的物件：Group類別、Builder類別。
 
-    	<圖>
+    ![物件模型01](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B01.png)
 
-- 接著為進出系統邊界的物件單位，加入對應的Repository類別，用來定義出系統邊界物件、並且隔離系統與DAL層的相依。
+- 接著套用DDD設計中的Aggregate模式，來處理Builder類別與Parameter類別之間的關聯，將Builder類別設計為Parameter類別的聚合根。
 
-    	<圖>
+	![物件模型02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B02.png)
 
-- 為了讓使用DI模組的開發人員能夠更簡單的使用，為物件模型套用DDD設計中的Service模式，來將需要各種物件交互運作，才能完成反射生成實體的這個職責，封裝成為一個Context類別。而在設計這個Context類別的背後，也套用了設計模式的Facade模式，讓Context類別成為DI模組的窗口，用來提供開發人員操作DI模組內的各種物件。
+- 再來為進出系統邊界的物件，加入套用DDD設計中的Repository，用來定義出系統邊界物件、以及隔離系統與DAL層的相依。在這其中IGroupRepository介面封裝Group類別進出系統邊界的職責、IBuilderRepository介面封裝Builder類別進出系統邊界的職責。
 
-    	<圖>
+	而Group類別與Builder類別之間的關聯，在這個步驟之後會改為透過IBuilderRepository介面，來操作Group類別所包含的Builder類別。
 
-- 最後為了抽換邊界物件的便利性，將系統中IGroupRepository、IBuilderRepository這兩個邊界物件套用設計模式的Facade模式，來整合兩個邊界物件成為一個。並且套用設計模式中的Adapter模式，來實作GroupRepository、BuilderRepository用以提供系統內部使用。
+    ![物件模型03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B03.png)
 
-		<圖>
+- 為了抽換邊界物件的便利性，將系統中IGroupRepository、IBuilderRepository這兩個邊界物件套用設計模式的Facade模式，來整合兩個邊界物件成為一個IRepository。並且套用設計模式中的Adapter模式，來實作GroupRepository、BuilderRepository用以提供系統內部使用。
+
+	![物件模型04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B04.png)
+
+- 最後讓使用DI模組的開發人員能夠更簡單的使用，為物件模型套用DDD設計中的Service模式，來將需要各種物件交互運作，才能完成反射生成實體的這個職責，封裝成為一個Context類別。而在設計這個Context類別的同時，也套用了設計模式的Facade模式，讓Context類別成為DI模組的窗口，用來提供開發人員操作DI模組內的各種物件。
+
+    ![物件模型05](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B05.png)
 
 
 ##模組設計##
