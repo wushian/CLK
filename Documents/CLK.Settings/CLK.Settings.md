@@ -109,7 +109,7 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 
 ###CLK.Settings.Samples.No001 - 建立模組###
 
-在使用SettingContext物件之前，必須先取得系統所使用的SettingContext物件，在本篇中統一透過生成函式來提供SettingContext物件。例如下列範例中的生成函式，會建立一個SettingContext物件的子類別：ConfigSettingContext物件，這個ConfigSettingContext物件會轉接Config檔的參數存取功能，用以提供系統來存取Config檔中的參數設定。
+在使用SettingContext物件之前，必須先取得系統所使用的SettingContext物件，在範例中統一透過生成函式來提供SettingContext物件。例如下列範例中的生成函式，會建立一個SettingContext物件的子類別：ConfigSettingContext物件，這個ConfigSettingContext物件會轉接Config檔的參數存取功能，用以提供系統來存取Config檔中的參數設定。
 
 - 建立模組    
 
@@ -123,17 +123,6 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
         }
 
 ###CLK.Settings.Samples.No002 - 讀取參數###
-
-- 建立模組    
-
-		static SettingContext Create()
-        {
-            // SettingContext
-            SettingContext settingContext = new ConfigSettingContext();
-
-            // Return
-            return settingContext;
-        }
 
 - 設定檔
 
@@ -177,17 +166,6 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 	![使用範例02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Settings/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B02.png)
 
 ###CLK.Settings.Samples.No003 - 列舉參數###
-
-- 建立模組    
-
-		static SettingContext Create()
-        {
-            // SettingContext
-            SettingContext settingContext = new ConfigSettingContext();
-
-            // Return
-            return settingContext;
-        }
 
 - 設定檔
 
@@ -237,17 +215,6 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 	![使用範例03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Settings/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B03.png)
 
 ###CLK.Settings.Samples.No004 - 新增參數###
-
-- 建立模組    
-
-		static SettingContext Create()
-        {
-            // SettingContext
-            SettingContext settingContext = new ConfigSettingContext();
-
-            // Return
-            return settingContext;
-        }
 
 - 原始設定檔
 
@@ -301,17 +268,6 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 		</connectionStrings>  
 
 ###CLK.Settings.Samples.No005 - 移除參數###
-
-- 建立模組    
-
-		static SettingContext Create()
-        {
-            // SettingContext
-            SettingContext settingContext = new ConfigSettingContext();
-
-            // Return
-            return settingContext;
-        }
 
 - 原始設定檔
 
