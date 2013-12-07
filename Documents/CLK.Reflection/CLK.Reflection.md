@@ -25,34 +25,68 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 選擇讀取Config生成物件這個種類來做為解決方案的設計方向之後，就需要開始思考Config的結構設計。
 
-- 從.NET中提供反射生成的機制去分析，可以發現在.NET中只要透過「型別的組件限定名稱([AssemblyQualifiedName](http://msdn.microsoft.com/library/system.type.assemblyqualifiedname.ASPX))」，就可以反射生成型別(Type)；然後再使用[Activator.CreateInstance](http://msdn.microsoft.com/library/system.activator.createinstance.aspx)這個方法，就可以反射生成出對應的實體(Entity)。以此為基礎該念、搭配XML概念，可以設計出下列的Config結構：每個可以被反射生成的實體，在Config結構裡使用一個標籤來定義；並且這個實體標籤的屬性裡，需要存放類別的AssemblyQualifiedName，來做為反射生成的必要參數。
+- 從.NET中提供反射生成的機制去分析，可以發現在.NET中只要透過「型別的組件限定名稱([AssemblyQualifiedName](http://msdn.microsoft.com/library/system.type.assemblyqualifiedname.ASPX))」，就可以反射生成型別(Type)；然後再使用[Activator.CreateInstance](http://msdn.microsoft.com/library/system.activator.createinstance.aspx)這個方法，就可以反射生成出對應的實體(Entity)。以此為基礎該念、搭配XML概念，可以設計出下列的Config結構：每個反射生成的實體，在Config結構裡使用一個標籤來定義；並且這個實體標籤的屬性裡，需要存放類別的AssemblyQualifiedName，來做為反射生成的必要參數。
 
 		<entity type="NamespaceName.ClassName, AssemblyName" />
 
-- 每個被反射生成的實體(Entity)，或多或少會需要定義一些各自的參數(Parameter)，例如說：反射生成一個SqlRepository類別,就會需要一個資料庫連線字串的參數。為了這個使用情景，所以為Config結構加入參數的概念：每個可以被反射生成的實體標籤，能夠包含一個到多個的參數屬性。
+- 每個被反射生成的實體(Entity)，或多或少會需要定義一些各自的參數(Parameter)，例如說：反射生成一個SqlRepository類別,就會需要一個資料庫連線字串的參數。為了這個使用情景，所以為Config結構加入參數的概念：代表實體的標籤，包含一個到多個的參數屬性。
 
 		<entity type="NamespaceName.ClassName, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
 
-- 在某些系統中，不單只需要反射生成一個實體來使用，而是需要生成一組實體集合，例如說：資料彙整的系統，就需要一次取得所有提供資料的Repository物件集合來使用。為了滿足這個使用情景，所以需要為Config結構加入群組(Group)的概念：Config中使用一個標籤用來定義群組，這個群組標籤裡包含了許多可以被反射生成的實體標籤，同群組標籤內的實體標籤能夠被反射生成為一組實體集合。
+- 在某些系統中，不單只需要反射生成一個實體來使用，而是需要生成一組實體集合，例如說：資料彙整的系統，就需要取得所有提供資料的Repository物件集合來使用。為了滿足這個使用情景，所以需要為Config結構加入群組(Group)的概念：Config中使用一個標籤用來定義群組，這個群組標籤裡包含了許多可以被反射生成的實體標籤，同群組標籤內的實體標籤能夠被反射生成為一組實體集合。
 
 		<group>
-		  <add type="NamespaceName.ClassNameA, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
-		  <add type="NamespaceName.ClassNameB, AssemblyName" ParameterC="CCC" />
-		  <add type="NamespaceName.ClassNameC, AssemblyName" ParameterD="DDD" />
+		  <add type="NamespaceName.ClassName001, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
+		  <add type="NamespaceName.ClassName002, AssemblyName" ParameterC="CCC" />
+		  <add type="NamespaceName.ClassName003, AssemblyName" ParameterD="DDD" />
 		</group>
 
-- 加入了群組的概念之後再回頭檢視，會發現目前的Config結構無法滿足，反射生成一個實體這樣的使用情景,因為從Config結構無法得知該生成哪個實體。這時可以為群組裡的每個實體加上實體名稱(Name)參數用來識別每個實體，並且在群組中加入預設實體名稱(Default)參數，當需要反射生成一個實體的情景，對照群組中的預設實體名稱，就可以反射生成實體名稱對應的實體；而需要生成一組實體集合的情景，在目前的Config結構設計中，依然可以正常的運作。
+- 加入了群組的概念之後再回頭檢視，會發現目前的Config結構無法滿足反射生成一個實體，這樣的使用情景,因為從Config結構無法得知該生成哪個實體。這時可以為群組裡的每個實體標籤加上實體名稱參數(Name)用來識別每個實體，並且在群組標籤中加入預設實體名稱參數(Default)，當遇到反射生成一個實體的情景，對照群組中的預設實體名稱，就可以反射生成實體名稱對應的實體；而需要生成一組實體集合的情景，在目前的Config結構設計中，依然可以正常的運作。
 
 		<group default="XXX">
-		  <add name="XXX" type="NamespaceName.ClassNameA, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
-		  <add name="YYY" type="NamespaceName.ClassNameB, AssemblyName" ParameterC="CCC" />
-		  <add name="ZZZ" type="NamespaceName.ClassNameC, AssemblyName" ParameterD="DDD" />
+		  <add name="XXX" type="NamespaceName.ClassName001, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
+		  <add name="YYY" type="NamespaceName.ClassName002, AssemblyName" ParameterC="CCC" />
+		  <add name="ZZZ" type="NamespaceName.ClassName003, AssemblyName" ParameterD="DDD" />
 		</group>
 
+- 在更複雜的系統中，不單只需要反射生成一種實體、實體集合，而是需要反射生成多種不同的實體或實體集合，例如：資料轉檔的系統，就需要取得輸入資料的Repository、輸出資料的Repository來使用。為了滿足這個使用情景，所以Config結構需要能夠包含多個群組標籤，並且每個群組標籤需要加上群組名稱，用來識別每個群組。
+
+		<GroupName001 default="XXX">
+		  <add name="XXX" type="NamespaceName.ClassName001, AssemblyName" ParameterA="AAA" ParameterB="BBB" />
+		  <add name="YYY" type="NamespaceName.ClassName002, AssemblyName" ParameterC="CCC" />
+		  <add name="ZZZ" type="NamespaceName.ClassName003, AssemblyName" ParameterD="DDD" />
+		</GroupName001>
+        
+        <GroupName002>
+		  <add name="VVV" type="NamespaceName.ClassName002, AssemblyName" ParameterC="CCC" />
+		  <add name="WWW" type="NamespaceName.ClassName003, AssemblyName" ParameterD="DDD" />
+		</GroupName002>
 
 ###領域模型###
 
+設計完Config結構之後，就可以依照Config結構的設計，來分析解決方案所包含的領域模型。
+
+- 解決方案包含許多群組(Group)。
+
+		<圖>
+
+- 每個群組包含許多實體(Entity)。
+ 
+		<圖>
+
+- 每個實體包含許多參數(Parameter)。
+
+		<圖>
+
+- 加入Bulier概念
+
 ###物件模型###
+
+光有領域模型不足以完成設計，還需要再進一步將領域模型設計為物件模型，才能用來提供解決方案。
+
+- 首先將領域模型，套用DDD設計中的Entity模式、Value Object模式，來決定進出系統邊界的物件單位。
+
+- 接著為進出系統邊界的物件單位，加入對應的Repository類別，用以隔離系統與
 
 
 ##模組設計##
