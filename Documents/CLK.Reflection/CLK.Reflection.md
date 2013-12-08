@@ -235,10 +235,15 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 - 生成預設實體物件
 
+	![物件互動01](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E4%BA%92%E5%8B%9501.png)
+
 - 生成指定實體物件
+
+	![物件互動02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E4%BA%92%E5%8B%9502.png)
 
 - 生成實體物件集合
 
+	![物件互動03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E4%BA%92%E5%8B%9503.png)
 
 ##使用範例##
 
