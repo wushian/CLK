@@ -144,6 +144,91 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 ###物件結構###
 
+![物件結構01](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E7%B5%90%E6%A7%8B01.png)
+
+- ReflectContext
+
+	- CLK.Reflection模組的根節點物件。		
+	
+	- 提供CreateEntity方法，用以反射生成實體物件。
+	
+	- 提供CreateAllEntity方法，用以反射生成實體集合。
+	
+    - 提供Locator功能(選用)。
+
+- IReflectRepository
+
+ 	- 套用Repository模式、Facade模式產生的邊界介面。
+ 	
+ 	- 用來隔離系統與DAL之間的相依性。 
+ 	
+ 	- 提供設定資料進出模組邊界的CRUD功能。 	
+
+- ReflectBuilder
+
+	- 進出系統邊界的物件單位，使用Name做為索引。
+	
+	- 使用Dictionary<string, string>結構來封裝Parameter集合。
+	
+	- 實際被反射生成的物件，Builder生成之後開始剖析參數內容、呼叫建構子、最終生成實體物件。
+	
+- ReflectGroup
+
+	- 進出系統邊界的物件單位，使用Name做為索引。
+
+	- 封裝ReflectBuilder物件集合，用以反射生成實體物件集合。
+	
+	- 封裝預設實體名稱，用以反射生成預設實體物件。 
+
+- ReflectGroupRepository
+
+	- 套用Adapter模式產生的邊界物件。
+	
+	- 轉接IReflectRepository介面的CRUD功能，提供ReflectGroup物件進出模組邊界的CRUD功能。
+	
+- ReflectBuilderRepository
+
+	- 套用Adapter模式產生的邊界物件。
+	
+	- 轉接IReflectRepository介面的CRUD功能，提供ReflectBuilder物件進出模組邊界的CRUD功能。
+	
+	- 轉接IReflectRepository介面的CRUD功能過程中，會將ReflectBuilder物件轉換為對應的DTO物件：ReflectSetting物件來進出系統邊界，用以簡化IReflectRepository介面的實作設計。
+
+- ReflectGroupDictionary
+
+	- 將ReflectGroupRepository物件所提供的CRUD功能，轉接為簡單使用的Dictionary物件樣式提供開發人員使用。
+		
+- ReflectBuilderDictionary
+
+	- 將ReflectBuilderRepository物件所提供的CRUD功能，轉接為簡單使用的Dictionary物件樣式提供開發人員使用。
+
+- ConfigReflectRepository
+
+	- 繼承IReflectRepository介面。	
+	
+	- 轉接Config檔的設定內容，用以提供系統來存取Config檔中的反射生成設定。
+    
+![物件結構02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E7%B5%90%E6%A7%8B02.png)
+
+- ReflectContext
+
+	- 額外封裝了SettingContext物件，用以提供ReflectBuilder類別反射生成實體物件時使用。
+	
+	- 額外繼承了IReflectContext物件，用以提供ReflectBuilder類別反射生成實體物件時使用。
+
+- SettingContext
+
+	- CLK.Settings模組的根節點物件。	
+
+	- 提供參數存取功能。
+		
+- IReflectContext
+	
+	- 封裝ReflectContext類別的CreateEntity方法、CreateAllEntity方法給ReflectBuilder類別使用。
+	
+	- 用以避免ReflectContext類別、ReflectBuilder類別之間的循環相依。
+
+
 ###物件互動###
 
 
