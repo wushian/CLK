@@ -115,7 +115,7 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
     ![物件模型03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B03.png)
 
-- 而Group類別與Builder類別之間的關聯，在設計出IBuilderRepository介面之後，就可以設計為Group類別使用IBuilderRepository介面，來操作Group類別所包含的Builder類別。
+- 而Group類別與Builder類別之間的關聯，在設計出IBuilderRepository介面之後，就可以設計為Group類別提供IBuilderRepository介面，來操作Group類別所包含的Builder類別。
 
     ![物件模型04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E7%89%A9%E4%BB%B6%E6%A8%A1%E5%9E%8B04.png)
 
