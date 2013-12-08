@@ -151,64 +151,70 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 ###CLK.Reflection.Samples - 建立TestEntity類別、TestEntityBuilder類別
 
-為了降低範例的複雜度，後續範例使用CLK.Reflection.Samples專案中的類別，來做為依賴注入功能的範例物件：
+為了降低範例的複雜度，部分範例使用CLK.Reflection.Samples專案中的類別，來做為依賴注入功能的範例物件：
 
 - TestEntity類別：做為依賴注入的實體物件。在TestEntity類別中提供了Print函式，列印參數內容到Console，用以在範例中提供開發人員觀察TestEntity物件內容。
 		
-		public class TestEntity
-	    {
-	        // Fields        
-	        private readonly string _parameterA = string.Empty;
-	
-	
-	        // Constructors
-	        public TestEntity(string parameterA)
-	        {
-	            #region Contracts
-	
-	            if (string.IsNullOrEmpty(parameterA) == true) throw new ArgumentNullException();
-	
-	            #endregion
-	
-	            // Arguments
-	            _parameterA = parameterA;
-	        }
-	        
-	
-	        // Methods
-	        public void Print()
-	        {
-	            // Write
-	            Console.WriteLine(_parameterA);
-	        }
-	    }
+		namespace CLK.Reflection.Samples
+		{
+		    public class TestEntity
+		    {
+		        // Fields        
+		        private readonly string _parameterA = string.Empty;
+		
+		
+		        // Constructors
+		        public TestEntity(string parameterA)
+		        {
+		            #region Contracts
+		
+		            if (string.IsNullOrEmpty(parameterA) == true) throw new ArgumentNullException();
+		
+		            #endregion
+		
+		            // Arguments
+		            _parameterA = parameterA;
+		        }
+		        
+		
+		        // Methods
+		        public void Print()
+		        {
+		            // Write
+		            Console.WriteLine(_parameterA);
+		        }
+		    }
+		}
 
-- TestEntityBuilder類別，做為TestEntity類別的建構者。用以剖析參數內容、呼叫建構子、最終生成TestEntity物件。
+- TestEntityBuilder類別：做為TestEntity類別的建構者。用以剖析參數內容、呼叫建構子、最終生成TestEntity物件。
 
-	    public sealed class TestEntityBuilder : ReflectBuilder
-	    {
-	        // Properties   
-	        public string ParameterA
-	        {
-	            get { return this.GetParameter("ParameterA"); }
-	            set { this.SetParameter("ParameterA", value); }
-	        }
-	
-	
-	        // Methods          
-	        protected override object CreateEntity()
-	        {
-	            // Parameters
-	            string parameterA = this.ParameterA;
-	            if (string.IsNullOrEmpty(parameterA) == true) throw new InvalidOperationException();
-	
-	            // Create
-	            TestEntity testEntity = new TestEntity(parameterA);
-	
-	            // Return
-	            return testEntity;
-	        }
-	    }
+		namespace CLK.Reflection.Samples
+		{
+		    public sealed class TestEntityBuilder : ReflectBuilder
+		    {
+		        // Properties   
+		        public string ParameterA
+		        {
+		            get { return this.GetParameter("ParameterA"); }
+		            set { this.SetParameter("ParameterA", value); }
+		        }
+		
+		
+		        // Methods          
+		        protected override object CreateEntity()
+		        {
+		            // Parameters
+		            string parameterA = this.ParameterA;
+		            if (string.IsNullOrEmpty(parameterA) == true) throw new InvalidOperationException();
+		
+		            // Create
+		            TestEntity testEntity = new TestEntity(parameterA);
+		
+		            // Return
+		            return testEntity;
+		        }
+		    }
+		}
 
 ###CLK.Reflection.Samples.No001 - 建立模組###
 
@@ -229,38 +235,421 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 - 設定檔
 
+		<?xml version="1.0" encoding="utf-8" ?>
+		<configuration>
+		
+		  <!-- ConfigSections -->
+		  <configSections>
+		    <section name="TestEntityGroup" type="CLK.Configuration.Reflection.ReflectConfigurationSection, CLK.Configuration" />
+		  </configSections>
+		
+		  <!--TestEntityGroup-->
+		  <TestEntityGroup default="XXX">
+		    <add name="XXX" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="AAA" />
+		    <add name="YYY" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="BBB" />
+		    <add name="ZZZ" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="CCC" />
+		  </TestEntityGroup>
+		
+		</configuration>
+
 - 生成預設物件
 
+		static void Main(string[] args)
+        {
+            // Create
+            ReflectContext reflectContext = Program.Create();
+
+            // CreateEntity
+            TestEntity testEntity = reflectContext.CreateEntity<TestEntity>("TestEntityGroup");            
+
+            // Print
+            Console.WriteLine("\nTestEntity.Print()");
+            testEntity.Print();
+
+            // End
+            Console.WriteLine("\nPress enter to end...");
+            Console.ReadLine();
+        }
+
 - 執行結果
+
+	![使用範例02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B02.png)
 
 ###CLK.Reflection.Samples.No003 - 生成指定物件###
 
 - 設定檔
 
+		<?xml version="1.0" encoding="utf-8" ?>
+		<configuration>
+		
+		  <!-- ConfigSections -->
+		  <configSections>
+		    <section name="TestEntityGroup" type="CLK.Configuration.Reflection.ReflectConfigurationSection, CLK.Configuration" />
+		  </configSections>
+		
+		  <!--TestEntityGroup-->
+		  <TestEntityGroup default="XXX">
+		    <add name="XXX" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="AAA" />
+		    <add name="YYY" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="BBB" />
+		    <add name="ZZZ" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="CCC" />
+		  </TestEntityGroup>
+		
+		</configuration>
+
 - 生成指定物件
 
+		static void Main(string[] args)
+        {
+            // Create
+            ReflectContext reflectContext = Program.Create();
+
+            // CreateEntity
+            TestEntity testEntity = reflectContext.CreateEntity<TestEntity>("TestEntityGroup", "YYY");            
+
+            // Print
+            Console.WriteLine("\nTestEntity.Print()");
+            testEntity.Print();
+
+            // End
+            Console.WriteLine("\nPress enter to end...");
+            Console.ReadLine();
+        }
+
 - 執行結果
+
+	![使用範例03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B03.png)
 
 ###CLK.Reflection.Samples.No004 - 生成物件集合###
 
 - 設定檔
 
+		<?xml version="1.0" encoding="utf-8" ?>
+		<configuration>
+		
+		  <!-- ConfigSections -->
+		  <configSections>
+		    <section name="TestEntityGroup" type="CLK.Configuration.Reflection.ReflectConfigurationSection, CLK.Configuration" />
+		  </configSections>
+		
+		  <!--TestEntityGroup-->
+		  <TestEntityGroup default="XXX">
+		    <add name="XXX" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="AAA" />
+		    <add name="YYY" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="BBB" />
+		    <add name="ZZZ" type="CLK.Reflection.Samples.TestEntityBuilder, CLK.Reflection.Samples" ParameterA="CCC" />
+		  </TestEntityGroup>
+		
+		</configuration>
+
 - 生成物件集合
+
+		static void Main(string[] args)
+        {
+            // Create
+            ReflectContext reflectContext = Program.Create();
+
+            // CreateAllEntity
+            IEnumerable<TestEntity> testEntityCollection = reflectContext.CreateAllEntity<TestEntity>("TestEntityGroup");            
+
+            // Print
+            Console.WriteLine("\nTestEntity.Print()");
+            foreach (var testEntity in testEntityCollection)
+            {
+                testEntity.Print();
+            }
+
+            // End
+            Console.WriteLine("\nPress enter to end...");
+            Console.ReadLine();
+        }
 
 - 執行結果
 
-###CLK.Reflection.Samples.No005 - 生成巢狀物件###
+	![使用範例04](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B04.png)
+
+###CLK.Reflection.Samples.No005 - 讀取連線字串###
+
+操作資料庫功能的類別再被反射生成的時候，必須提供資料庫的連線字串給物件所使用，而資料庫的連線字串通常會建議存放在config檔的connectionStrings區段裡。為了符合這個使用情景，在CLK.Reflection模組中，使用CLK.Settings模組做為參數存取模組，來提供connectionStrings、AppSetting等等相關參數的存取功能。
+
+- SqlRepository類別：做為依賴注入的實體物件。在SqlRepository類別中提供了ConnectionString屬性，用以在範例中提供開發人員觀察SqlRepository物件內容。
+
+		namespace CLK.Reflection.Samples.No005
+		{
+		    public class SqlRepository
+		    {
+		        // Constructors
+		        public SqlRepository(string connectionString)
+		        {
+		            #region Contracts
+		
+		            if (string.IsNullOrEmpty(connectionString) == true) throw new ArgumentNullException();
+		
+		            #endregion
+		
+		            // Arguments
+		            this.ConnectionString = connectionString;
+		        }
+		
+		
+		        // Properties   
+		        public string ConnectionString { get; private set; }
+		    }
+		}
+
+
+- SqlRepositoryBuilder類別：做為SqlRepository類別的建構者。用以剖析參數內容、讀取連線字串、呼叫建構子、最終生成SqlRepository物件。
+
+		namespace CLK.Reflection.Samples.No005
+		{
+		    public sealed class SqlRepositoryBuilder : ReflectBuilder
+		    {
+		        // Properties   
+		        public string ConnectionStringName
+		        {
+		            get { return this.GetParameter("ConnectionStringName"); }
+		            set { this.SetParameter("ConnectionStringName", value); }
+		        }
+		
+		
+		        // Methods          
+		        protected override object CreateEntity()
+		        {
+		            // ConnectionStringName
+		            string connectionStringName = this.ConnectionStringName;
+		            if (string.IsNullOrEmpty(connectionStringName) == true) throw new InvalidOperationException();
+		
+		            // ConnectionString
+		            string connectionString = this.SettingContext.ConnectionStrings[connectionStringName];
+		            if (string.IsNullOrEmpty(connectionString) == true) throw new InvalidOperationException();
+		
+		            // Create
+		            SqlRepository sqlRepository = new SqlRepository(connectionString);
+		
+		            // Return
+		            return sqlRepository;
+		        }
+		    }
+		}
 
 - 設定檔
+
+		<?xml version="1.0" encoding="utf-8" ?>
+		<configuration>
+		
+		  <!-- ConfigSections -->
+		  <configSections>
+		    <section name="SqlRepositoryGroup" type="CLK.Configuration.Reflection.ReflectConfigurationSection, CLK.Configuration" />
+		  </configSections>
+		
+		  <!--connectionStrings-->
+		  <connectionStrings>
+		    <add name="MainDB"  connectionString="Data Source=127.1.1.1;Initial Catalog=DB001;Uid=sa;Pwd=1234;Persist Security Info=True" />
+		    <add name="OtherDB" connectionString="Data Source=127.2.2.2;Initial Catalog=DB002;Uid=sa;Pwd=1234;Persist Security Info=True" />
+		  </connectionStrings>
+		
+		  <!--SqlRepositoryGroup-->
+		  <SqlRepositoryGroup default="XXX">
+		    <add name="XXX" type="CLK.Reflection.Samples.No005.SqlRepositoryBuilder, CLK.Reflection.Samples.No005" ConnectionStringName="MainDB" />
+		    <add name="YYY" type="CLK.Reflection.Samples.No005.SqlRepositoryBuilder, CLK.Reflection.Samples.No005" ConnectionStringName="OtherDB" />
+		    <add name="ZZZ" type="CLK.Reflection.Samples.No005.SqlRepositoryBuilder, CLK.Reflection.Samples.No005" ConnectionStringName="OtherDB" />
+		  </SqlRepositoryGroup>
+		
+		</configuration>
+
+- 讀取連線字串
+		
+		static void Main(string[] args)
+        {
+            // Create
+            ReflectContext reflectContext = Program.Create();
+
+            // CreateEntity
+            SqlRepository sqlRepository = reflectContext.CreateEntity<SqlRepository>("SqlRepositoryGroup");
+
+            // Print
+            Console.WriteLine("\nTestEntity.ConnectionString");
+            Console.WriteLine(sqlRepository.ConnectionString);
+
+            // End
+            Console.WriteLine("\nPress enter to end...");
+            Console.ReadLine();
+        }
+
+- 執行結果
+
+	![使用範例05](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B05.png)
+
+
+###CLK.Reflection.Samples.No006 - 生成巢狀物件###
+
+當生成Top物件的時候，需要另外一個Sub物件做為參數來建構，這是物件導向中很常見的物件設計。為了生成這類的巢狀物件，CLK.Reflection模組支援TopBuilder類別在生成Top物件的同時，使用群組名稱去反射生成Sub物件，來做為Top物件的建構參數。
+
+- TopEntity類別：做為依賴注入的實體物件。生成TopEntity類別需要在建構子中提供SubEntity物件做為建構參數，並且這個SubEntity物件會做為TopEntity類別的屬性，用以在範例中提供開發人員觀察TopEntity物件中SubEntity物件的內容。
+
+		namespace CLK.Reflection.Samples.No006
+		{
+		    public class TopEntity
+		    {
+		        // Constructors
+		        public TopEntity(SubEntity subEntity)
+		        {
+		            #region Contracts
+		
+		            if (subEntity == null) throw new ArgumentNullException();
+		
+		            #endregion
+		
+		            // Arguments
+		            this.SubEntity = subEntity;
+		        }
+		
+		
+		        // Properties   
+		        public SubEntity SubEntity { get; private set; }
+		    }
+		}
+
+- TopEntityBuilder類別：做為TopEntity類別的建構者。用以剖析參數內容、生成SubEntity物件、呼叫建構子、最終生成TopEntity物件。
+
+		namespace CLK.Reflection.Samples.No006
+		{
+		    public sealed class TopEntityBuilder : ReflectBuilder
+		    {
+		        // Properties   
+		        public string SubEntityGroupName
+		        {
+		            get { return this.GetParameter("SubEntityGroupName"); }
+		            set { this.SetParameter("SubEntityGroupName", value); }
+		        }
+		
+		
+		        // Methods          
+		        protected override object CreateEntity()
+		        {
+		            // SubEntityGroupName
+		            string subEntityGroupName = this.SubEntityGroupName;
+		            if (string.IsNullOrEmpty(subEntityGroupName) == true) throw new InvalidOperationException();
+		
+		            // SubEntity
+		            SubEntity subEntity = this.ReflectContext.CreateEntity<SubEntity>(subEntityGroupName);
+		            if (subEntity == null) throw new InvalidOperationException();
+		
+		            // Create
+		            TopEntity topEntity = new TopEntity(subEntity);
+		
+		            // Return
+		            return topEntity;
+		        }
+		    }
+		}
+
+- SubEntity類別：做為依賴注入的實體物件的建構參數。在SubEntity類別中提供了Print函式，列印參數內容到Console，用以在範例中提供開發人員觀察SubEntity物件內容。
+
+		namespace CLK.Reflection.Samples.No006
+		{
+		    public class SubEntity
+		    {
+		        // Fields        
+		        private readonly string _parameterA = string.Empty;
+		
+		
+		        // Constructors
+		        public SubEntity(string parameterA)
+		        {
+		            #region Contracts
+		
+		            if (string.IsNullOrEmpty(parameterA) == true) throw new ArgumentNullException();
+		
+		            #endregion
+		
+		            // Arguments
+		            _parameterA = parameterA;
+		        }
+		
+		
+		        // Methods
+		        public void Print()
+		        {
+		            // Write
+		            Console.WriteLine(_parameterA);
+		        }
+		    }
+		}
+
+- SubEntityBuilder類別：做為SubEntity類別的建構者。用以剖析參數內容、呼叫建構子、最終生成SubEntity物件。
+
+		namespace CLK.Reflection.Samples.No006
+		{
+		    public sealed class SubEntityBuilder : ReflectBuilder
+		    {
+		        // Properties   
+		        public string ParameterA
+		        {
+		            get { return this.GetParameter("ParameterA"); }
+		            set { this.SetParameter("ParameterA", value); }
+		        }
+		
+		
+		        // Methods          
+		        protected override object CreateEntity()
+		        {
+		            // Parameters
+		            string parameterA = this.ParameterA;
+		            if (string.IsNullOrEmpty(parameterA) == true) throw new InvalidOperationException();
+		
+		            // Create
+		            SubEntity subEntity = new SubEntity(parameterA);
+		
+		            // Return
+		            return subEntity;
+		        }
+		    }
+		}
+
+- 設定檔
+
+		<?xml version="1.0" encoding="utf-8" ?>
+		<configuration>
+		
+		  <!-- ConfigSections -->
+		  <configSections>
+		    <section name="TopEntityGroup" type="CLK.Configuration.Reflection.ReflectConfigurationSection, CLK.Configuration" />
+		    <section name="SubEntityGroup" type="CLK.Configuration.Reflection.ReflectConfigurationSection, CLK.Configuration" />
+		  </configSections>
+		
+		  <!--TopEntityGroup-->
+		  <TopEntityGroup default="Top001">
+		    <add name="Top001" type="CLK.Reflection.Samples.No006.TopEntityBuilder, CLK.Reflection.Samples.No006" SubEntityGroupName="SubEntityGroup" />
+		    <add name="Top002" type="CLK.Reflection.Samples.No006.TopEntityBuilder, CLK.Reflection.Samples.No006" SubEntityGroupName="SubEntityGroup" />
+		    <add name="Top003" type="CLK.Reflection.Samples.No006.TopEntityBuilder, CLK.Reflection.Samples.No006" SubEntityGroupName="SubEntityGroup" />
+		  </TopEntityGroup>
+		
+		  <!--SubEntityGroup-->
+		  <SubEntityGroup default="Sub002">
+		    <add name="Sub001" type="CLK.Reflection.Samples.No006.SubEntityBuilder, CLK.Reflection.Samples.No006" ParameterA="AAA" />
+		    <add name="Sub002" type="CLK.Reflection.Samples.No006.SubEntityBuilder, CLK.Reflection.Samples.No006" ParameterA="BBB" />
+		  </SubEntityGroup>
+		
+		</configuration>
 
 - 生成巢狀物件
 
+		static void Main(string[] args)
+        {
+            // Create
+            ReflectContext reflectContext = Program.Create();
+
+            // CreateEntity
+            TopEntity topEntity = reflectContext.CreateEntity<TopEntity>("TopEntityGroup");
+
+            // Print
+            Console.WriteLine("\nTopEntity.SubEntity.Print()");
+            topEntity.SubEntity.Print();
+
+            // End
+            Console.WriteLine("\nPress enter to end...");
+            Console.ReadLine();
+        }
+
 - 執行結果
 
-###CLK.Reflection.Samples.No006 - 讀取連線字串###
-
-- 設定檔
-
-- 讀取連線字串
-
-- 執行結果
+	![使用範例06](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B06.png)
