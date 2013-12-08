@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{386E281E-2A31-42D9-B8B4-EDD8CA5C0799}</ProjectGuid>
+    <ProjectGuid>{05246117-54B5-44A4-A844-8A6DBAB2F994}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CLK.Reflection.Samples.No001</RootNamespace>
-    <AssemblyName>CLK.Reflection.Samples.No001</AssemblyName>
+    <RootNamespace>CLK.Reflection.Samples.No004</RootNamespace>
+    <AssemblyName>CLK.Reflection.Samples.No004</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -57,7 +57,7 @@
       <Name>CLK</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Reflection.Samples\CLK.Reflection.Samples.csproj">
-      <Project>{3a470f61-a0b2-489c-8c35-e54500dd94d7}</Project>
+      <Project>{3A470F61-A0B2-489C-8C35-E54500DD94D7}</Project>
       <Name>CLK.Reflection.Samples</Name>
     </ProjectReference>
   </ItemGroup>

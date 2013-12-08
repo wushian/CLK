@@ -19,6 +19,8 @@ namespace CLK.Reflection
 
             // Create
             ReflectSetting setting = new ReflectSetting(builder.GetType().AssemblyQualifiedName);
+
+            // Parameters
             foreach (string parameterKey in builder.Parameters.Keys)
             {
                 setting.Parameters.Add(parameterKey, builder.Parameters[parameterKey]);

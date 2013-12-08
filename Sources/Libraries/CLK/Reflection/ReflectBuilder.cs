@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CLK.Settings;
+using System.Runtime;
 
 namespace CLK.Reflection
 {
@@ -28,92 +29,98 @@ namespace CLK.Reflection
         internal protected abstract object CreateEntity();
 
 
-        protected string GetParameterValue(string parameterName, string defaultValue = default(string))
+        protected string GetParameter(string name, string defaultValue = default(string))
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(parameterName) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
 
             #endregion
 
-            // Result
-            string resultValue = defaultValue;
+            // Require
+            if (this.Parameters.ContainsKey(name) == false) return defaultValue;
 
             // Get
-            if (this.Parameters.ContainsKey(parameterName) == true)
-            {
-                resultValue = this.Parameters[parameterName];
-            }
+            string valueString = this.Parameters[name];
+            if (string.IsNullOrEmpty(valueString) == true) throw new ArgumentNullException();
+
+            // Convert
+            string value = valueString;
 
             // Return
-            return resultValue;
+            return value;
         }
 
-        protected TValue GetParameterValue<TValue>(string parameterName, TValue defaultValue, Func<string, TValue> convertDelegate)
+        protected TValue GetParameter<TValue>(string name, TValue defaultValue, Func<string, TValue> converter)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(parameterName) == true) throw new ArgumentNullException();
-            if (convertDelegate == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
+            if (converter == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Result
-            TValue resultValue = defaultValue;
+            // Require
+            if (this.Parameters.ContainsKey(name) == false) return defaultValue;
 
             // Get
-            if (this.Parameters.ContainsKey(parameterName) == true)
-            {
-                resultValue = convertDelegate(this.Parameters[parameterName]);
-            }
+            string valueString = this.Parameters[name];
+            if (string.IsNullOrEmpty(valueString) == true) throw new ArgumentNullException();
+
+            // Convert
+            TValue value = converter(this.Parameters[name]);
 
             // Return
-            return resultValue;
+            return value;
         }
 
 
-        protected void SetParameterValue(string parameterName, string parameterValue)
+        protected void SetParameter(string name, string value)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(parameterName) == true) throw new ArgumentNullException();
-            if (string.IsNullOrEmpty(parameterValue) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(value) == true) throw new ArgumentNullException();
 
             #endregion
+
+            // Convert
+            string valueString = value;
+            if (string.IsNullOrEmpty(valueString) == true) throw new ArgumentNullException();
 
             // Set
-            if (this.Parameters.ContainsKey(parameterName) == true)
+            if (this.Parameters.ContainsKey(name) == true)
             {
-                this.Parameters[parameterName] = parameterValue;
+                this.Parameters[name] = valueString;
             }
             else
             {
-                this.Parameters.Add(parameterName, parameterValue);
+                this.Parameters.Add(name, valueString);
             }
         }
 
-        protected void SetParameterValue<TValue>(string parameterName, TValue parameterValue, Func<TValue, string> convertDelegate)
+        protected void SetParameter<TValue>(string name, TValue value, Func<TValue, string> converter)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(parameterName) == true) throw new ArgumentNullException();
-            if (parameterValue == null) throw new ArgumentNullException();
-            if (convertDelegate == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(name) == true) throw new ArgumentNullException();
+            if (value == null) throw new ArgumentNullException();
+            if (converter == null) throw new ArgumentNullException();
 
             #endregion
 
-            // Result
-            string parameterValueString = convertDelegate(parameterValue);
-            if (string.IsNullOrEmpty(parameterValueString) == true) throw new ArgumentNullException();
+            // Convert
+            string valueString = converter(value);
+            if (string.IsNullOrEmpty(valueString) == true) throw new ArgumentNullException();
 
             // Set
-            if (this.Parameters.ContainsKey(parameterName) == true)
+            if (this.Parameters.ContainsKey(name) == true)
             {
-                this.Parameters[parameterName] = parameterValueString;
+                this.Parameters[name] = valueString;
             }
             else
             {
-                this.Parameters.Add(parameterName, parameterValueString);
+                this.Parameters.Add(name, valueString);
             }
         }
     }

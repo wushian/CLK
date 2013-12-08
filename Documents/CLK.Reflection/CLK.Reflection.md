@@ -65,7 +65,7 @@ IoC模式在近代軟體設計中已經成了顯學。不管是將系統設計�
 
 ###領域模型###
 
-設計完Config結構之後，就可以依照這個結構，來分析DI模組的領域模型。
+設計完Config結構之後，就可以依照這個結構，來分析DI模組的領域模型。([Eric Evans - 領域驅動設計(DDD)](http://www.books.com.tw/products/CN10710357))
 
 - DI模組包含許多群組(Group)。
 
@@ -149,6 +149,67 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 ##使用範例##
 
+###CLK.Reflection.Samples - 建立TestEntity類別、TestEntityBuilder類別
+
+為了降低範例的複雜度，後續範例使用CLK.Reflection.Samples專案中的類別，來做為依賴注入功能的範例物件：
+
+- TestEntity類別：做為依賴注入的實體物件。在TestEntity類別中提供了Print函式，列印參數內容到Console，用以在範例中提供開發人員觀察TestEntity物件內容。
+		
+		public class TestEntity
+	    {
+	        // Fields        
+	        private readonly string _parameterA = string.Empty;
+	
+	
+	        // Constructors
+	        public TestEntity(string parameterA)
+	        {
+	            #region Contracts
+	
+	            if (string.IsNullOrEmpty(parameterA) == true) throw new ArgumentNullException();
+	
+	            #endregion
+	
+	            // Arguments
+	            _parameterA = parameterA;
+	        }
+	        
+	
+	        // Methods
+	        public void Print()
+	        {
+	            // Write
+	            Console.WriteLine(_parameterA);
+	        }
+	    }
+
+- TestEntityBuilder類別，做為TestEntity類別的建構者。用以剖析參數內容、呼叫建構子、最終生成TestEntity物件。
+
+	    public sealed class TestEntityBuilder : ReflectBuilder
+	    {
+	        // Properties   
+	        public string ParameterA
+	        {
+	            get { return this.GetParameter("ParameterA"); }
+	            set { this.SetParameter("ParameterA", value); }
+	        }
+	
+	
+	        // Methods          
+	        protected override object CreateEntity()
+	        {
+	            // Parameters
+	            string parameterA = this.ParameterA;
+	            if (string.IsNullOrEmpty(parameterA) == true) throw new InvalidOperationException();
+	
+	            // Create
+	            TestEntity testEntity = new TestEntity(parameterA);
+	
+	            // Return
+	            return testEntity;
+	        }
+	    }
+
 ###CLK.Reflection.Samples.No001 - 建立模組###
 
 在使用ReflectContext物件之前，必須先取得系統所使用的ReflectContext物件，在範例中統一透過生成函式來提供ReflectContext物件。例如下列範例中的生成函式，會建立一個ReflectContext物件的子類別：ConfigReflectContext物件，這個ConfigReflectContext物件會讀取Config檔中的相關設定內容，用以提供系統使用DI模組的反射生成功能來完成依賴注入的開發工作。
@@ -166,13 +227,40 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 ###CLK.Reflection.Samples.No002 - 生成預設物件###
 
+- 設定檔
+
+- 生成預設物件
+
+- 執行結果
+
 ###CLK.Reflection.Samples.No003 - 生成指定物件###
+
+- 設定檔
+
+- 生成指定物件
+
+- 執行結果
 
 ###CLK.Reflection.Samples.No004 - 生成物件集合###
 
+- 設定檔
+
+- 生成物件集合
+
+- 執行結果
+
 ###CLK.Reflection.Samples.No005 - 生成巢狀物件###
+
+- 設定檔
+
+- 生成巢狀物件
+
+- 執行結果
 
 ###CLK.Reflection.Samples.No006 - 讀取連線字串###
 
-###CLK.Reflection.Samples.No007 - 生成巢狀設定###
+- 設定檔
 
+- 讀取連線字串
+
+- 執行結果
