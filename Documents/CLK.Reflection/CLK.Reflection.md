@@ -170,13 +170,15 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 	
 	- 使用Dictionary<string, string>結構來封裝Parameter集合。
 	
-	- 實際被反射生成的物件，Builder生成之後開始剖析參數內容、呼叫建構子、最終生成實體物件。
+	- 實際被反射生成的物件。
+	
+	- 提供CreateEntity函式，調用CreateEntity函式之後開始剖析參數內容、呼叫建構子、最終生成實體物件回傳。
 	
 - ReflectGroup
 
 	- 進出系統邊界的物件單位，使用Name做為索引。
-
-	- 封裝ReflectBuilder物件集合，用以反射生成實體物件集合。
+	
+	- 提供ReflectBuilderRepository屬性，用以提供ReflectBuilder物件。
 	
 	- 封裝預設實體名稱，用以反射生成預設實體物件。 
 
@@ -212,9 +214,9 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 - ReflectContext
 
-	- 額外封裝了SettingContext物件，用以提供ReflectBuilder類別反射生成實體物件時使用。
+	- 額外封裝SettingContext物件，用以提供ReflectBuilder類別反射生成實體物件時使用。
 	
-	- 額外繼承了IReflectContext物件，用以提供ReflectBuilder類別反射生成實體物件時使用。
+	- 額外繼承IReflectContext物件，用以提供ReflectBuilder類別反射生成實體物件時使用。
 
 - SettingContext
 
@@ -230,6 +232,12 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 
 ###物件互動###
+
+- 生成預設實體物件
+
+- 生成指定實體物件
+
+- 生成實體物件集合
 
 
 ##使用範例##
@@ -316,7 +324,7 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
             return reflectContext;
         }
 
-###CLK.Reflection.Samples.No002 - 生成預設物件###
+###CLK.Reflection.Samples.No002 - 生成預設實體物件###
 
 - 設定檔
 
@@ -337,7 +345,7 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 		
 		</configuration>
 
-- 生成預設物件
+- 生成預設實體物件
 
 		static void Main(string[] args)
         {
@@ -360,7 +368,7 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 	![使用範例02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B02.png)
 
-###CLK.Reflection.Samples.No003 - 生成指定物件###
+###CLK.Reflection.Samples.No003 - 生成指定實體物件###
 
 - 設定檔
 
@@ -381,7 +389,7 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 		
 		</configuration>
 
-- 生成指定物件
+- 生成指定實體物件
 
 		static void Main(string[] args)
         {
@@ -404,7 +412,7 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 
 	![使用範例03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Reflection/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B03.png)
 
-###CLK.Reflection.Samples.No004 - 生成物件集合###
+###CLK.Reflection.Samples.No004 - 生成實體物件集合###
 
 - 設定檔
 
@@ -425,7 +433,7 @@ CLK.Reflection是一個極簡風格的依賴注入模組(DI Framework)。在開�
 		
 		</configuration>
 
-- 生成物件集合
+- 生成實體物件集合
 
 		static void Main(string[] args)
         {
