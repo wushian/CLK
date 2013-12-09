@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    internal sealed partial class ConnectionServiceResource
+    internal sealed partial class ChannelServiceResource
     {
         // Singleton
-        private static ConnectionServiceResource _current = null;
+        private static ChannelServiceResource _current = null;
 
-        public static ConnectionServiceResource Current
+        public static ChannelServiceResource Current
         {
             get
             {
                 if (_current == null)
                 {
-                    _current = new ConnectionServiceResource();
+                    _current = new ChannelServiceResource();
                 }
                 return _current;
             }
         }
     }
 
-    internal sealed partial class ConnectionServiceResource
+    internal sealed partial class ChannelServiceResource
     {
         // Fields  
         private readonly object _syncRoot = new object();

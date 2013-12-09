@@ -40,15 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection.cs" />
-    <Compile Include="ConnectionHost.cs" />
-    <Compile Include="ConnectionProxy.cs" />
-    <Compile Include="ConnectionProxyHost.cs" />
-    <Compile Include="ConnectionService.cs" />
-    <Compile Include="ConnectionServiceHost.cs" />
-    <Compile Include="ConnectionServiceMediator.cs" />
-    <Compile Include="ConnectionServiceResource.cs" />
-    <Compile Include="Contracts\IConnectionService.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="ChannelHost.cs" />
+    <Compile Include="ChannelProxy.cs" />
+    <Compile Include="ChannelProxyHost.cs" />
+    <Compile Include="ChannelService.cs" />
+    <Compile Include="ChannelServiceHost.cs" />
+    <Compile Include="ChannelServiceMediator.cs" />
+    <Compile Include="ChannelServiceResource.cs" />
+    <Compile Include="Contracts\IChannelService.cs" />
     <Compile Include="Extensions\ExceptionTransformExtension.cs" />
     <Compile Include="Exceptions\ExecuteIgnoredException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

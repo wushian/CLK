@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionServiceHost<TConnectionService> : ConnectionHost<TConnectionService>
-        where TConnectionService : ConnectionService, new()
+    public abstract class ChannelServiceHost<TChannelService> : ChannelHost<TChannelService>
+        where TChannelService : ChannelService, new()
     {
         // Fields   
         private readonly ServiceHost _serviceHost = null;
 
-        private readonly ConnectionServiceMediator _serviceMediator = null;
+        private readonly ChannelServiceMediator _serviceMediator = null;
                
 
         // Constructors
-        public ConnectionServiceHost(Type contract, Binding binding, string address)
+        public ChannelServiceHost(Type contract, Binding binding, string address)
         {
             #region Contracts
 
@@ -29,13 +29,13 @@ namespace CLK.ServiceModel
             #endregion
 
             // ServiceHost
-            _serviceHost = new ServiceHost(typeof(TConnectionService));
+            _serviceHost = new ServiceHost(typeof(TChannelService));
             _serviceHost.AddServiceEndpoint(contract, binding, address);
 
             // ServiceMediator
-            _serviceMediator = new ConnectionServiceMediator();
-            _serviceMediator.Connected += this.ConnectionService_Connected;
-            _serviceMediator.Disconnected += this.ConnectionService_Disconnected;
+            _serviceMediator = new ChannelServiceMediator();
+            _serviceMediator.Connected += this.ChannelService_Connected;
+            _serviceMediator.Disconnected += this.ChannelService_Disconnected;
         }
                         
 
@@ -68,7 +68,7 @@ namespace CLK.ServiceModel
             #endregion
 
             // Resource
-            ConnectionServiceResource.Current.AttachResource(_serviceHost, resource);
+            ChannelServiceResource.Current.AttachResource(_serviceHost, resource);
         }
 
         protected void DetachResource(object resource)
@@ -80,12 +80,12 @@ namespace CLK.ServiceModel
             #endregion
                         
             // Resource
-            ConnectionServiceResource.Current.DetachResource(_serviceHost, resource);
+            ChannelServiceResource.Current.DetachResource(_serviceHost, resource);
         }
 
 
         // Handlers
-        private void ConnectionService_Connected(object sender, EventArgs e)
+        private void ChannelService_Connected(object sender, EventArgs e)
         {
             #region Contracts
 
@@ -95,14 +95,14 @@ namespace CLK.ServiceModel
             #endregion
 
             // Require
-            TConnectionService connectionService = sender as TConnectionService;
-            if (connectionService == null) return;
+            TChannelService channelService = sender as TChannelService;
+            if (channelService == null) return;
 
             // Attach
-            this.Attach(connectionService);
+            this.Attach(channelService);
         }
 
-        private void ConnectionService_Disconnected(object sender, EventArgs e)
+        private void ChannelService_Disconnected(object sender, EventArgs e)
         {
             #region Contracts
 
@@ -112,13 +112,13 @@ namespace CLK.ServiceModel
             #endregion
 
             // Require
-            TConnectionService connectionService = sender as TConnectionService;
-            if (connectionService == null) return;
+            TChannelService channelService = sender as TChannelService;
+            if (channelService == null) return;
 
            
 
             // Detach
-            this.Detach(connectionService);
+            this.Detach(channelService);
         }
     }
 }

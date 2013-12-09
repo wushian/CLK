@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class Connection
+    public abstract class Channel
     {
         // Constructors
-        internal Connection() { }
+        internal Channel() { }
     }
 }

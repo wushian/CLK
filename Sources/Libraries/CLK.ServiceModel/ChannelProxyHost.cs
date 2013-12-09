@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {    
-    public abstract class ConnectionProxyHost<TConnectionProxy> : ConnectionHost<TConnectionProxy>
-        where TConnectionProxy : ConnectionProxy
+    public abstract class ChannelProxyHost<TChannelProxy> : ChannelHost<TChannelProxy>
+        where TChannelProxy : ChannelProxy
     {
         // Fields
         private readonly object _syncObject = new object();
 
-        private readonly IEnumerable<TConnectionProxy> _connectionProxyCollection = null;
+        private readonly IEnumerable<TChannelProxy> _channelProxyCollection = null;
 
-        private readonly Func<IEnumerable<ConnectionProxy>, bool> _connectedPredicate = null;
+        private readonly Func<IEnumerable<ChannelProxy>, bool> _connectedPredicate = null;
 
         private bool _isConnected = false;
 
 
         // Constructors        
-        public ConnectionProxyHost(IEnumerable<TConnectionProxy> connectionProxyCollection, Func<IEnumerable<ConnectionProxy>, bool> connectedPredicate)
+        public ChannelProxyHost(IEnumerable<TChannelProxy> channelProxyCollection, Func<IEnumerable<ChannelProxy>, bool> connectedPredicate)
         {
             #region Contracts
 
-            if (connectionProxyCollection == null) throw new ArgumentNullException();
+            if (channelProxyCollection == null) throw new ArgumentNullException();
             if (connectedPredicate == null) throw new ArgumentNullException();
 
             #endregion
                         
-            // ConnectionProxyCollection
-            _connectionProxyCollection = connectionProxyCollection;
+            // ChannelProxyCollection
+            _channelProxyCollection = channelProxyCollection;
 
             // ConnectedPredicate 
             _connectedPredicate = connectedPredicate;            
@@ -56,41 +56,41 @@ namespace CLK.ServiceModel
         public virtual void Open()
         {
             // Attach
-            foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
+            foreach (TChannelProxy channelProxy in _channelProxyCollection)
             {
-                this.Attach(connectionProxy);
+                this.Attach(channelProxy);
             }
 
             // Open
-            foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
+            foreach (TChannelProxy channelProxy in _channelProxyCollection)
             {                
-                connectionProxy.Connected += this.ConnectionProxy_Connected;
-                connectionProxy.Disconnected += this.ConnectionProxy_Disconnected;
-                connectionProxy.Open();
+                channelProxy.Connected += this.ChannelProxy_Connected;
+                channelProxy.Disconnected += this.ChannelProxy_Disconnected;
+                channelProxy.Open();
             }
         }
 
         public virtual void Close()
         {
             // Close
-            foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
+            foreach (TChannelProxy channelProxy in _channelProxyCollection)
             {
-                connectionProxy.Close();
-                connectionProxy.Connected -= this.ConnectionProxy_Connected;
-                connectionProxy.Disconnected -= this.ConnectionProxy_Disconnected;
+                channelProxy.Close();
+                channelProxy.Connected -= this.ChannelProxy_Connected;
+                channelProxy.Disconnected -= this.ChannelProxy_Disconnected;
             }
 
             // Detach
-            foreach (TConnectionProxy connectionProxy in _connectionProxyCollection)
+            foreach (TChannelProxy channelProxy in _channelProxyCollection)
             {
-                this.Detach(connectionProxy);
+                this.Detach(channelProxy);
             }
         }
 
         private void Refresh()
         {
             // IsConnected
-            bool isConnected = _connectedPredicate(_connectionProxyCollection);
+            bool isConnected = _connectedPredicate(_channelProxyCollection);
 
             // Require
             lock (_syncObject)
@@ -112,7 +112,7 @@ namespace CLK.ServiceModel
 
 
         // Handlers
-        private void ConnectionProxy_Connected(object sender, EventArgs e)
+        private void ChannelProxy_Connected(object sender, EventArgs e)
         {
             #region Contracts
 
@@ -125,7 +125,7 @@ namespace CLK.ServiceModel
             this.Refresh();
         }
 
-        private void ConnectionProxy_Disconnected(object sender, EventArgs e)
+        private void ChannelProxy_Disconnected(object sender, EventArgs e)
         {
             #region Contracts
 
@@ -161,18 +161,18 @@ namespace CLK.ServiceModel
         }
     }
 
-    public static class ConnectionProxyHost
+    public static class ChannelProxyHost
     {
         // ConnectedPredicate
-        public static Func<IEnumerable<ConnectionProxy>, bool> OneConnectedPredicate
+        public static Func<IEnumerable<ChannelProxy>, bool> OneConnectedPredicate
         {
             get
             {
-                return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
+                return delegate(IEnumerable<ChannelProxy> channelProxyCollection)
                 {
-                    foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
+                    foreach (ChannelProxy channelProxy in channelProxyCollection)
                     {
-                        if (connectionProxy.IsConnected == true)
+                        if (channelProxy.IsConnected == true)
                         {
                             return true;
                         }
@@ -182,15 +182,15 @@ namespace CLK.ServiceModel
             }
         }
 
-        public static Func<IEnumerable<ConnectionProxy>, bool> AllConnectedPredicate
+        public static Func<IEnumerable<ChannelProxy>, bool> AllConnectedPredicate
         {
             get
             {
-                return delegate(IEnumerable<ConnectionProxy> connectionProxyCollection)
+                return delegate(IEnumerable<ChannelProxy> channelProxyCollection)
                 {
-                    foreach (ConnectionProxy connectionProxy in connectionProxyCollection)
+                    foreach (ChannelProxy channelProxy in channelProxyCollection)
                     {
-                        if (connectionProxy.IsConnected == false)
+                        if (channelProxy.IsConnected == false)
                         {
                             return false;
                         }

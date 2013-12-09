@@ -9,77 +9,77 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionHost<TConnection>
-        where TConnection : Connection
+    public abstract class ChannelHost<TChannel>
+        where TChannel : Channel
     {
         // Fields
         private readonly object _syncObject = new object();
 
-        private readonly List<TConnection> _connectionList = new List<TConnection>();
+        private readonly List<TChannel> _channelList = new List<TChannel>();
 
-        private IEnumerable<TConnection> _connectionCollection = null;
+        private IEnumerable<TChannel> _channelCollection = null;
 
 
         // Constructors
-        internal ConnectionHost() { }
+        internal ChannelHost() { }
 
 
         // Properties
-        private IEnumerable<TConnection> ConnectionCollection
+        private IEnumerable<TChannel> ChannelCollection
         {
             get
             {
                 lock (_syncObject)
                 {
-                    if (_connectionCollection == null)
+                    if (_channelCollection == null)
                     {
-                        _connectionCollection = _connectionList.ToArray();
+                        _channelCollection = _channelList.ToArray();
                     }
-                    return _connectionCollection;
+                    return _channelCollection;
                 }
             }
         }
 
 
         // Methods
-        protected virtual void Attach(TConnection connection)
+        protected virtual void Attach(TChannel channel)
         {
             #region Contracts
 
-            if (connection == null) throw new ArgumentNullException();
+            if (channel == null) throw new ArgumentNullException();
 
             #endregion
 
             lock (_syncObject)
             {
                 // Refresh
-                _connectionCollection = null;
+                _channelCollection = null;
 
                 // Add
-                _connectionList.Add(connection);
+                _channelList.Add(channel);
             }
         }
 
-        protected virtual void Detach(TConnection connection)
+        protected virtual void Detach(TChannel channel)
         {
             #region Contracts
 
-            if (connection == null) throw new ArgumentNullException();
+            if (channel == null) throw new ArgumentNullException();
 
             #endregion
 
             lock (_syncObject)
             {
                 // Refresh
-                _connectionCollection = null;
+                _channelCollection = null;
                                 
                 // Remove
-                _connectionList.Remove(connection);
+                _channelList.Remove(channel);
             }
         }
 
 
-        public void ExecuteOne(Action<TConnection> executeDelegate)
+        public void ExecuteOne(Action<TChannel> executeDelegate)
         {
             #region Contracts
 
@@ -87,13 +87,13 @@ namespace CLK.ServiceModel
 
             #endregion
 
-            // Connection
-            foreach (TConnection connection in this.ConnectionCollection)
+            // Channel
+            foreach (TChannel channel in this.ChannelCollection)
             {
                 try
                 {
                     // Execute
-                    executeDelegate(connection);
+                    executeDelegate(channel);
 
                     // Return
                     return;
@@ -109,7 +109,7 @@ namespace CLK.ServiceModel
             throw new ExecuteIgnoredException();
         }
 
-        public TResult ExecuteOne<TResult>(Func<TConnection, TResult> executeDelegate)
+        public TResult ExecuteOne<TResult>(Func<TChannel, TResult> executeDelegate)
         {
             #region Contracts
 
@@ -117,13 +117,13 @@ namespace CLK.ServiceModel
 
             #endregion
 
-            // Connection
-            foreach (TConnection connection in this.ConnectionCollection)
+            // Channel
+            foreach (TChannel channel in this.ChannelCollection)
             {
                 try
                 {
                     // Execute
-                    TResult result = executeDelegate(connection);
+                    TResult result = executeDelegate(channel);
 
                     // Return
                     return result;
@@ -139,7 +139,7 @@ namespace CLK.ServiceModel
             throw new ExecuteIgnoredException();
         }
 
-        public TResult ExecuteOne<TResult>(Func<TConnection, TResult> executeDelegate, Func<TResult, bool> finishPredicate)
+        public TResult ExecuteOne<TResult>(Func<TChannel, TResult> executeDelegate, Func<TResult, bool> finishPredicate)
         {
             #region Contracts
 
@@ -148,13 +148,13 @@ namespace CLK.ServiceModel
 
             #endregion
 
-            // Connection
-            foreach (TConnection connection in this.ConnectionCollection)
+            // Channel
+            foreach (TChannel channel in this.ChannelCollection)
             {
                 try
                 {
                     // Execute
-                    TResult result = executeDelegate(connection);
+                    TResult result = executeDelegate(channel);
 
                     // Return
                     if (finishPredicate(result) == true) return result;
@@ -171,7 +171,7 @@ namespace CLK.ServiceModel
         }
 
 
-        public void ExecuteAll(Action<TConnection> executeDelegate)
+        public void ExecuteAll(Action<TChannel> executeDelegate)
         {
             #region Contracts
 
@@ -182,13 +182,13 @@ namespace CLK.ServiceModel
             // Result
             bool executeIgnored = true;
 
-            // Connection
-            foreach (TConnection connection in this.ConnectionCollection)
+            // Channel
+            foreach (TChannel channel in this.ChannelCollection)
             {
                 try
                 {
                     // Execute
-                    executeDelegate(connection);
+                    executeDelegate(channel);
 
                     // Count
                     executeIgnored = false;
@@ -204,7 +204,7 @@ namespace CLK.ServiceModel
             if (executeIgnored == true) throw new ExecuteIgnoredException();
         }
 
-        public IEnumerable<TResult> ExecuteAll<TResult>(Func<TConnection, TResult> executeDelegate)
+        public IEnumerable<TResult> ExecuteAll<TResult>(Func<TChannel, TResult> executeDelegate)
         {
             #region Contracts
 
@@ -216,13 +216,13 @@ namespace CLK.ServiceModel
             bool executeIgnored = true;
             List<TResult> resultCollection = new List<TResult>();
 
-            // Connection
-            foreach (TConnection connection in this.ConnectionCollection)
+            // Channel
+            foreach (TChannel channel in this.ChannelCollection)
             {
                 try
                 {
                     // Execute
-                    TResult result = executeDelegate(connection);
+                    TResult result = executeDelegate(channel);
 
                     // Add
                     resultCollection.Add(result);

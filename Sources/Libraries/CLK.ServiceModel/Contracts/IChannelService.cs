@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CLK.ServiceModel
 {
     [ServiceContract(SessionMode=SessionMode.Required)]
-    public interface IConnectionService
+    public interface IChannelService
     {
         [OperationContract(IsOneWay = true)]
         void Heartbeat();

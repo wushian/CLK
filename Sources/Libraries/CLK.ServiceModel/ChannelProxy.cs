@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    public abstract class ConnectionProxy : Connection
+    public abstract class ChannelProxy : Channel
     {
         // Constructors
-        internal ConnectionProxy() { }
+        internal ChannelProxy() { }
 
 
         // Properties
@@ -48,8 +48,8 @@ namespace CLK.ServiceModel
         }
     }
 
-    public abstract class ConnectionProxy<TService> : ConnectionProxy
-        where TService : class, IConnectionService
+    public abstract class ChannelProxy<TService> : ChannelProxy
+        where TService : class, IChannelService
     {
         // Fields
         private readonly object _syncRoot = new object();
@@ -77,7 +77,7 @@ namespace CLK.ServiceModel
 
         private ChannelFactory<TService> _channelFactory = null;
 
-        private IContextChannel _channel = null;
+        private IContextChannel _contextChannel = null;
 
         private TService _service = null;
 
@@ -85,7 +85,7 @@ namespace CLK.ServiceModel
 
 
         // Constructors
-        public ConnectionProxy(Binding binding, string adress)
+        public ChannelProxy(Binding binding, string adress)
         {
             #region Contracts
 
@@ -240,7 +240,7 @@ namespace CLK.ServiceModel
                     this.ExecuteOperation_Disconnect();
 
                     // Wait
-                    if (_channel == null)
+                    if (_contextChannel == null)
                     {
                         WaitHandle.WaitAny(waitHandles, this.ReconnectInterval);
                     }
@@ -266,7 +266,7 @@ namespace CLK.ServiceModel
         {
             // Require
             if (_service != null) return;
-            if (_channel != null) return;
+            if (_contextChannel != null) return;
 
             // Result
             bool executeResult = false;
@@ -283,11 +283,11 @@ namespace CLK.ServiceModel
                 // Service
                 _service = channelObject as TService;
 
-                // Channel
-                _channel = channelObject as IContextChannel;
-                _channel.Closed += this.Channel_Closed;
-                _channel.Faulted += this.Channel_Faulted;
-                _channel.Open();
+                // ContextChannel
+                _contextChannel = channelObject as IContextChannel;
+                _contextChannel.Closed += this.ContextChannel_Closed;
+                _contextChannel.Faulted += this.ContextChannel_Faulted;
+                _contextChannel.Open();
 
                 // Result
                 executeResult = true;
@@ -319,8 +319,8 @@ namespace CLK.ServiceModel
         {
             // Require
             if (_service == null) return;
-            if (_channel == null) return;
-            if (_channel.State == CommunicationState.Opened && _isClosed == false) return;
+            if (_contextChannel == null) return;
+            if (_contextChannel.State == CommunicationState.Opened && _isClosed == false) return;
 
             // Result
             bool executeResult = false;
@@ -331,22 +331,22 @@ namespace CLK.ServiceModel
                 // Service
                 _service = null;
 
-                // Channel
-                _channel.Close();
-                _channel.Closed -= this.Channel_Closed;
-                _channel.Faulted -= this.Channel_Faulted;
-                _channel = null;
+                // ContextChannel
+                _contextChannel.Close();
+                _contextChannel.Closed -= this.ContextChannel_Closed;
+                _contextChannel.Faulted -= this.ContextChannel_Faulted;
+                _contextChannel = null;
             }
             catch
             {
                 // Service
                 _service = null;
 
-                // Channel
-                _channel.Abort();
-                _channel.Closed -= this.Channel_Closed;
-                _channel.Faulted -= this.Channel_Faulted;
-                _channel = null;
+                // ContextChannel
+                _contextChannel.Abort();
+                _contextChannel.Closed -= this.ContextChannel_Closed;
+                _contextChannel.Faulted -= this.ContextChannel_Faulted;
+                _contextChannel = null;
             }
             finally
             {
@@ -375,8 +375,8 @@ namespace CLK.ServiceModel
         {
             // Require
             if (_service == null) return;
-            if (_channel == null) return;
-            if (_channel.State != CommunicationState.Opened) return;
+            if (_contextChannel == null) return;
+            if (_contextChannel.State != CommunicationState.Opened) return;
 
             // Heartbeat            
             try
@@ -393,25 +393,25 @@ namespace CLK.ServiceModel
 
 
         // Handlers
-        private void Channel_Closed(object sender, EventArgs e)
+        private void ContextChannel_Closed(object sender, EventArgs e)
         {
             // Trigger
             _executeTriggerEvent.Set();
         }
 
-        private void Channel_Faulted(object sender, EventArgs e)
+        private void ContextChannel_Faulted(object sender, EventArgs e)
         {
             // Trigger
             _executeTriggerEvent.Set();
         }
     }
 
-    public abstract class ConnectionProxy<TService, TCallback> : ConnectionProxy<TService>
-        where TService : class, IConnectionService
+    public abstract class ChannelProxy<TService, TCallback> : ChannelProxy<TService>
+        where TService : class, IChannelService
         where TCallback : class
     {
         // Constructors
-        public ConnectionProxy(Binding binding, string adress)
+        public ChannelProxy(Binding binding, string adress)
             : base(binding, adress)
         {
             // Require

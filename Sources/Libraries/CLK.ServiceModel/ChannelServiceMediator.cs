@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLK.ServiceModel
 {
-    internal sealed class ConnectionServiceMediator
+    internal sealed class ChannelServiceMediator
     {
         // Events
         public event EventHandler Connected;
