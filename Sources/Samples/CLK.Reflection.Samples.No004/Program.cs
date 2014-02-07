@@ -1,6 +1,6 @@
 ﻿using CLK.Configuration;
 using System.Collections.Generic;
-using CLK.Configuration.Reflection;
+using CLK.Reflection;
 using System;
 
 namespace CLK.Reflection.Samples.No004

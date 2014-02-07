@@ -1,5 +1,5 @@
 ﻿using CLK.Configuration;
-using CLK.Configuration.Reflection;
+using CLK.Reflection;
 using System;
 
 namespace CLK.Reflection.Samples.No002

@@ -148,7 +148,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\CLK\CLK.csproj">
+    <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
       <Project>{55A100B9-E43E-4E90-A2D8-2B5E5EF31490}</Project>
       <Name>CLK</Name>
     </ProjectReference>

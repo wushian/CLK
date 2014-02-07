@@ -37,9 +37,9 @@ CLK.Threading.PortableTimer是一個跨平台的Timer類別。在開發跨平台
 
 下載程式碼：[由此進入GitHub後，點選右下角的「Download ZIP」按鈕下載。](https://github.com/Clark159/CLK)
 
-模組程式碼：\CLK方案\99 Libraries資料夾\CLK專案\Threading資料夾\PortableTimer類別
+模組程式碼：\CLK方案\01 Domains資料夾\CLK專案\Threading資料夾\PortableTimer類別
 
-範例程式碼：\CLK方案\01 Samples\02 CLK.Threading.Samples資料夾\PortableTimer資料夾\
+範例程式碼：\CLK方案\02 Samples資料夾\02 CLK.Threading.Samples資料夾\PortableTimer資料夾\
 
 (開啟程式碼的時候，建議使用Visual Studio所提供的「大綱->摺疊至定義」功能來摺疊程式碼，以能得到較適合閱讀的排版樣式。)
 

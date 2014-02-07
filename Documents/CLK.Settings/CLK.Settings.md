@@ -35,9 +35,9 @@ CLK.Settings是一個跨平台的參數存取模組。在開發跨平台功能�
 
 下載程式碼：[由此進入GitHub後，點選右下角的「Download ZIP」按鈕下載。](https://github.com/Clark159/CLK)
 
-模組程式碼：\CLK方案\99 Libraries資料夾\CLK專案\Settings資料夾\
+模組程式碼：\CLK方案\01 Domains資料夾\CLK專案\Settings資料夾\
 
-範例程式碼：\CLK方案\01 Samples\01 CLK.Settings.Samples資料夾\
+範例程式碼：\CLK方案\02 Samples資料夾\01 CLK.Settings.Samples資料夾\
 
 (開啟程式碼的時候，建議使用Visual Studio所提供的「大綱->摺疊至定義」功能來摺疊程式碼，以能得到較適合閱讀的排版樣式。)
 
