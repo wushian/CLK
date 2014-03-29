@@ -10,5 +10,16 @@ namespace CLK.Settings
     {        
         // Constructors
         internal SettingDictionary(ISettingRepository repository) : base(repository) { }
+
+
+        // Methods 
+        public void AddDefault(string key, string value)
+        {
+            // Require
+            if (this.ContainsKey(key) == true) return;
+
+            // Add
+            this.Add(key, value);
+        }
     }
 }
