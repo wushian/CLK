@@ -78,7 +78,7 @@
     <Compile Include="Reflection\Implementation\ReflectConfigurationElementCollection.cs" />
     <Compile Include="Reflection\Implementation\ReflectConfigurationSection.cs" />
     <Compile Include="Settings\Implementation\ConfigAppSettingRepository.cs" />
-    <Compile Include="Settings\ConfigConnectionStringRepository.cs" />
+    <Compile Include="Settings\Implementation\ConfigConnectionStringRepository.cs" />
     <Compile Include="Settings\ConfigSettingContext.cs" />
     <Compile Include="Threading\BlockingQueue.cs" />
     <Compile Include="Threading\PortableReaderWriterLock.cs" />
