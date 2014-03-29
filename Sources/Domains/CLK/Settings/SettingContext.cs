@@ -39,23 +39,6 @@ namespace CLK.Settings
 
             #endregion
 
-            // Initialize
-            this.Initialize(appSettingRepository, connectionStringRepository);
-        }
-
-        protected SettingContext() { }
-
-
-        // Methods  
-        protected void Initialize(ISettingRepository appSettingRepository, ISettingRepository connectionStringRepository)
-        {
-            #region Contracts
-
-            if (appSettingRepository == null) throw new ArgumentNullException();
-            if (connectionStringRepository == null) throw new ArgumentNullException();
-
-            #endregion
-
             // Arguments
             this.AppSettings = new SettingDictionary(appSettingRepository);
             this.ConnectionStrings = new SettingDictionary(connectionStringRepository);

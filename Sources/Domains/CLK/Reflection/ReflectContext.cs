@@ -6,7 +6,7 @@ using CLK.Settings;
 
 namespace CLK.Reflection
 {
-    public abstract partial class ReflectContext
+    public partial class ReflectContext
     {
         // Locator
         private static ReflectContext _instance = null;
@@ -28,7 +28,7 @@ namespace CLK.Reflection
         }
     }
 
-    public abstract partial class ReflectContext : IReflectContext
+    public partial class ReflectContext : IReflectContext
     {
         // Fields        
         private IReflectContext _reflectContext = null;
@@ -37,7 +37,7 @@ namespace CLK.Reflection
 
 
         // Constructors
-        protected void Initialize(IReflectRepository reflectRepository, SettingContext settingContext)
+        public ReflectContext(IReflectRepository reflectRepository, SettingContext settingContext)
         {
             #region Contracts
 

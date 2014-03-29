@@ -11,57 +11,47 @@ namespace CLK.Reflection
     public sealed class ConfigReflectContext : ReflectContext
     {
         // Constructors
-        public ConfigReflectContext()
+        public ConfigReflectContext() : this(ConfigReflectContext.CreateConfiguration()) { }
+
+        public ConfigReflectContext(string configFilename) : this(ConfigReflectContext.CreateConfiguration(configFilename)) { }
+
+        public ConfigReflectContext(System.Configuration.Configuration configuration) : this(new ConfigReflectRepository(configuration), new ConfigSettingContext(configuration)) { }
+
+        public ConfigReflectContext(IReflectRepository reflectRepository, SettingContext settingContext) : base(reflectRepository, settingContext) { }
+
+
+        // Methods 
+        private static System.Configuration.Configuration CreateConfiguration()
         {
             // Configuration
             System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             if (configuration == null) throw new InvalidOperationException();
 
-            // Initialize
-            this.Initialize(configuration);
+            // Return
+            return configuration;
         }
 
-        public ConfigReflectContext(string configurationFilename)
+        private static System.Configuration.Configuration CreateConfiguration(string configFilename)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(configurationFilename) == true) throw new ArgumentNullException();
-            
+            if (string.IsNullOrEmpty(configFilename) == true) throw new ArgumentNullException();
+
             #endregion
 
             // Require
-            if (System.IO.File.Exists(configurationFilename) == false) throw new System.IO.FileNotFoundException(string.Format("Filename:{0}", configurationFilename));
+            if (System.IO.File.Exists(configFilename) == false) throw new System.IO.FileNotFoundException(string.Format("Filename:{0}", configFilename));
 
             // ConfigurationFileMap
             ExeConfigurationFileMap configurationFileMap = new ExeConfigurationFileMap();
-            configurationFileMap.ExeConfigFilename = configurationFilename;
+            configurationFileMap.ExeConfigFilename = configFilename;
 
             // Configuration
             System.Configuration.Configuration configuration = ConfigurationManager.OpenMappedExeConfiguration(configurationFileMap, ConfigurationUserLevel.None);
             if (configuration == null) throw new InvalidOperationException();
 
-            // Initialize
-            this.Initialize(configuration);
-        }
-
-
-        // Methods   
-        private void Initialize(System.Configuration.Configuration configuration)
-        {
-            #region Contracts
-
-            if (configuration == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // ReflectRepository
-            IReflectRepository reflectRepository = new ConfigReflectRepository(configuration);
-            
-            // SettingContext
-            SettingContext settingContext = new ConfigSettingContext(configuration);
-
-            // Initialize
-            base.Initialize(reflectRepository, settingContext);
+            // Return
+            return configuration;
         }
     }
 }

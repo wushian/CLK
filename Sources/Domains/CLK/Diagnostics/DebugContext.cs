@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CLK.Diagnostics
 {
-    public abstract partial class DebugContext
+    public partial class DebugContext
     {
         // Locator
         private static DebugContext _instance = null;
@@ -28,14 +28,14 @@ namespace CLK.Diagnostics
         }
     }
 
-    public abstract partial class DebugContext
+    public partial class DebugContext
     {
         // Fields        
         private IDebugProvider _debugProvider = null;
 
 
         // Constructors
-        protected void Initialize(IDebugProvider debugProvider)
+        public DebugContext(IDebugProvider debugProvider)
         {
             #region Contracts
 

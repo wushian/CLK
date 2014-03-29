@@ -6,15 +6,10 @@ using System.Text;
 namespace CLK.Diagnostics
 {
     public sealed class PortableDebugContext : DebugContext
-    {
+    {        
         // Constructors
-        public PortableDebugContext()
-        {
-            // DebugProvider
-            IDebugProvider debugProvider = new PortableDebugProvider();
+        public PortableDebugContext() : this(new PortableDebugProvider()) { }
 
-            // Initialize
-            this.Initialize(debugProvider);
-        }
+        public PortableDebugContext(IDebugProvider debugProvider) : base(debugProvider) { }
     }
 }
