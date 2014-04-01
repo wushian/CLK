@@ -23,7 +23,7 @@ namespace CLK.Settings
 
             #endregion
 
-            // Configuration
+            // Arguments
             _configuration = configuration;
         }
 
