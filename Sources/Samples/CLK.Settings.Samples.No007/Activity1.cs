@@ -23,7 +23,22 @@ namespace CLK.Settings.Samples.No007
             SetContentView(Resource.Layout.Main);
 
             // Context
-            SettingContext.Current = new IsolatedSettingContext();
+            var settingContext = new IsolatedStorageSettingContext();
+
+            // Default
+            if (settingContext.AppSettings.ContainsKey("count") == true)
+            {
+                count = int.Parse(settingContext.AppSettings["count"]);
+            }
+
+            // Test
+            Button button = FindViewById<Button>(Resource.Id.MyButton);
+            button.Click += delegate 
+            {
+                count++;
+                button.Text = string.Format("{0} clicks!", count.ToString());
+                settingContext.AppSettings["count"] = count.ToString();
+            };
         }
     }
 }
