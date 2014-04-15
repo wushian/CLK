@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
+<?xml version="1.0" encoding="utf-8"?>
+<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2014/deployment" AppPlatformVersion="8.1">
   <DefaultLanguage xmlns="" code="zh-TW"/>
-  <App xmlns="" ProductID="{f8345e08-4ecf-41a4-b55a-cb0dfcab09e4}" Title="CLK.Threading.Samples.No002" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="CLK.Threading.Samples.No002 author" Description="Sample description" Publisher="CLK.Threading.Samples.No002" PublisherID="{7dafa417-6221-4b08-96d4-e28d6807d703}">
+  <App xmlns="" ProductID="{00a9f662-c867-4499-9d64-e5470c923d19}" Title="CLK.Threading.Samples.No002" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="CLK.Threading.Samples.No002 author" Description="Sample description" SDOptOut="false" BackUpOptOut="false" Publisher="CLK.Threading.Samples.No002" PublisherID="{fe66b2df-e0af-4a09-b85b-3feeeacee778}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING"/>
@@ -11,7 +11,7 @@
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT"/>
     </Capabilities>
     <Tasks>
-      <DefaultTask Name="_default" NavigationPage="MainPage.xaml"/>
+      <DefaultTask Name="_default" NavigationPage="MainPage.xaml" ActivationPolicy="Resume"/>
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="CLK.Threading.Samples.No002Token" TaskName="_default">

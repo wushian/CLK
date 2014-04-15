@@ -21,7 +21,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // 下列 GUID 為專案公開 (Expose) 至 COM 時所要使用的 typelib ID
-[assembly: Guid("13059d33-2cdb-4761-8ec7-d9fcbd16392c")]
+[assembly: Guid("2ef4dbb7-0e82-447f-9230-fedb6ba53d9a")]
 
 // 組件的版本資訊是由下列四項值構成: 
 //

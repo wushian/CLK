@@ -57,6 +57,12 @@ namespace CLK.Threading.Samples.No002
 
         }
 
+        // Code to execute when a contract activation such as a file open or save picker returns 
+        // with the picked file or other return values
+        private void Application_ContractActivated(object sender, Windows.ApplicationModel.Activation.IActivatedEventArgs e)
+        {
+        }
+
         // 啟動應用程式 (例如，從 [開始]) 時要執行的程式碼
         // 重新啟動應用程式時不會執行這段程式碼
         private void Application_Launching(object sender, LaunchingEventArgs e)
@@ -122,6 +128,9 @@ namespace CLK.Threading.Samples.No002
 
             // 處理清除 backstack 的重設要求
             RootFrame.Navigated += CheckForResetNavigation;
+
+            // Handle contract activation such as a file open or save picker
+            PhoneApplicationService.Current.ContractActivated += Application_ContractActivated;
 
             // 確定不會重新初始化
             phoneApplicationInitialized = true;
