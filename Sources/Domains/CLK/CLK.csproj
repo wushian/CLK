@@ -70,6 +70,13 @@
     <Compile Include="Reflection\ReflectGroupDictionary.cs" />
     <Compile Include="Reflection\ReflectSetting.cs" />
     <Compile Include="Reflection\ReflectBuilderDictionary.cs" />
+    <Compile Include="Scheduling\Implementation\ConcatTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\DatedTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\TimedTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\YearlyTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\DailyTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\MonthlyTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\HourlyTrigger.cs" />
     <Compile Include="Scheduling\ScheduleContext.cs" />
     <Compile Include="Scheduling\TaskAction.cs" />
     <Compile Include="Scheduling\TaskRecord.cs" />
