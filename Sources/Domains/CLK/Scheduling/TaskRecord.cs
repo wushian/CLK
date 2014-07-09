@@ -21,19 +21,19 @@ namespace CLK.Scheduling
             this.ExecuteTime = executeTime;
         }
 
-        public TaskRecord(string taskSettingId, DateTime executeTime, Exception error)
+        public TaskRecord(string taskSettingId, DateTime executeTime, Exception executeError)
         {
             #region Contracts
 
             if (string.IsNullOrEmpty(taskSettingId) == true) throw new ArgumentNullException();
-            if (error == null) throw new ArgumentNullException();
+            if (executeError == null) throw new ArgumentNullException();
 
             #endregion
 
             // Arguments
             this.TaskSettingId = taskSettingId;
             this.ExecuteTime = executeTime;
-            this.Error = error;
+            this.ExecuteError = executeError;
         }
 
 
@@ -42,6 +42,6 @@ namespace CLK.Scheduling
 
         public DateTime ExecuteTime { get; private set; }
 
-        public Exception Error { get; private set; }
+        public Exception ExecuteError { get; private set; }
     }
 }
