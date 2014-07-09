@@ -18,7 +18,7 @@ namespace CLK.Scheduling
 
             // Arguments
             this.TaskSettingId = taskSettingId;
-            this.LastExecuteTime = DateTime.Now;
+            this.LastExecuteTime = DateTime.MinValue;
         }
 
         public TaskState(string taskSettingId, DateTime lastExecuteTime)

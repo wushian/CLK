@@ -72,6 +72,7 @@
     <Compile Include="Reflection\ReflectBuilderDictionary.cs" />
     <Compile Include="Scheduling\Implementation\ConcatTrigger.cs" />
     <Compile Include="Scheduling\Implementation\DatedTrigger.cs" />
+    <Compile Include="Scheduling\Implementation\PromptlyTrigger.cs" />
     <Compile Include="Scheduling\Implementation\TimedTrigger.cs" />
     <Compile Include="Scheduling\Implementation\YearlyTrigger.cs" />
     <Compile Include="Scheduling\Implementation\DailyTrigger.cs" />
