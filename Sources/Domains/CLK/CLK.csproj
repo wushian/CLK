@@ -11,7 +11,7 @@
     <RootNamespace>CLK</RootNamespace>
     <AssemblyName>CLK</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile158</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile344</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <FileUpgradeFlags>
@@ -70,6 +70,15 @@
     <Compile Include="Reflection\ReflectGroupDictionary.cs" />
     <Compile Include="Reflection\ReflectSetting.cs" />
     <Compile Include="Reflection\ReflectBuilderDictionary.cs" />
+    <Compile Include="Scheduling\ScheduleContext.cs" />
+    <Compile Include="Scheduling\TaskAction.cs" />
+    <Compile Include="Scheduling\TaskRecord.cs" />
+    <Compile Include="Scheduling\TaskRecordRepository.cs" />
+    <Compile Include="Scheduling\TaskSetting.cs" />
+    <Compile Include="Scheduling\TaskStateRepository.cs" />
+    <Compile Include="Scheduling\TaskState.cs" />
+    <Compile Include="Scheduling\TaskTrigger.cs" />
+    <Compile Include="Scheduling\TaskSettingRepository.cs" />
     <Compile Include="Settings\Implementation\MemorySettingContext.cs" />
     <Compile Include="Settings\Implementation\MemorySettingRepository.cs" />
     <Compile Include="Settings\SettingRepository.cs" />
