@@ -99,20 +99,16 @@ namespace CLK.Scheduling
                     }
                     catch (Exception error)
                     {
-                        try
-                        {
-                            // State
-                            var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
-                            if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
+                        // State
+                        var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
+                        if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
 
-                            // Record
-                            _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime, error));
+                        // Record
+                        _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime, error));
 
-                            // Update
-                            taskState.LastExecuteTime = executeTime;
-                            _taskStateRepository.Set(taskState);
-                        }
-                        catch { }
+                        // Update
+                        taskState.LastExecuteTime = executeTime;
+                        _taskStateRepository.Set(taskState);
                     }
                 }
             }
