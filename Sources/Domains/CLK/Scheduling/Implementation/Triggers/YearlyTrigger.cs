@@ -90,12 +90,12 @@ namespace CLK.Scheduling
         internal DateTime? Next(DateTime lastExecuteTime, int offsetYear)
         {
             // Next
-            var nextExecuteTime = new DateTime(lastExecuteTime.Year, 0, 0, 0, 0, 0);
+            var nextExecuteTime = new DateTime(lastExecuteTime.Year, 1, 1, 0, 0, 0);
             nextExecuteTime = nextExecuteTime.AddYears(offsetYear);
-            nextExecuteTime = nextExecuteTime.AddMonths(this.Month);
+            nextExecuteTime = nextExecuteTime.AddMonths(this.Month - 1);
 
             if (this.Day > DateTime.DaysInMonth(nextExecuteTime.Year, nextExecuteTime.Month)) return null;
-            nextExecuteTime = nextExecuteTime.AddDays(this.Day);
+            nextExecuteTime = nextExecuteTime.AddDays(this.Day - 1);
 
             // Return
             return nextExecuteTime;
