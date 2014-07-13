@@ -38,6 +38,10 @@ namespace CLK.Scheduling
 
     public abstract partial class ScheduleContext
     {
+        // Constructors
+        internal ScheduleContext() { }
+
+
         // Methods
         public abstract void Execute(DateTime executeTime);
     }
