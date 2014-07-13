@@ -8,7 +8,7 @@ namespace CLK.Scheduling
     public sealed class PromptlyTrigger: ITaskTrigger
     {
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
             // Return
             return true;

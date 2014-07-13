@@ -5,14 +5,13 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public class TaskSetting
+    public class TaskSetting<T>
     {
         // Constructors
-        public TaskSetting(string taskSettingId, string taskSettingName, ITaskTrigger taskTrigger, ITaskAction taskAction)
+        public TaskSetting(T taskSettingId, string taskSettingName, ITaskTrigger taskTrigger, ITaskAction taskAction)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(taskSettingId) == true) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(taskSettingName) == true) throw new ArgumentNullException();
             if (taskTrigger == null) throw new ArgumentNullException();
             if (taskAction == null) throw new ArgumentNullException();
@@ -28,7 +27,7 @@ namespace CLK.Scheduling
 
 
         // Properties
-        public string TaskSettingId { get; private set; }
+        public T TaskSettingId { get; private set; }
 
         public string TaskSettingName { get; private set; }
 

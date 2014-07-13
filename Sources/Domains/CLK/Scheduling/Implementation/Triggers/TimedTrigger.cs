@@ -32,9 +32,9 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
-            // Verify
+            // Approve
             foreach (var nextExecuteTime in _timeCollection)
             {
                 // Check

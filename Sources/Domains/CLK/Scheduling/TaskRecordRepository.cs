@@ -5,9 +5,9 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public interface ITaskRecordRepository
+    public interface ITaskRecordRepository<T>
     {
         // Methods
-        void Add(TaskRecord taskRecord);
+        void Add(TaskRecord<T> taskRecord);
     }
 }

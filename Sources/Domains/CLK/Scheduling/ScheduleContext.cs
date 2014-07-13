@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Scheduling
 {
-    public partial class ScheduleContext
+    public abstract partial class ScheduleContext
     {
         // Locator
         private static ScheduleContext _current;
@@ -36,20 +36,26 @@ namespace CLK.Scheduling
         }
     }
 
-    public partial class ScheduleContext
+    public abstract partial class ScheduleContext
+    {
+        // Methods
+        public abstract void Execute(DateTime executeTime);
+    }
+
+    public class ScheduleContext<T> : ScheduleContext
     {
         // Fields
         private readonly object _syncRoot = new object();
 
-        private readonly ITaskSettingRepository _taskSettingRepository = null;
+        private readonly ITaskSettingRepository<T> _taskSettingRepository = null;
 
-        private readonly ITaskStateRepository _taskStateRepository = null;
+        private readonly ITaskStateRepository<T> _taskStateRepository = null;
 
-        private readonly ITaskRecordRepository _taskRecordRepository = null;
+        private readonly ITaskRecordRepository<T> _taskRecordRepository = null;
 
 
         // Constructors
-        public ScheduleContext(ITaskSettingRepository taskSettingRepository, ITaskStateRepository taskStateRepository, ITaskRecordRepository taskRecordRepository)
+        public ScheduleContext(ITaskSettingRepository<T> taskSettingRepository, ITaskStateRepository<T> taskStateRepository, ITaskRecordRepository<T> taskRecordRepository)
         {
             #region Contracts
 
@@ -67,7 +73,7 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public void Execute(DateTime executeTime)
+        public override void Execute(DateTime executeTime)
         {
             lock (_syncRoot)
             {
@@ -82,16 +88,16 @@ namespace CLK.Scheduling
                     {
                         // State
                         var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
-                        if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
+                        if (taskState == null) taskState = new TaskState<T>(taskSetting.TaskSettingId);
 
-                        // Verify
-                        if (taskSetting.TaskTrigger.Verify(executeTime, taskState.LastExecuteTime) == false) continue;
+                        // Approve
+                        if (taskSetting.TaskTrigger.Approve(executeTime, taskState.LastExecuteTime) == false) continue;
 
                         // Execute
                         taskSetting.TaskAction.Execute(executeTime);
 
                         // Record
-                        _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime));
+                        _taskRecordRepository.Add(new TaskRecord<T>(taskSetting.TaskSettingId, executeTime));
 
                         // Update
                         taskState.LastExecuteTime = executeTime;
@@ -101,10 +107,10 @@ namespace CLK.Scheduling
                     {
                         // State
                         var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
-                        if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
+                        if (taskState == null) taskState = new TaskState<T>(taskSetting.TaskSettingId);
 
                         // Record
-                        _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime, error));
+                        _taskRecordRepository.Add(new TaskRecord<T>(taskSetting.TaskSettingId, executeTime, error));
 
                         // Update
                         taskState.LastExecuteTime = executeTime;

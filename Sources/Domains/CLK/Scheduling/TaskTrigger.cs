@@ -8,6 +8,6 @@ namespace CLK.Scheduling
     public interface ITaskTrigger
     {
         // Methods
-        bool Verify(DateTime executeTime, DateTime lastExecuteTime);
+        bool Approve(DateTime executeTime, DateTime lastExecuteTime);
     }
 }

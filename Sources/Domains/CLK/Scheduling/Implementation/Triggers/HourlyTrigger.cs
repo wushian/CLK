@@ -38,9 +38,9 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
-            // Verify
+            // Approve
             for (int offsetHour = 0; offsetHour <= 1; offsetHour++)
             {
                 foreach (var hourlyTime in _hourlyTimeCollection)

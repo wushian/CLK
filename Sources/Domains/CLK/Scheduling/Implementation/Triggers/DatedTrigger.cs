@@ -37,13 +37,13 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
             // Date
             var executeDate = executeTime.Date;
             var lastExecuteDate = lastExecuteTime.Date;
 
-            // Verify
+            // Approve
             foreach (var nextExecuteDate in _dateCollection)
             {
                 // Check

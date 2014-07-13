@@ -5,11 +5,11 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public interface ITaskStateRepository
+    public interface ITaskStateRepository<T>
     {
         // Methods
-        void Set(TaskState taskState);
+        void Set(TaskState<T> taskState);
 
-        TaskState Get(string taskSettingId);
+        TaskState<T> Get(T taskSettingId);
     }
 }

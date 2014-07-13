@@ -38,9 +38,9 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
-            // Verify
+            // Approve
             for (int offsetMonth = 0; offsetMonth <= 1; offsetMonth++)
             {
                 foreach (var monthlyTime in _monthlyTimeCollection)

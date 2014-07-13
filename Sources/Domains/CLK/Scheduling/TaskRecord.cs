@@ -5,27 +5,20 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public sealed class TaskRecord
+    public sealed class TaskRecord<T>
     {
         // Constructors
-        public TaskRecord(string taskSettingId, DateTime executeTime) 
+        public TaskRecord(T taskSettingId, DateTime executeTime) 
         {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(taskSettingId) == true) throw new ArgumentNullException();
-
-            #endregion
-
             // Arguments
             this.TaskSettingId = taskSettingId;
             this.ExecuteTime = executeTime;
         }
 
-        public TaskRecord(string taskSettingId, DateTime executeTime, Exception executeError)
+        public TaskRecord(T taskSettingId, DateTime executeTime, Exception executeError)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(taskSettingId) == true) throw new ArgumentNullException();
             if (executeError == null) throw new ArgumentNullException();
 
             #endregion
@@ -38,7 +31,7 @@ namespace CLK.Scheduling
 
 
         // Properties
-        public string TaskSettingId { get; private set; }
+        public T TaskSettingId { get; private set; }
 
         public DateTime ExecuteTime { get; private set; }
 

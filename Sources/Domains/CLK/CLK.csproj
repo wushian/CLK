@@ -70,6 +70,7 @@
     <Compile Include="Reflection\ReflectGroupDictionary.cs" />
     <Compile Include="Reflection\ReflectSetting.cs" />
     <Compile Include="Reflection\ReflectBuilderDictionary.cs" />
+    <Compile Include="Scheduling\Implementation\Actions\ConcatAction.cs" />
     <Compile Include="Scheduling\Implementation\Actions\EmptyAction.cs" />
     <Compile Include="Scheduling\Implementation\Triggers\ConcatTrigger.cs" />
     <Compile Include="Scheduling\Implementation\Triggers\DatedTrigger.cs" />

@@ -5,30 +5,18 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public sealed class TaskState
+    public sealed class TaskState<T>
     {
         // Constructors
-        public TaskState(string taskSettingId)
+        public TaskState(T taskSettingId)
         {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(taskSettingId) == true) throw new ArgumentNullException();
-
-            #endregion
-
             // Arguments
             this.TaskSettingId = taskSettingId;
             this.LastExecuteTime = DateTime.MinValue;
         }
 
-        public TaskState(string taskSettingId, DateTime lastExecuteTime)
+        public TaskState(T taskSettingId, DateTime lastExecuteTime)
         {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(taskSettingId) == true) throw new ArgumentNullException();
-
-            #endregion
-
             // Arguments
             this.TaskSettingId = taskSettingId;
             this.LastExecuteTime = lastExecuteTime;
@@ -36,7 +24,7 @@ namespace CLK.Scheduling
 
 
         // Properties
-        public string TaskSettingId { get; private set; }
+        public T TaskSettingId { get; private set; }
 
         public DateTime LastExecuteTime { get; internal set; }
     }

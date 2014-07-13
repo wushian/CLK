@@ -5,9 +5,9 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public interface ITaskSettingRepository
+    public interface ITaskSettingRepository<T>
     {
         // Methods
-        IEnumerable<TaskSetting> GetAll();
+        IEnumerable<TaskSetting<T>> GetAll();
     }
 }

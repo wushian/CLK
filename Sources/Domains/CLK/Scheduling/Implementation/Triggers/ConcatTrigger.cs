@@ -30,13 +30,13 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
             // FirstTrigger
-            if (_firstTrigger.Verify(executeTime, lastExecuteTime) == false) return false;
+            if (_firstTrigger.Approve(executeTime, lastExecuteTime) == false) return false;
 
             // SecondTrigger
-            if (_secondTrigger.Verify(executeTime, lastExecuteTime) == false) return false;
+            if (_secondTrigger.Approve(executeTime, lastExecuteTime) == false) return false;
 
             // Return
             return true;

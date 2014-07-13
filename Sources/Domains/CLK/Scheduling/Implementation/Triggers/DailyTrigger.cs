@@ -38,9 +38,9 @@ namespace CLK.Scheduling
 
 
         // Methods
-        public bool Verify(DateTime executeTime, DateTime lastExecuteTime)
+        public bool Approve(DateTime executeTime, DateTime lastExecuteTime)
         {
-            // Verify
+            // Approve
             for (int offsetDay = 0; offsetDay <= 1; offsetDay++)
             {
                 foreach (var dailyTime in _dailyTimeCollection)
