@@ -69,48 +69,72 @@ namespace CLK.Scheduling
         // Methods
         public void Execute(DateTime executeTime)
         {
+            // Execute
+            Func<TaskSetting, TaskState, bool> selectDelegate = delegate(TaskSetting taskSetting, TaskState taskState)
+            {
+                // Approve
+                if (taskSetting.TaskTrigger.Approve(executeTime, taskState.LastExecuteTime) == false) return false;
+
+                // Return
+                return true;
+            };
+            this.Execute(executeTime, selectDelegate);
+        }
+
+        public void Execute(DateTime executeTime, Func<TaskSetting, TaskState, bool> selectDelegate)
+        {
+            #region Contracts
+
+            if (selectDelegate == null) throw new ArgumentNullException();
+
+            #endregion
+
             lock (_syncRoot)
             {
-                // TaskSettingCollection
-                var taskSettingCollection = _taskSettingRepository.GetAll();
-                if (taskSettingCollection == null) throw new InvalidOperationException();
-
-                // Execute
-                foreach (var taskSetting in taskSettingCollection)
+                try
                 {
-                    try
+                    // TaskSettingCollection
+                    var taskSettingCollection = _taskSettingRepository.GetAll();
+                    if (taskSettingCollection == null) throw new InvalidOperationException();
+
+                    // Execute
+                    foreach (var taskSetting in taskSettingCollection)
                     {
-                        // State
-                        var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
-                        if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
+                        try
+                        {
+                            // State
+                            var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
+                            if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
 
-                        // Approve
-                        if (taskSetting.TaskTrigger.Approve(executeTime, taskState.LastExecuteTime) == false) continue;
+                            // Select
+                            if (selectDelegate(taskSetting, taskState) == false) continue;
 
-                        // Execute
-                        taskSetting.TaskAction.Execute(executeTime);
+                            // Execute
+                            taskSetting.TaskAction.Execute(executeTime);
 
-                        // Record
-                        _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime));
+                            // Record
+                            _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime));
 
-                        // Update
-                        taskState.LastExecuteTime = executeTime;
-                        _taskStateRepository.Set(taskState);
-                    }
-                    catch (Exception error)
-                    {
-                        // State
-                        var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
-                        if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
+                            // Update
+                            taskState.LastExecuteTime = executeTime;
+                            _taskStateRepository.Set(taskState);
+                        }
+                        catch (Exception error)
+                        {
+                            // State
+                            var taskState = _taskStateRepository.Get(taskSetting.TaskSettingId);
+                            if (taskState == null) taskState = new TaskState(taskSetting.TaskSettingId);
 
-                        // Record
-                        _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime, error));
+                            // Record
+                            _taskRecordRepository.Add(new TaskRecord(taskSetting.TaskSettingId, executeTime, error));
 
-                        // Update
-                        taskState.LastExecuteTime = executeTime;
-                        _taskStateRepository.Set(taskState);
+                            // Update
+                            taskState.LastExecuteTime = executeTime;
+                            _taskStateRepository.Set(taskState);
+                        }
                     }
                 }
+                catch { }
             }
         }
     }
