@@ -5,17 +5,17 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public sealed class TaskState<T>
+    public sealed class TaskState
     {
         // Constructors
-        public TaskState(T taskSettingId)
+        public TaskState(string taskSettingId)
         {
             // Arguments
             this.TaskSettingId = taskSettingId;
             this.LastExecuteTime = DateTime.MinValue;
         }
 
-        public TaskState(T taskSettingId, DateTime lastExecuteTime)
+        public TaskState(string taskSettingId, DateTime lastExecuteTime)
         {
             // Arguments
             this.TaskSettingId = taskSettingId;
@@ -24,7 +24,7 @@ namespace CLK.Scheduling
 
 
         // Properties
-        public T TaskSettingId { get; private set; }
+        public string TaskSettingId { get; private set; }
 
         public DateTime LastExecuteTime { get; internal set; }
     }

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public class TaskSetting<T>
+    public class TaskSetting
     {
         // Constructors
-        public TaskSetting(T taskSettingId, string taskSettingName, ITaskTrigger taskTrigger, ITaskAction taskAction)
+        public TaskSetting(string taskSettingId, string taskSettingName, ITaskTrigger taskTrigger, ITaskAction taskAction)
         {
             #region Contracts
 
@@ -27,7 +27,7 @@ namespace CLK.Scheduling
 
 
         // Properties
-        public T TaskSettingId { get; private set; }
+        public string TaskSettingId { get; private set; }
 
         public string TaskSettingName { get; private set; }
 

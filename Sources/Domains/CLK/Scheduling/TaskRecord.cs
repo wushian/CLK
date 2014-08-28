@@ -5,17 +5,17 @@ using System.Text;
 
 namespace CLK.Scheduling
 {
-    public sealed class TaskRecord<T>
+    public sealed class TaskRecord
     {
         // Constructors
-        public TaskRecord(T taskSettingId, DateTime executeTime) 
+        public TaskRecord(string taskSettingId, DateTime executeTime) 
         {
             // Arguments
             this.TaskSettingId = taskSettingId;
             this.ExecuteTime = executeTime;
         }
 
-        public TaskRecord(T taskSettingId, DateTime executeTime, Exception executeError)
+        public TaskRecord(string taskSettingId, DateTime executeTime, Exception executeError)
         {
             #region Contracts
 
@@ -31,7 +31,7 @@ namespace CLK.Scheduling
 
 
         // Properties
-        public T TaskSettingId { get; private set; }
+        public string TaskSettingId { get; private set; }
 
         public DateTime ExecuteTime { get; private set; }
 
