@@ -103,6 +103,10 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <ProjectReference Include="..\..\CLK.Threading\CLK.Threading.csproj">
+      <Project>{54b9c267-3895-43a4-9e0a-3a6d5b4f88d3}</Project>
+      <Name>CLK.Threading</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
       <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
       <Name>CLK</Name>

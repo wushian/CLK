@@ -94,6 +94,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CLK.Threading\CLK.Threading.csproj">
+      <Project>{54B9C267-3895-43A4-9E0A-3A6D5B4F88D3}</Project>
+      <Name>CLK.Threading</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
       <Project>{55A100B9-E43E-4E90-A2D8-2B5E5EF31490}</Project>
       <Name>CLK</Name>

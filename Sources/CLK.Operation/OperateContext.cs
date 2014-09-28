@@ -1,5 +1,4 @@
-﻿using CLK.Threading;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +8,6 @@ namespace CLK.Operation
     public class OperateContext
     {
         // Fields    
-        private readonly PortableStarterStoperLock _operateLock = new PortableStarterStoperLock();
-
         private readonly IEnumerable<ComponentBroker> _componentBrokerCollection = null;
 
         private readonly IEnumerable<ComponentWrapper> _componentWrapperCollection = null;
@@ -77,43 +74,19 @@ namespace CLK.Operation
         // Methods  
         public void Start()
         {
-            // EnterStartLock
-            if (_operateLock.EnterStartLock() == false) return;
-
             // Start
-            try
-            {                
-                // Start
-                foreach (ComponentBroker componentBroker in _componentBrokerCollection)
-                {
-                    componentBroker.Start();
-                }
-            }
-            finally
+            foreach (ComponentBroker componentBroker in _componentBrokerCollection)
             {
-                // ExitStartLock
-                _operateLock.ExitStartLock();
+                componentBroker.Start();
             }
         }
 
         public void Stop()
         {
-            // EnterStopLock
-            if (_operateLock.EnterStopLock() == false) return;
-
             // Stop
-            try
+            foreach (ComponentBroker componentBroker in _componentBrokerCollection)
             {
-                // Stop
-                foreach (ComponentBroker componentBroker in _componentBrokerCollection)
-                {
-                    componentBroker.Stop();
-                }
-            }
-            finally
-            {
-                // ExitStopLock
-                _operateLock.ExitStopLock();
+                componentBroker.Stop();
             }
         }
 

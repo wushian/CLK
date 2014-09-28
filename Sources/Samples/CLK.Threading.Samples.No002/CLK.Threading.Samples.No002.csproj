@@ -161,9 +161,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domains\CLK.WinPhone\CLK.WinPhone.csproj">
-      <Project>{2ef4dbb7-0e82-447f-9230-fedb6ba53d9a}</Project>
-      <Name>CLK.WinPhone</Name>
+    <ProjectReference Include="..\..\CLK.Threading\CLK.Threading.csproj">
+      <Project>{54B9C267-3895-43A4-9E0A-3A6D5B4F88D3}</Project>
+      <Name>CLK.Threading</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
       <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>

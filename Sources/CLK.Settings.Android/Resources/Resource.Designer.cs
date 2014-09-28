@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("CLK.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("CLK.Settings.Resource", IsApplication=false)]
 
-namespace CLK
+namespace CLK.Settings
 {
 	
 	

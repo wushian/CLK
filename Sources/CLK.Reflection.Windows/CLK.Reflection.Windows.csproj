@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{386E281E-2A31-42D9-B8B4-EDD8CA5C0799}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{C11BF8F9-8DA9-4FB7-B66C-04946F714E69}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CLK.Reflection.Samples.No001</RootNamespace>
-    <AssemblyName>CLK.Reflection.Samples.No001</AssemblyName>
+    <RootNamespace>CLK.Reflection</RootNamespace>
+    <AssemblyName>CLK.Reflection.Windows</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,32 +40,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ConfigReflectContext.cs" />
+    <Compile Include="ConfigReflectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectConfigurationElement.cs" />
+    <Compile Include="ReflectConfigurationElementCollection.cs" />
+    <Compile Include="ReflectConfigurationSection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\CLK.Reflection.Windows\CLK.Reflection.Windows.csproj">
-      <Project>{C11BF8F9-8DA9-4FB7-B66C-04946F714E69}</Project>
-      <Name>CLK.Reflection.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CLK.Reflection\CLK.Reflection.csproj">
-      <Project>{423F086C-215D-46BE-9481-97F00FFC99A7}</Project>
+    <ProjectReference Include="..\CLK.Reflection\CLK.Reflection.csproj">
+      <Project>{423f086c-215d-46be-9481-97f00ffc99a7}</Project>
       <Name>CLK.Reflection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Domains\CLK.Windows\CLK.Windows.csproj">
-      <Project>{0C2CF9BC-A694-4C28-9DF5-077584F5F382}</Project>
+    <ProjectReference Include="..\CLK.Settings.Windows\CLK.Settings.Windows.csproj">
+      <Project>{a7603528-c5c8-40e0-a1ac-1c0e92493561}</Project>
+      <Name>CLK.Settings.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Settings\CLK.Settings.csproj">
+      <Project>{09e7a54b-74be-4d96-8ec6-a829eb52addc}</Project>
+      <Name>CLK.Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domains\CLK.Windows\CLK.Windows.csproj">
+      <Project>{0c2cf9bc-a694-4c28-9df5-077584f5f382}</Project>
       <Name>CLK.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
-      <Project>{55A100B9-E43E-4E90-A2D8-2B5E5EF31490}</Project>
+    <ProjectReference Include="..\Domains\CLK\CLK.csproj">
+      <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
       <Name>CLK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Reflection.Samples\CLK.Reflection.Samples.csproj">
-      <Project>{3a470f61-a0b2-489c-8c35-e54500dd94d7}</Project>
-      <Name>CLK.Reflection.Samples</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

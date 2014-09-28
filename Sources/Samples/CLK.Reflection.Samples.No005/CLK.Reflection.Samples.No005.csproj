@@ -50,6 +50,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CLK.Reflection.Windows\CLK.Reflection.Windows.csproj">
+      <Project>{C11BF8F9-8DA9-4FB7-B66C-04946F714E69}</Project>
+      <Name>CLK.Reflection.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CLK.Reflection\CLK.Reflection.csproj">
+      <Project>{423F086C-215D-46BE-9481-97F00FFC99A7}</Project>
+      <Name>CLK.Reflection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CLK.Settings\CLK.Settings.csproj">
+      <Project>{09e7a54b-74be-4d96-8ec6-a829eb52addc}</Project>
+      <Name>CLK.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Domains\CLK.Windows\CLK.Windows.csproj">
       <Project>{0C2CF9BC-A694-4C28-9DF5-077584F5F382}</Project>
       <Name>CLK.Windows</Name>
