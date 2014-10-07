@@ -76,15 +76,11 @@
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CLK.Settings.Android\CLK.Settings.Android.csproj">
-      <Project>{8bf9b93b-6072-497e-a4cb-a26d117df1ab}</Project>
-      <Name>CLK.Settings.Android</Name>
+    <ProjectReference Include="..\..\CLK.Android\CLK.Android.csproj">
+      <Project>{2a385c1c-f4fc-424b-9e29-8e720e4c9bdb}</Project>
+      <Name>CLK.Android</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\CLK.Settings\CLK.Settings.csproj">
-      <Project>{09E7A54B-74BE-4D96-8EC6-A829EB52ADDC}</Project>
-      <Name>CLK.Settings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
+    <ProjectReference Include="..\..\CLK\CLK.csproj">
       <Project>{55a100b9-e43e-4e90-a2d8-2b5e5ef31490}</Project>
       <Name>CLK</Name>
     </ProjectReference>

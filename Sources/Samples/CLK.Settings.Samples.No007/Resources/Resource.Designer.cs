@@ -26,8 +26,8 @@ namespace CLK.Settings.Samples.No007
 		
 		public static void UpdateIdValues()
 		{
-			global::CLK.Settings.Resource.String.ApplicationName = global::CLK.Settings.Samples.No007.Resource.String.ApplicationName;
-			global::CLK.Settings.Resource.String.Hello = global::CLK.Settings.Samples.No007.Resource.String.Hello;
+			global::CLK.Resource.String.ApplicationName = global::CLK.Settings.Samples.No007.Resource.String.ApplicationName;
+			global::CLK.Resource.String.Hello = global::CLK.Settings.Samples.No007.Resource.String.Hello;
 		}
 		
 		public partial class Attribute

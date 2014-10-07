@@ -48,19 +48,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CLK.Settings.Windows\CLK.Settings.Windows.csproj">
-      <Project>{A7603528-C5C8-40E0-A1AC-1C0E92493561}</Project>
-      <Name>CLK.Settings.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CLK.Settings\CLK.Settings.csproj">
-      <Project>{09E7A54B-74BE-4D96-8EC6-A829EB52ADDC}</Project>
-      <Name>CLK.Settings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Domains\CLK.Windows\CLK.Windows.csproj">
+    <ProjectReference Include="..\..\CLK.Windows\CLK.Windows.csproj">
       <Project>{0c2cf9bc-a694-4c28-9df5-077584f5f382}</Project>
       <Name>CLK.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Domains\CLK\CLK.csproj">
+    <ProjectReference Include="..\..\CLK\CLK.csproj">
       <Project>{55A100B9-E43E-4E90-A2D8-2B5E5EF31490}</Project>
       <Name>CLK</Name>
     </ProjectReference>
