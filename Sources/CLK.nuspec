@@ -13,6 +13,21 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Domains\CLK\bin\Release\CLK.dll" target="lib\portable-net+netcore+wpa+wp+sl+MonoAndroid+MonoTouch" />    
+
+    <!-- CLK.dll -->
+    <file src="CLK\bin\Release\CLK.dll" target="lib\net" />
+    <file src="CLK\bin\Release\CLK.dll" target="lib\netcore" />
+    <file src="CLK\bin\Release\CLK.dll" target="lib\wpa" />
+    <file src="CLK\bin\Release\CLK.dll" target="lib\wp" />
+    <file src="CLK\bin\Release\CLK.dll" target="lib\MonoAndroid" />
+    <file src="CLK\bin\Release\CLK.dll" target="lib\MonoTouch" />
+    <file src="CLK\bin\Release\CLK.dll" target="lib\portable-net+netcore+wpa+wp+MonoAndroid+MonoTouch" />
+
+    <!-- CLK.Windows.dll -->
+    <file src="CLK.Windows\bin\Release\CLK.Windows.dll" target="lib\net" />
+
+    <!-- CLK.Android.dll -->
+    <file src="CLK.Android\bin\Release\CLK.Android.dll" target="lib\MonoAndroid" />
+
   </files>
 </package>

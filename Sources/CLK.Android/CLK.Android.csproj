@@ -47,9 +47,7 @@
     <Compile Include="Settings\IsolatedStorageSettingContext.cs" />
     <Compile Include="Settings\IsolatedStorageSettingRepository.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Transactions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
