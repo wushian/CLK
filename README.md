@@ -10,7 +10,7 @@
 
 ##[CLK Framework] CLK.Threading.PortableTimer - 跨平台的Timer類別##
 
-[[繼續閱讀]](http://www.dotblogs.com.tw/clark/archive/2013/11/24/131069.aspx)
+[[繼續閱讀]](https://github.com/Clark159/CLK/blob/master/Documents/CLK.Threading.PortableTimer/CLK.Threading.PortableTimer.md))
 
 
 ##[CLK Framework] CLK.Transactions##
