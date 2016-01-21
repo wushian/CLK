@@ -48,6 +48,12 @@
     <Compile Include="Diagnostics\DebugProvider.cs" />
     <Compile Include="Diagnostics\Implementation\PortableDebugContext.cs" />
     <Compile Include="Diagnostics\Implementation\PortableDebugProvider.cs" />
+    <Compile Include="Mvvm\Binding.cs" />
+    <Compile Include="Mvvm\BindingContext.cs" />
+    <Compile Include="Mvvm\BindingMode.cs" />
+    <Compile Include="Mvvm\IValueConverter.cs" />
+    <Compile Include="Mvvm\ObservableObject.cs" />
+    <Compile Include="Mvvm\RelayCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\Extensions\ReflectBuilderTransformExtension.cs" />
     <Compile Include="Reflection\Extensions\ReflectSettingTransformExtension.cs" />
