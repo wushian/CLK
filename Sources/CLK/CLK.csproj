@@ -90,10 +90,10 @@
     <Compile Include="Settings\SettingContext.cs" />
     <Compile Include="Settings\SettingDictionary.cs" />
     <Compile Include="Settings\SettingRepository.cs" />
-    <Compile Include="Transactions\Implementation\EmptyUnitOfWorkScope.cs" />
-    <Compile Include="Transactions\Implementation\EmptyUnitOfWorkScopeProvider.cs" />
-    <Compile Include="Transactions\Implementation\LockUnitOfWorkScope.cs" />
-    <Compile Include="Transactions\Implementation\LockUnitOfWorkScopeProvider.cs" />
+    <Compile Include="Transactions\EmptyUnitOfWorkScope.cs" />
+    <Compile Include="Transactions\EmptyUnitOfWorkScopeProvider.cs" />
+    <Compile Include="Transactions\LockUnitOfWorkScope.cs" />
+    <Compile Include="Transactions\LockUnitOfWorkScopeProvider.cs" />
     <Compile Include="Transactions\IUnitOfWorkScope.cs" />
     <Compile Include="Transactions\IUnitOfWorkScopeProvider.cs" />
     <Compile Include="Transactions\UnitOfWorkContext.cs" />

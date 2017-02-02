@@ -49,10 +49,10 @@
     <Compile Include="Configuration\FreeAttributeConfigurationElementCollection.cs" />
     <Compile Include="Configuration\FreeAttributeDictionary.cs" />
     <Compile Include="Configuration\FreeAttributeProvider.cs" />
-    <Compile Include="Data\Extensions\SqlCommandExtensions.cs" />
-    <Compile Include="Data\SqlCommandScope.cs" />
-    <Compile Include="Data\SqlConnectionScope.cs" />
-    <Compile Include="Data\SqlTransactionScope.cs" />
+    <Compile Include="Data\SqlClient\SqlCommandExtensions.cs" />
+    <Compile Include="Data\SqlClient\SqlCommandScope.cs" />
+    <Compile Include="Data\SqlClient\SqlConnectionScope.cs" />
+    <Compile Include="Data\SqlClient\SqlTransactionScope.cs" />
     <Compile Include="IO\FileSystemWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\ConfigReflectContext.cs" />
