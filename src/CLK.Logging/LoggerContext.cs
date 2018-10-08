@@ -6,37 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging
 {
-    public partial class LoggerContext
-    {
-        // Singleton 
-        private static LoggerContext _current;
-
-        public static LoggerContext Current
-        {
-            get
-            {
-                // Require
-                if (_current == null) throw new InvalidOperationException("_current=null");
-
-                // Return
-                return _current;
-            }
-        }
-
-        public static void Initialize(LoggerContext context)
-        {
-            #region Contracts
-
-            if (context == null) throw new ArgumentNullException();
-
-            #endregion
-
-            // Default
-            _current = context;
-        }
-    }
-
-    public partial class LoggerContext : IDisposable
+    public class LoggerContext : IDisposable
     {
         // Fields
         private readonly LoggerFactory _loggerFactory = null;

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 組件的一般資訊是由下列的屬性集控制。
 // 變更這些屬性的值即可修改組件的相關
 // 資訊。
-[assembly: AssemblyTitle("CLK.Logging.Log4net")]
+[assembly: AssemblyTitle("CLK.Autofac")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CLK.Logging.Log4net")]
+[assembly: AssemblyProduct("CLK.Autofac")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 下列 GUID 為專案公開 (Expose) 至 COM 時所要使用的 typelib ID
-[assembly: Guid("e172d9b5-252a-4959-b42c-6a23dbd22ab6")]
+[assembly: Guid("be36a99d-6e18-4db3-b7e4-44e396314110")]
 
 // 組件的版本資訊由下列四個值所組成: 
 //
