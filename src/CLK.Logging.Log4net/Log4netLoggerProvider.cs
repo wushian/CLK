@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging.Log4net
 {
-    public class Log4netLogger : Logger
+    public class Log4netLoggerProvider : LoggerProvider
     {
         // Fields
         private readonly ILog _logger = null;
 
 
         // Constructors
-        public Log4netLogger(ILog logger)
+        public Log4netLoggerProvider(ILog logger)
         {
             #region Contracts
 
@@ -40,21 +40,8 @@ namespace CLK.Logging.Log4net
             // Setting
             log4net.LogicalThreadContext.Properties["method"] = methodName;
 
-            // Exception
-            while(exception?.InnerException!=null)
-            {
-                exception = exception.InnerException;
-            }
-
             // Log
-            if (exception == null)
-            {
-                _logger.Debug(message);
-            }
-            else
-            {
-                _logger.Debug(message, exception);
-            }
+            _logger.Debug(message, exception);
         }
 
         public void Info(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -68,21 +55,8 @@ namespace CLK.Logging.Log4net
             // Setting
             log4net.LogicalThreadContext.Properties["method"] = methodName;
 
-            // Exception
-            while (exception?.InnerException != null)
-            {
-                exception = exception.InnerException;
-            }
-
             // Log
-            if (exception == null)
-            {
-                _logger.Info(message);
-            }
-            else
-            {
-                _logger.Info(message, exception);
-            }
+            _logger.Info(message, exception);
         }
 
         public void Warn(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -96,21 +70,8 @@ namespace CLK.Logging.Log4net
             // Setting
             log4net.LogicalThreadContext.Properties["method"] = methodName;
 
-            // Exception
-            while (exception?.InnerException != null)
-            {
-                exception = exception.InnerException;
-            }
-
             // Log
-            if (exception == null)
-            {
-                _logger.Warn(message);
-            }
-            else
-            {
-                _logger.Warn(message, exception);
-            }
+            _logger.Warn(message, exception);
         }
 
         public void Error(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -124,21 +85,8 @@ namespace CLK.Logging.Log4net
             // Setting
             log4net.LogicalThreadContext.Properties["method"] = methodName;
 
-            // Exception
-            while (exception?.InnerException != null)
-            {
-                exception = exception.InnerException;
-            }
-
             // Log
-            if (exception == null)
-            {
-                _logger.Error(message);
-            }
-            else
-            {
-                _logger.Error(message, exception);
-            }
+            _logger.Error(message, exception);
         }
 
         public void Fatal(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -152,21 +100,8 @@ namespace CLK.Logging.Log4net
             // Setting
             log4net.LogicalThreadContext.Properties["method"] = methodName;
 
-            // Exception
-            while (exception?.InnerException != null)
-            {
-                exception = exception.InnerException;
-            }
-
             // Log
-            if (exception == null)
-            {
-                _logger.Fatal(message);
-            }
-            else
-            {
-                _logger.Fatal(message, exception);
-            }
+            _logger.Fatal(message, exception);
         }
     }
 }

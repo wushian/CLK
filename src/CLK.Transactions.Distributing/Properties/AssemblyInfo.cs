@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 組件的一般資訊是由下列的屬性集控制。
 // 變更這些屬性的值即可修改組件的相關
 // 資訊。
-[assembly: AssemblyTitle("CLK.Transactions")]
+[assembly: AssemblyTitle("CLK.Transactions.Distributing")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CLK.Transactions")]
+[assembly: AssemblyProduct("CLK.Transactions.Distributing")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 下列 GUID 為專案公開 (Expose) 至 COM 時所要使用的 typelib ID
-[assembly: Guid("9ed87355-e5e6-45e5-a74f-e97a69b49cd1")]
+[assembly: Guid("2656788c-362c-43ae-9363-cc82d835d36a")]
 
 // 組件的版本資訊由下列四個值所組成: 
 //

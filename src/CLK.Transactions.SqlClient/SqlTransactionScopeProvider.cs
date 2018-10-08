@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions.SqlClient
 {
-    public sealed class SqlUnitOfWorkScopeProvider : UnitOfWorkScopeProvider
+    public sealed class SqlTransactionScopeProvider : TransactionScopeProvider
     {
         // Fields
         private readonly SqlTransactionScope _transactionScope = null;
 
 
         // Constructors
-        public SqlUnitOfWorkScopeProvider(SqlTransactionScope transactionScope)
+        public SqlTransactionScopeProvider(SqlTransactionScope transactionScope)
         {
             #region Contracts
 

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Logging
+namespace CLK.Transactions
 {
-    public interface LoggerFactory : IDisposable
+    public interface TransactionScopeFactory : IDisposable
     {
         // Methods
-        LoggerProvider Create<TCategory>();
+        TransactionScopeProvider Create();
     }
 }

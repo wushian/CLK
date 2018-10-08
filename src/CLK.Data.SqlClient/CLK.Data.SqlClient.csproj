@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6FEF4A0-5A4F-4E7B-BD0D-CFE84EC19A08}</ProjectGuid>
+    <ProjectGuid>{AABF99F3-D2B7-4C95-B2D5-0AB4C9B4A13C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CLK.Data.SqlClient</RootNamespace>

@@ -6,21 +6,21 @@ using System.Threading;
 
 namespace CLK.Transactions
 {
-    internal sealed class LockUnitOfWorkScopeProvider : UnitOfWorkScopeProvider
+    internal sealed class LockTransactionScopeProvider : TransactionScopeProvider
     {
         // Fields
         private readonly object _syncRoot = null;
 
-        private readonly UnitOfWorkScopeProvider _unitOfWorkScopeProvider = null;
+        private readonly TransactionScopeProvider _transactionScopeProvider = null;
 
 
         // Constructors
-        public LockUnitOfWorkScopeProvider(object syncRoot, UnitOfWorkScopeFactory unitOfWorkScopeFactory)
+        public LockTransactionScopeProvider(object syncRoot, TransactionScopeFactory transactionScopeFactory)
         {
             #region Contracts
 
             if (syncRoot == null) throw new ArgumentNullException();
-            if (unitOfWorkScopeFactory == null) throw new ArgumentNullException();
+            if (transactionScopeFactory == null) throw new ArgumentNullException();
 
             #endregion
 
@@ -33,9 +33,9 @@ namespace CLK.Transactions
                 // Monitor
                 Monitor.Enter(_syncRoot);
 
-                // UnitOfWorkScopeProvider
-                _unitOfWorkScopeProvider = unitOfWorkScopeFactory.Create();
-                if (_unitOfWorkScopeProvider == null) throw new InvalidOperationException("_unitOfWorkScopeProvider=null");
+                // TransactionScopeProvider
+                _transactionScopeProvider = transactionScopeFactory.Create();
+                if (_transactionScopeProvider == null) throw new InvalidOperationException("_transactionScopeProvider=null");
             }
             catch
             {
@@ -53,7 +53,7 @@ namespace CLK.Transactions
             try
             {
                 // Dispose
-                _unitOfWorkScopeProvider.Dispose();
+                _transactionScopeProvider.Dispose();
             }
             finally
             {
@@ -67,7 +67,7 @@ namespace CLK.Transactions
         public void Complete()
         {
             // Complete
-            _unitOfWorkScopeProvider.Complete();
+            _transactionScopeProvider.Complete();
         }
     }
 }

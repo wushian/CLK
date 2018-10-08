@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9DCEEE8F-2711-49C3-95C0-EE890EDAB076}</ProjectGuid>
+    <ProjectGuid>{14377FFA-0377-4FEC-A45B-CC027FE91562}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CLK.Transactions.SqlClient</RootNamespace>
@@ -42,16 +42,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlUnitOfWorkScopeFactory.cs" />
-    <Compile Include="SqlUnitOfWorkScopeProvider.cs" />
+    <Compile Include="SqlTransactionScopeFactory.cs" />
+    <Compile Include="SqlTransactionScopeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CLK.Data.SqlClient\CLK.Data.SqlClient.csproj">
-      <Project>{a6fef4a0-5a4f-4e7b-bd0d-cfe84ec19a08}</Project>
+      <Project>{aabf99f3-d2b7-4c95-b2d5-0ab4c9b4a13c}</Project>
       <Name>CLK.Data.SqlClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Transactions\CLK.Transactions.csproj">
-      <Project>{9ed87355-e5e6-45e5-a74f-e97a69b49cd1}</Project>
+      <Project>{0de9caea-c323-46dc-8827-801f15c80fd4}</Project>
       <Name>CLK.Transactions</Name>
     </ProjectReference>
   </ItemGroup>

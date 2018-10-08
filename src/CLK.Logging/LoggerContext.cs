@@ -6,14 +6,47 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging
 {
-    public class LoggerContext : IDisposable
+    public partial class LoggerContext : IDisposable
+    {
+        // Singleton 
+        private static LoggerContext _current;
+
+        internal static LoggerContext Current
+        {
+            get
+            {
+                // Require
+                if (_current == null) throw new InvalidOperationException("_current=null");
+
+                // Return
+                return _current;
+            }
+        }
+
+        public static LoggerContext Initialize(LoggerFactory loggerFactory)
+        {
+            #region Contracts
+
+            if (loggerFactory == null) throw new ArgumentException();
+
+            #endregion
+
+            // Default
+            _current = new LoggerContext(loggerFactory);
+
+            // Return
+            return _current;
+        }
+    }
+
+    public partial class LoggerContext : IDisposable
     {
         // Fields
         private readonly LoggerFactory _loggerFactory = null;
 
 
         // Constructors
-        public LoggerContext(LoggerFactory loggerFactory)
+        internal LoggerContext(LoggerFactory loggerFactory)
         {
             #region Contracts
 
@@ -27,26 +60,20 @@ namespace CLK.Logging
 
         public void Dispose()
         {
-            // LoggerFactory
+            // Dispose
             _loggerFactory.Dispose();
         }
 
 
         // Methods
-        public Logger Create(Type target)
+        internal LoggerProvider Create<TCategory>()
         {
-            #region Contracts
-
-            if (target == null) throw new ArgumentException();
-
-            #endregion
-
-            // Logger
-            var logger = _loggerFactory.Create(target);
-            if (logger == null) throw new InvalidOperationException("logger=null");
+            // LoggerProvider
+            var loggerProvider = _loggerFactory.Create<TCategory>();
+            if (loggerProvider == null) throw new InvalidOperationException("loggerProvider=null");
 
             // Return
-            return logger;
+            return loggerProvider;
         }
     }
 }

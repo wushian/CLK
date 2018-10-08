@@ -23,7 +23,7 @@ namespace CLK.Logging.Log4net
             if (string.IsNullOrEmpty(configFilename) == false)
             {
                 // GetAll
-                configFileList = this.GetAllFileInfo(configFilename);
+                configFileList = FileHelper.GetAllFile(configFilename);
                 if (configFileList == null) throw new InvalidOperationException("configFileList=null");
             }
 
@@ -87,76 +87,14 @@ namespace CLK.Logging.Log4net
 
 
         // Methods
-        public Logger Create(Type target)
+        public LoggerProvider Create<TCategory>()
         {
-            #region Contracts
-
-            if (target == null) throw new ArgumentException();
-
-            #endregion
-
             // Logger
-            var logger = LogManager.GetLogger(System.Reflection.Assembly.GetEntryAssembly(), target);
+            var logger = LogManager.GetLogger(System.Reflection.Assembly.GetEntryAssembly(), typeof(TCategory));
             if (logger == null) throw new InvalidOperationException("logger=null");
 
             // Return
-            return new Log4netLogger(logger);
-        }
-
-        private List<FileInfo> GetAllFileInfo(string filename)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(filename) == true) throw new ArgumentException();
-
-            #endregion
-
-            // Result
-            Dictionary<string, FileInfo> resultFileDictionary = new Dictionary<string, FileInfo>();
-
-            // SearchPatternList
-            var searchPatternList = filename.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-            if (searchPatternList == null) throw new InvalidOperationException();
-            if (searchPatternList.Length <= 0) throw new InvalidOperationException();
-
-            // EntryAssembly             
-            foreach (var searchPattern in searchPatternList)
-            {
-                // GetFiles 
-                DirectoryInfo fileDirectory = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-                FileInfo[] fileList = fileDirectory?.GetFiles(searchPattern, SearchOption.AllDirectories);
-                if (fileList == null) throw new InvalidOperationException();
-
-                // Add
-                foreach (var file in fileList)
-                {
-                    if (resultFileDictionary.ContainsKey(file.Name.ToLower()) == false)
-                    {
-                        resultFileDictionary.Add(file.Name.ToLower(), file);
-                    }
-                }
-            }
-
-            // CurrentDirectory         
-            foreach (var searchPattern in searchPatternList)
-            {
-                // GetFiles 
-                DirectoryInfo fileDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                FileInfo[] fileList = fileDirectory?.GetFiles(searchPattern, SearchOption.AllDirectories);
-                if (fileList == null) throw new InvalidOperationException();
-
-                // Add
-                foreach (var file in fileList)
-                {
-                    if (resultFileDictionary.ContainsKey(file.Name.ToLower()) == false)
-                    {
-                        resultFileDictionary.Add(file.Name.ToLower(), file);
-                    }
-                }
-            }
-
-            // Return
-            return resultFileDictionary.Values.ToList();
+            return new Log4netLoggerProvider(logger);
         }
     }
 }

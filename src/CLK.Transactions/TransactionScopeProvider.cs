@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions
 {
-    public interface UnitOfWorkScopeProvider : IDisposable
+    public interface TransactionScopeProvider : IDisposable
     {
         // Methods
         void Complete();

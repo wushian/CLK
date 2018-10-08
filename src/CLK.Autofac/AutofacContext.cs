@@ -21,6 +21,8 @@ namespace CLK.Autofac
 
         private readonly List<string> _configFileList = new List<string>();
 
+        private readonly List<string> _assemblyFileList = new List<string>();        
+
         private IContainer _container = null;
 
 
@@ -120,7 +122,7 @@ namespace CLK.Autofac
             #endregion
 
             // ConfigFileList
-            var configFileList = this.GetAllFile(configFilename);
+            var configFileList = FileHelper.GetAllFile(configFilename);
             if (configFileList == null) throw new InvalidOperationException();
 
             // RegisterConfig
@@ -147,7 +149,7 @@ namespace CLK.Autofac
         }
 
 
-        public void RegisterAssemblyTypes(string assemblyFilename, Type type)
+        public void RegisterAssembly(string assemblyFilename, Type type)
         {
             #region Contracts
 
@@ -162,11 +164,11 @@ namespace CLK.Autofac
             // Delegate
             _registerDelegateList.Add((autofacBuilder) =>
             {
-                this.RegisterAssemblyTypes(assemblyFilename, type, autofacBuilder);
+                this.RegisterAssembly(assemblyFilename, type, autofacBuilder);
             });
         }
 
-        private void RegisterAssemblyTypes(string assemblyFilename, Type type, ContainerBuilder autofacBuilder)
+        private void RegisterAssembly(string assemblyFilename, Type type, ContainerBuilder autofacBuilder)
         {
             #region Contracts
 
@@ -177,13 +179,19 @@ namespace CLK.Autofac
             #endregion
 
             // AssemblyFileList
-            var assemblyFileList = this.GetAllFile(assemblyFilename);
+            var assemblyFileList = FileHelper.GetAllFile(assemblyFilename);
             if (assemblyFileList == null) throw new InvalidOperationException();
 
-            // AssemblyList
-            var assemblyList = new List<Assembly>();
+            // RegisterAssembly
             foreach (var assemblyFile in assemblyFileList)
             {
+                // Require
+                if (_assemblyFileList.Contains(assemblyFile.Name.ToLower()) == true)
+                {
+                    continue;
+                }
+                _assemblyFileList.Add(assemblyFile.Name.ToLower());
+
                 // Assembly
                 Assembly assembly = null;
                 try
@@ -195,16 +203,44 @@ namespace CLK.Autofac
                 {
                     continue;
                 }
-                assemblyList.Add(assembly);
-            }
 
-            // Register
-            foreach (var assembly in assemblyList)
-            {
+                // Register
                 autofacBuilder
                     .RegisterAssemblyTypes(assembly)
                     .Where(assemblyType => assemblyType.IsSubclassOf(type));
             }
+        }
+
+
+        public void RegisterModule(AutofacCore.Module module)
+        {
+            #region Contracts
+
+            if (module == null) throw new ArgumentException();
+
+            #endregion
+
+            // Require
+            if (_container != null) throw new InvalidOperationException();
+
+            // Delegate
+            _registerDelegateList.Add((autofacBuilder) =>
+            {
+                this.RegisterModule(module, autofacBuilder);
+            });
+        }
+
+        private void RegisterModule(AutofacCore.Module module, ContainerBuilder autofacBuilder)
+        {
+            #region Contracts
+
+            if (module == null) throw new ArgumentException();
+            if (autofacBuilder == null) throw new ArgumentException();
+
+            #endregion
+
+            // Register
+            autofacBuilder.RegisterModule(module);
         }
 
 
@@ -274,11 +310,12 @@ namespace CLK.Autofac
         }
 
 
-        public void RegisterModule(AutofacCore.Module module)
+        public void RegisterGeneric(Type implementer, Type type)
         {
             #region Contracts
 
-            if (module == null) throw new ArgumentException();
+            if (implementer == null) throw new ArgumentException();
+            if (type == null) throw new ArgumentException();
 
             #endregion
 
@@ -288,23 +325,24 @@ namespace CLK.Autofac
             // Delegate
             _registerDelegateList.Add((autofacBuilder) =>
             {
-                this.RegisterModule(module, autofacBuilder);
+                this.RegisterGeneric(implementer, type, autofacBuilder);
             });
         }
 
-        private void RegisterModule(AutofacCore.Module module, ContainerBuilder autofacBuilder)
+        private void RegisterGeneric(Type implementer, Type type, ContainerBuilder autofacBuilder)
         {
             #region Contracts
 
-            if (module == null) throw new ArgumentException();
+            if (implementer == null) throw new ArgumentException();
+            if (type == null) throw new ArgumentException();
             if (autofacBuilder == null) throw new ArgumentException();
 
             #endregion
 
             // Register
-            autofacBuilder.RegisterModule(module);
+            autofacBuilder.RegisterGeneric(implementer).As(type);
         }
-
+        
 
         public void RegisterServices(IServiceCollection serviceList)
         {
@@ -335,50 +373,6 @@ namespace CLK.Autofac
 
             // Register
             autofacBuilder.Populate(serviceList);
-        }
-
-
-        private List<FileInfo> GetAllFile(string filename)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(filename) == true) throw new ArgumentException();
-
-            #endregion
-
-            // Result
-            var fileList = new List<FileInfo>();
-
-            // SearchPatternList
-            var searchPatternList = filename.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-            if (searchPatternList == null) throw new InvalidOperationException();
-
-            // EntryDirectory           
-            foreach (var searchPattern in searchPatternList)
-            {
-                // SearchFile 
-                var searchFileDirectory = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-                var searchFileList = searchFileDirectory?.GetFiles(searchPattern, SearchOption.AllDirectories);
-                if (searchFileList == null) throw new InvalidOperationException();
-
-                // Add
-                fileList.AddRange(searchFileList);
-            }
-
-            // CurrentDirectory         
-            foreach (var searchPattern in searchPatternList)
-            {
-                // SearchFile 
-                var searchFileDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                var searchFileList = searchFileDirectory?.GetFiles(searchPattern, SearchOption.AllDirectories);
-                if (searchFileList == null) throw new InvalidOperationException();
-
-                // Add
-                fileList.AddRange(searchFileList);
-            }
-
-            // Return
-            return fileList;
-        }
+        }        
     }
 }

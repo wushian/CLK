@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Transactions
+namespace CLK.Services
 {
-    public interface UnitOfWorkScopeFactory
+    public class IgnoreLogAttribute : System.Attribute
     {
-        // Methods
-        UnitOfWorkScopeProvider Create();
+
     }
 }

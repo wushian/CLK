@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace CLK.Transactions
 {
-    public sealed class DistributedUnitOfWorkScopeProvider : UnitOfWorkScopeProvider
+    public sealed class DistributedTransactionScopeProvider : TransactionScopeProvider
     {
         // Fields
-        private readonly TransactionScope _transactionScope = null;
+        private readonly System.Transactions.TransactionScope _transactionScope = null;
 
 
         // Constructors
-        public DistributedUnitOfWorkScopeProvider(TransactionScope transactionScope)
+        public DistributedTransactionScopeProvider(System.Transactions.TransactionScope transactionScope)
         {
             #region Contracts
 

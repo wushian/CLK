@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DDE9A465-D116-4A51-9079-51C1C44446C8}</ProjectGuid>
+    <ProjectGuid>{2656788C-362C-43AE-9363-CC82D835D36A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CLK.Logging.Log4net</RootNamespace>
-    <AssemblyName>CLK.Logging.Log4net</AssemblyName>
+    <RootNamespace>CLK.Transactions.Distributing</RootNamespace>
+    <AssemblyName>CLK.Transactions.Distributing</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,21 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Log4netLoggerProvider.cs" />
-    <Compile Include="Log4netLoggerFactory.cs" />
+    <Compile Include="DistributedTransactionScopeFactory.cs" />
+    <Compile Include="DistributedTransactionScopeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\FileHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj">
-      <Project>{9ac5d7bf-4935-41ec-ab6d-e31673f53e44}</Project>
-      <Name>CLK.Logging</Name>
+    <ProjectReference Include="..\CLK.Transactions\CLK.Transactions.csproj">
+      <Project>{0de9caea-c323-46dc-8827-801f15c80fd4}</Project>
+      <Name>CLK.Transactions</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

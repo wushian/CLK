@@ -7,17 +7,121 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging
 {
-    public interface Logger
+    public partial class Logger : LoggerProvider
     {
+        // Fields
+        private readonly LoggerProvider _loggerProvider = null;
+
+
+        // Constructors
+        internal Logger(LoggerProvider loggerProvider)
+        {
+            #region Contracts
+
+            if (loggerProvider == null) throw new ArgumentException();
+
+            #endregion
+
+            // Default
+            _loggerProvider = loggerProvider;
+        }
+
+
         // Methods
-        void Debug(string message, Exception exception = null, [CallerMemberName]string methodName = "");
+        public void Debug(string message, Exception exception = null, [CallerMemberName]string methodName = "")
+        {
+            #region Contracts
 
-        void Info(string message, Exception exception = null, [CallerMemberName]string methodName = "");
+            if (string.IsNullOrEmpty(message) == true) throw new ArgumentException();
 
-        void Warn(string message, Exception exception = null, [CallerMemberName]string methodName = "");
+            #endregion
 
-        void Error(string message, Exception exception = null, [CallerMemberName]string methodName = "");
+            // Exception
+            while (exception?.InnerException != null)
+            {
+                exception = exception.InnerException;
+            }
 
-        void Fatal(string message, Exception exception = null, [CallerMemberName]string methodName = "");
+            // Log
+            _loggerProvider.Debug(message, exception);
+        }
+
+        public void Info(string message, Exception exception = null, [CallerMemberName]string methodName = "")
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(message) == true) throw new ArgumentException();
+
+            #endregion
+
+            // Exception
+            while (exception?.InnerException != null)
+            {
+                exception = exception.InnerException;
+            }
+
+            // Log
+            _loggerProvider.Info(message, exception);
+        }
+
+        public void Warn(string message, Exception exception = null, [CallerMemberName]string methodName = "")
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(message) == true) throw new ArgumentException();
+
+            #endregion
+
+            // Exception
+            while (exception?.InnerException != null)
+            {
+                exception = exception.InnerException;
+            }
+
+            // Log
+            _loggerProvider.Warn(message, exception);
+        }
+
+        public void Error(string message, Exception exception = null, [CallerMemberName]string methodName = "")
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(message) == true) throw new ArgumentException();
+
+            #endregion
+
+            // Exception
+            while (exception?.InnerException != null)
+            {
+                exception = exception.InnerException;
+            }
+
+            // Log
+            _loggerProvider.Error(message, exception);
+        }
+
+        public void Fatal(string message, Exception exception = null, [CallerMemberName]string methodName = "")
+        {
+            #region Contracts
+
+            if (string.IsNullOrEmpty(message) == true) throw new ArgumentException();
+
+            #endregion
+
+            // Exception
+            while (exception?.InnerException != null)
+            {
+                exception = exception.InnerException;
+            }
+
+            // Log
+            _loggerProvider.Fatal(message, exception);
+        }
+    }
+
+    public partial class Logger<TCategory> : Logger
+    {
+        // Constructors
+        public Logger() : base(LoggerContext.Current.Create<TCategory>()) { }
     }
 }
