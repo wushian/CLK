@@ -32,6 +32,8 @@ namespace CLK.AspNetCore
 
             private readonly Dictionary<Type, Logger> _loggerDictionary = new Dictionary<Type, Logger>();
 
+            private readonly string _executingTimeKey = "__" + typeof(ActionLoggerFilter).ToString();
+
 
             // Methods
             public void OnActionExecuting(ActionExecutingContext context)
@@ -42,20 +44,25 @@ namespace CLK.AspNetCore
 
                 #endregion
 
-                // ActionDescriptor
-                var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-                if (actionDescriptor == null) throw new InvalidOperationException();
+                // Duration 
+                var executingTime = DateTime.Now;
+                context.HttpContext.Items.Add(_executingTimeKey, executingTime);
+
+                // Descriptor
+                var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
+                if (descriptor == null) throw new InvalidOperationException();
 
                 // Logger
-                var logger = this.GetLogger(actionDescriptor.ControllerTypeInfo);
+                var logger = this.GetLogger(descriptor.ControllerTypeInfo);
                 if (logger == null) throw new InvalidOperationException();
 
-                // IgnoreLogAttribute
-                var ignoreLogAttribute = actionDescriptor.MethodInfo.GetCustomAttribute<IgnoreLogAttribute>();
-                if (ignoreLogAttribute == null)
+                // Attribute
+                var skipLogAttribute = descriptor.MethodInfo.GetCustomAttribute<SkipLogAttribute>();
+
+                // Start
+                if (skipLogAttribute == null)
                 {
-                    // Log
-                    logger.Debug("Action started", null, actionDescriptor.MethodInfo.Name);
+                    logger.Debug("Action started", null, descriptor.MethodInfo.Name);
                 }
             }
 
@@ -66,36 +73,40 @@ namespace CLK.AspNetCore
                 if (context == null) throw new ArgumentException();
 
                 #endregion
-                
-                // ActionDescriptor
-                var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-                if (actionDescriptor == null) throw new InvalidOperationException();
+
+                // Duration 
+                var executingTime = context.HttpContext.Items[_executingTimeKey] as DateTime?;
+                var executedTime = DateTime.Now;
+                var duration = executedTime - executingTime;
+
+                // Descriptor
+                var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
+                if (descriptor == null) throw new InvalidOperationException();
 
                 // Logger
-                var logger = this.GetLogger(actionDescriptor.ControllerTypeInfo);
-                if (logger == null) throw new InvalidOperationException();                
+                var logger = this.GetLogger(descriptor.ControllerTypeInfo);
+                if (logger == null) throw new InvalidOperationException();
 
-                // IgnoreLogAttribute
-                var ignoreLogAttribute = actionDescriptor.MethodInfo.GetCustomAttribute<IgnoreLogAttribute>();
-                if (ignoreLogAttribute == null)
+                // Attribute
+                var skipLogAttribute = descriptor.MethodInfo.GetCustomAttribute<SkipLogAttribute>();
+
+                // Exception
+                var exception = context.Exception;
+                while (exception?.InnerException != null)
                 {
-                    // Log
-                    if (context.Exception == null)
-                    {
-                        logger.Debug("Action ended", context.Exception, actionDescriptor.MethodInfo.Name);
-                    }
-                    else
-                    {
-                        logger.Error("Action error", context.Exception, actionDescriptor.MethodInfo.Name);
-                    }
+                    exception = exception.InnerException;
                 }
-                else
+
+                // End
+                if (exception == null && skipLogAttribute == null)
                 {
-                    // Log
-                    if (context.Exception != null)
-                    {
-                        logger.Error("Action error", context.Exception, actionDescriptor.MethodInfo.Name);
-                    }
+                    logger.Debug(string.Format("Action ended: duration={0}", duration?.Milliseconds), exception, descriptor.MethodInfo.Name);
+                }
+
+                // Error
+                if (exception != null)
+                {
+                    logger.Error(string.Format("Action error: duration={0}", duration?.Milliseconds), exception, descriptor.MethodInfo.Name);
                 }
             }
             

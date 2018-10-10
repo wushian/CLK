@@ -49,7 +49,7 @@ namespace CLK.Logging.Log4net
                 // PatternLayout
                 var patternLayout = new log4net.Layout.PatternLayout()
                 {
-                    ConversionPattern = @"%date{yyyy-MM-dd HH:mm:ss fff} %-5level [%thread] %logger.%property{method}() - %message%newline%X{tab}"
+                    ConversionPattern = @"%date{yyyy-MM-dd HH:mm:ss fff} %-5level [%thread] %logger.%property{method}() - %message%newline"
                 };
                 patternLayout.ActivateOptions();
 

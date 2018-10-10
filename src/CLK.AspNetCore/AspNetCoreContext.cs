@@ -1,102 +1,171 @@
 ﻿using System;
+using System.IO;
 using Autofac.Extensions.DependencyInjection;
 using CLK.Autofac;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CLK.AspNetCore
 {
-    public partial class AspNetCoreContext
+    public partial class AspNetCoreContext : IDisposable
     {
         // Fields
-        private readonly AutofacContext _autofacContext = null;
-
-        private readonly string _controllerFilename = null;
+        private readonly IWebHost _webHost = null;
 
 
         // Constructors
-        public AspNetCoreContext(AutofacContext autofacContext, string controllerFilename)
+        public AspNetCoreContext(string baseUrl, string controllerFilename, AutofacContext autofacContext)
         {
             #region Contracts
 
-            if (autofacContext == null) throw new ArgumentException();
+            if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
             if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
+            if (autofacContext == null) throw new ArgumentException();
 
             #endregion
 
-            // Default
-            _autofacContext = autofacContext;
-            _controllerFilename = controllerFilename;
+            // WebHost
+            _webHost = new WebHostBuilder(baseUrl, controllerFilename, autofacContext).Create();
+            if (_webHost == null) throw new InvalidOperationException("_webHost=null");
+
+            // Start
+            _webHost.Start();
         }
 
-        // Methods
-
-    }
-
-    public partial class AspNetCoreContext : IStartup
-    {
-        // Methods
-        void IStartup.Configure(IApplicationBuilder app)
+        public void Dispose()
         {
-            #region Contracts
-
-            if (app == null) throw new ArgumentException();
-
-            #endregion
-
-            // Cors
-            app.UseCors("Default");
-
-            // Exception
-            app.UseExceptionMiddleware();            
-
-            // FileServer
-            app.UseFileServer();
-
-            // Mvc   
-            app.UseMvc();
+            // Dispose
+            _webHost.Dispose();
         }
 
-        IServiceProvider IStartup.ConfigureServices(IServiceCollection services)
+
+        // Class
+        private class WebHostBuilder : IStartup
         {
-            #region Contracts
+            // Fields
+            private readonly string _baseUrl = null;
 
-            if (services == null) throw new ArgumentException();
+            private readonly string _controllerFilename = null;
 
-            #endregion
+            private readonly AutofacContext _autofacContext = null;
 
-            // Cors
-            services.AddCors(corsOptions => corsOptions.AddPolicy("Default", corsPolicyBuilder => corsPolicyBuilder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-            ));
 
-            // Mvc
-            services.AddMvcCore(options =>
+            // Constructors
+            public WebHostBuilder(string baseUrl, string controllerFilename, AutofacContext autofacContext)
             {
-                // Conventions
-                options.Conventions.Clear();
-                options.Conventions.AddNamespaceRoute();
+                #region Contracts
 
-                // Filters
-                options.Filters.AddActionLogger();
-            })
-            .AddAssemblyController(_controllerFilename);
+                if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
+                if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
+                if (autofacContext == null) throw new ArgumentException();
 
-            // ServiceProvider
-            IServiceProvider serviceProvider = null;
-            {
-                // Register
-                _autofacContext.RegisterServices(services);
+                #endregion
 
-                // Create
-                serviceProvider = new AutofacServiceProvider(_autofacContext.Container);
+                // Default
+                _baseUrl = baseUrl;
+                _controllerFilename = controllerFilename;
+                _autofacContext = autofacContext;
             }
 
-            // Return
-            return serviceProvider;
+
+            // Methods
+            public IWebHost Create()
+            {
+                // Create
+                IWebHost webHost = null;
+                {
+                    // Builder
+                    webHost = new Microsoft.AspNetCore.Hosting.WebHostBuilder()
+ 
+                    // Services
+                    .ConfigureServices((services) =>
+                    {
+                        // Add
+                        services.AddSingleton<IStartup>(this);
+                    })
+
+                    // Content
+                    .UseContentRoot(Directory.GetCurrentDirectory())
+
+                    // Server
+                    .UseKestrel()
+
+                    // Listen
+                    .UseUrls(_baseUrl)
+
+                    // Build       
+                    .Build();
+                }
+                if (webHost == null) throw new InvalidOperationException("webHost=null");
+
+                // Return
+                return webHost;
+            }
+
+            public void Configure(IApplicationBuilder app)
+            {
+                #region Contracts
+
+                if (app == null) throw new ArgumentException();
+
+                #endregion
+
+                // Cors
+                app.UseCors("Default");
+
+                // Exception
+                app.UseExceptionMiddleware();
+
+                // FileServer
+                app.UseFileServer();
+
+                // Mvc   
+                app.UseMvc();
+            }
+
+            public IServiceProvider ConfigureServices(IServiceCollection services)
+            {
+                #region Contracts
+
+                if (services == null) throw new ArgumentException();
+
+                #endregion
+
+                // Cors
+                services.AddCors(options => options.AddPolicy("Default", corsPolicyBuilder => corsPolicyBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                ));
+
+                // Mvc
+                services.AddMvcCore(options =>
+                {
+                    // Conventions
+                    options.Conventions.Clear();
+                    options.Conventions.AddNamespaceRoute();
+
+                    // Filters
+                    options.Filters.AddActionLogger();                    
+                })
+                .AddJsonFormatters()
+                .AddAssemblyController(_controllerFilename);
+
+                // ServiceProvider
+                IServiceProvider serviceProvider = null;
+                {
+                    // Register
+                    _autofacContext.RegisterServices(services);
+
+                    // Create
+                    serviceProvider = new AutofacServiceProvider(_autofacContext.Container);
+                }
+
+                // Return
+                return serviceProvider;
+            }
         }
-    }
+    }    
 }

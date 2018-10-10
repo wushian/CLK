@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace CLK.AspNetCore
 {
@@ -40,15 +41,33 @@ namespace CLK.AspNetCore
                     }
                     if (exception == null) return;
 
+                    // CorsService
+                    var corsService = context.RequestServices.GetService<ICorsService>();
+                    if (corsService == null) return;
+
+                    // CorsPolicy
+                    var corsPolicy = await context.RequestServices.GetService<ICorsPolicyProvider>()?.GetPolicyAsync(context, "Default");
+                    if (corsPolicy == null) return;
+
+                    // CorsResult
+                    var corsResult = corsService.EvaluatePolicy(context, corsPolicy);
+                    if (corsResult == null) return;
+
                     // Response
                     context.Response.Clear();
                     context.Response.StatusCode = 500;
                     context.Response.ContentType = "application/json";
 
+                    // CorsResponse
+                    corsService.ApplyResult(
+                        corsResult, 
+                        context.Response
+                    );
+
                     // Write
                     await context.Response.WriteAsync(
                         JsonConvert.SerializeObject(
-                            new { message = exception.Message }
+                            new { error = exception.Message }
                         )
                     );
                 });

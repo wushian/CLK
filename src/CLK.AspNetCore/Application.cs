@@ -19,155 +19,69 @@ namespace CLK.AspNetCore
     public partial class Application
     {
         // Methods
-        public static IWebHost Run(string baseUrl, IStartup startup, Action execute)
+        public static void Run()
         {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
-            if (startup == null) throw new ArgumentException();
-            if (execute == null) throw new ArgumentException();
-
-            #endregion
-
-            // Create
-            IWebHost webHost = null;
-            {
-                // Builder
-                webHost = new WebHostBuilder()
-
-                // Services
-                .ConfigureServices((services) =>
-                {
-                    // Add
-                    services.AddSingleton<IStartup>(startup);
-                })
-
-                // Listen
-                .UseUrls(baseUrl)
-
-                // Build       
-                .Build();
-            }
-            if (webHost == null) throw new InvalidOperationException("webHost=null");
-
-            // Run 
-            try
-            {
-                // Start
-                webHost.Start();
-
-                // Execute
-                execute();
-            }
-            catch (Exception)
-            {
-                // Dispose
-                webHost.Dispose();
-
-                // Throw
-                throw;
-            }
-
-            // Return
-            return webHost;
-        }
-    }
-
-    public partial class Application
-    {
-        // Methods
-        public static void Run(string[] args)
-        {
-            // Main
             try
             {
                 // AppSettings
-                var appSettings = Application.GetAppSettings();
-                if (appSettings == null) throw new InvalidOperationException();
+                var appSettings = SettingsHelper.GetAllAppSettings();
+                if (appSettings == null) throw new InvalidOperationException("appSettings=null");
 
                 // Variables
                 var appId = appSettings["appId"];
-                var version = appSettings["version"];
-                var baseUrl = appSettings["baseUrl"];
+                var appName = appSettings["appName"];
+                var appVersion = appSettings["appVersion"];
+                var baseUrl = appSettings["baseUrl"];                                
+                var hostingFilename = @"*.Hosting.json";
+                var servicesFilename = @"*.Services.dll";
 
                 // Setting
-                Console.Title = string.Format("{0} ({1})", appId, version);
+                Console.Title = string.Format("{0} ({1})", appName, appVersion);
                 Application.ShowConsole();
                 Application.DisableCloseButton();
-                Application.DisbleQuickEditMode();
+                Application.DisableQuickEditMode();
 
                 // Context
-                using (var logContext = LoggerContext.Initialize(new Log4netLoggerFactory()))
-                using (var autofacContext = new AutofacContext())                            
+                using (var autofacContext = new AutofacContext(hostingFilename))
+                using (var loggerContext = LoggerContext.Initialize(new Log4netLoggerFactory()))                                            
                 {
                     // Logger
                     var logger = new Logger<Application>();
                     if (logger == null) throw new InvalidOperationException();
 
-                    // Run
-                    logger.Info("=========================================================");
-                    logger.Info(string.Format("Application started: appId={0}, version={1}", appId, version));
-                    using (CLK.AspNetCore.Application.Run(baseUrl, null, () =>
+                    // Application
+                    logger.Info("========================================");
+                    logger.Info(string.Format("Application started: appId={0}, appName={1}, appVersion={2}", appId, appName, appVersion));
+                    using (var aspNetCoreContext = new AspNetCoreContext(baseUrl, servicesFilename, autofacContext))
                     {
-                        // Execute                    
-                        var runEvent = new ManualResetEvent(false);
+                        // Wait                
+                        var waitEvent = new ManualResetEvent(false);
                         Console.WriteLine("Application started. Press Ctrl + C to shut down.");
-                        Console.CancelKeyPress += (sender, eventArgs) => { runEvent.Set(); eventArgs.Cancel = true; };
-                        runEvent.WaitOne();
-                    })) { }
+                        Console.CancelKeyPress += (sender, eventArgs) => { waitEvent.Set(); eventArgs.Cancel = true; };
+                        waitEvent.WaitOne();
+                    }
                     logger.Info("Application ended");
-                    logger.Info("=========================================================");
+                    logger.Info("========================================");
                 }
             }
-            catch (Exception unknownException)
+            catch (Exception exception)
             {
                 // Setting
                 Application.ShowConsole();
 
-                // InnerException
-                while (unknownException.InnerException != null)
+                // Exception
+                while (exception?.InnerException != null)
                 {
-                    unknownException = unknownException.InnerException;
+                    exception = exception.InnerException;
                 }
-                Console.WriteLine(unknownException.Message);
+                Console.WriteLine(exception.Message);
 
                 // Wait
-                var runEvent = new ManualResetEvent(false);
+                var waitEvent = new ManualResetEvent(false);
                 Console.WriteLine("Application ended. Press Ctrl + C to shut down.");
-                Console.CancelKeyPress += (sender, eventArgs) => { runEvent.Set(); eventArgs.Cancel = true; };
-                runEvent.WaitOne();
+                Console.CancelKeyPress += (sender, eventArgs) => { waitEvent.Set(); eventArgs.Cancel = true; };
+                waitEvent.WaitOne();
             }
-        }
-
-        private static IConfiguration GetAppSettings(string configFilename = @"appsettings.*")
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(configFilename) == true) throw new ArgumentException();
-
-            #endregion
-
-            // ConfigFileList
-            var configFileList = FileHelper.GetAllFile(configFilename);
-            if (configFileList == null) throw new InvalidOperationException();
-            
-            // ConfigurationBuilder
-            var configurationBuilder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory());
-            foreach (var configFile in configFileList)
-            {
-                // Require
-                if (configFile.Extension.ToLower() != "json") continue;
-
-                // Add
-                configurationBuilder = configurationBuilder.AddJsonFile(configFile.Name, true, true);
-            }
-
-            // Configuration
-            var configuration = configurationBuilder.Build();
-            if (configuration == null) throw new InvalidOperationException();
-
-            // Return
-            return configuration;
         }
     }
 
@@ -244,7 +158,7 @@ namespace CLK.AspNetCore
             Application.DeleteMenu(menu, SC_CLOSE, MF_BYCOMMAND);
         }
 
-        private static void DisbleQuickEditMode()
+        private static void DisableQuickEditMode()
         {
             // Window
             IntPtr window = Application.GetStdHandle(STD_INPUT_HANDLE);
@@ -254,7 +168,7 @@ namespace CLK.AspNetCore
             uint consoleMode;
             Application.GetConsoleMode(window, out consoleMode);
 
-            // Disble
+            // Disable
             consoleMode &= ~ENABLE_QUICK_EDIT_MODE;
             Application.SetConsoleMode(window, consoleMode);
         }        

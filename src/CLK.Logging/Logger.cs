@@ -43,7 +43,7 @@ namespace CLK.Logging
             }
 
             // Log
-            _loggerProvider.Debug(message, exception);
+            _loggerProvider.Debug(message, exception, methodName);
         }
 
         public void Info(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -61,7 +61,7 @@ namespace CLK.Logging
             }
 
             // Log
-            _loggerProvider.Info(message, exception);
+            _loggerProvider.Info(message, exception, methodName);
         }
 
         public void Warn(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -79,7 +79,7 @@ namespace CLK.Logging
             }
 
             // Log
-            _loggerProvider.Warn(message, exception);
+            _loggerProvider.Warn(message, exception, methodName);
         }
 
         public void Error(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -97,7 +97,7 @@ namespace CLK.Logging
             }
 
             // Log
-            _loggerProvider.Error(message, exception);
+            _loggerProvider.Error(message, exception, methodName);
         }
 
         public void Fatal(string message, Exception exception = null, [CallerMemberName]string methodName = "")
@@ -115,7 +115,7 @@ namespace CLK.Logging
             }
 
             // Log
-            _loggerProvider.Fatal(message, exception);
+            _loggerProvider.Fatal(message, exception, methodName);
         }
     }
 
