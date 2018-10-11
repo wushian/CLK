@@ -1,20 +1,86 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{827CC11F-20F3-41BD-BE06-2C47C444455B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
+    <RootNamespace>CLK.AspNetCore.Lab</RootNamespace>
+    <AssemblyName>CLK.AspNetCore.Lab</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <None Remove="appsettings.json" />
-    <None Remove="wwwroot\favicon.ico" />
-    <None Remove="wwwroot\index.html" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
-
   <ItemGroup>
+    <Compile Include="Controllers\ValueController.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj">
+      <Project>{97e76dc1-3a4f-4f05-aaab-99d7ef0c7474}</Project>
+      <Name>CLK.AspNetCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj">
+      <Project>{8b3ab9af-a749-4bdc-9bd9-697233ad285e}</Project>
+      <Name>CLK.Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj">
+      <Project>{7afec0ad-36a8-4fc3-b7ad-9655c77a788a}</Project>
+      <Name>CLK.Logging.Log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj">
+      <Project>{92569f47-4aa2-44af-9119-0f2e27cbc5d1}</Project>
+      <Name>CLK.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Services\CLK.Services.csproj">
+      <Project>{d5f9a388-d6da-4e33-a42d-9fb555d839fc}</Project>
+      <Name>CLK.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration">
+      <Version>2.1.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="wwwroot\favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -22,10 +88,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj" />
-    <ProjectReference Include="..\CLK.Services\CLK.Services.csproj" />
-  </ItemGroup>
-
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

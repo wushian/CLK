@@ -9,14 +9,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CLK.AspNetCore
 {
-    public partial class AspNetCoreContext : IDisposable
+    public partial class AspnetContext : IDisposable
     {
         // Fields
         private readonly IWebHost _webHost = null;
 
 
         // Constructors
-        public AspNetCoreContext(string baseUrl, string controllerFilename, AutofacContext autofacContext)
+        public AspnetContext(string baseUrl, string controllerFilename, AutofacContext autofacContext)
         {
             #region Contracts
 
@@ -28,8 +28,11 @@ namespace CLK.AspNetCore
 
             // WebHost
             _webHost = new WebHostBuilder(baseUrl, controllerFilename, autofacContext).Create();
-            if (_webHost == null) throw new InvalidOperationException("_webHost=null");
+            if (_webHost == null) throw new InvalidOperationException("_webHost=null");            
+        }
 
+        public void Start()
+        {
             // Start
             _webHost.Start();
         }
