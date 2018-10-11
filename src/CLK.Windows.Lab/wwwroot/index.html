@@ -1,0 +1,135 @@
+﻿<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <script>
+
+        // getValue
+        function getValue() {
+
+            // Variables
+
+            // ActionModel
+            var actionModel = {};
+
+            // Post
+            postRequst("demo/webapi/value/get", actionModel)
+
+            // Success
+            .then(function (response) {
+                document.getElementById("getValue.result").innerText = JSON.stringify(response);
+            })
+
+            // Error
+            .catch(function (error) {
+                document.getElementById("getValue.result").innerText = JSON.stringify(error);
+            });
+        }
+
+
+        // PostRequst
+        function postRequst(url, body) {
+
+            // Post
+            var task = fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+
+            // Response
+            .then(function (response) {
+                return response.text().then(function (text) {
+
+                    // Success
+                    if (response.ok == true) {
+                        return text ? JSON.parse(text) : {};
+                    }
+
+                    // Error
+                    if (response.ok == false) {
+                        throw text ? JSON.parse(text) : {};
+                    }
+                })
+            })
+
+            // Error
+            .catch(function (error) {
+
+                // Local
+                if (error instanceof TypeError == true) {
+                    throw {
+                        errorCode: 999,
+                        message: "Connection Failed"
+                    }
+                };
+
+                // Remote
+                throw error;
+            });
+
+            // Return
+            return task;
+        }
+
+        // GetRequst
+        function getRequest(url) {
+
+            // Post
+            var task = fetch(url)
+
+            // Response
+            .then(function (response) {
+                return response.text().then(function (text) {
+
+                    // Success
+                    if (response.ok == true) {
+                        return text ? JSON.parse(text) : {};
+                    }
+
+                    // Error
+                    if (response.ok == false) {
+                        throw text ? JSON.parse(text) : {};
+                    }
+                })
+            })
+
+            // Error
+            .catch(function (error) {
+
+                // Local
+                if (error instanceof TypeError == true) {
+                    throw {
+                        errorCode: 999,
+                        message: "Connection Failed"
+                    }
+                };
+
+                // Remote
+                throw error;
+            });
+
+            // Return
+            return task;
+        }
+
+    </script>
+
+</head>
+<body>
+
+    <h2>CLK.Windows.Lab</h2>
+    <hr />
+
+    <!--GetValue-->
+    <button onclick="getValue();">GetValue</button><br />
+    <br />
+    <div id="getValue.result"></div><br />
+    <br /><hr />
+   
+</body>
+</html>
