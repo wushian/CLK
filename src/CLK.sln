@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLK.Transactions.SqlClient"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.AspNetCore.Lab", "CLK.AspNetCore.Lab\CLK.AspNetCore.Lab.csproj", "{827CC11F-20F3-41BD-BE06-2C47C444455B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Windows.Lab", "CLK.Windows.Lab\CLK.Windows.Lab.csproj", "{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{827CC11F-20F3-41BD-BE06-2C47C444455B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{827CC11F-20F3-41BD-BE06-2C47C444455B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{827CC11F-20F3-41BD-BE06-2C47C444455B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{96220256-12A3-41A4-A08B-5E1C7B19FB7A} = {1BB91AA3-DE38-4282-BDC2-110F91B2998C}
 		{F0C8A089-0D0F-444C-ADE3-79F9CD75C014} = {1BB91AA3-DE38-4282-BDC2-110F91B2998C}
 		{827CC11F-20F3-41BD-BE06-2C47C444455B} = {2B5EC946-F4DE-4423-BB2E-0E0D44572B61}
+		{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652} = {2B5EC946-F4DE-4423-BB2E-0E0D44572B61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B5FF7BC-AA66-4246-86AC-F7CDEC53952D}

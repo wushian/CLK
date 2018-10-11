@@ -40,12 +40,12 @@ namespace CLK.AspNetCore.Lab
                 using (var autofacContext = new AutofacContext(hostingFilename))
                 using (var aspnetContext = new AspnetContext(baseUrl, servicesFilename, autofacContext))
                 {
+                    // Logger
+                    var logger = new Logger<Program>();
+
                     // Run
                     aspnetContext.Run(() =>
                     {
-                        // Logger
-                        var logger = new Logger<Program>();
-
                         // Start
                         logger.Info("========================================");
                         logger.Info(string.Format("Program started: appId={0}, appName={1}, appVersion={2}", appId, appName, appVersion));
@@ -64,9 +64,6 @@ namespace CLK.AspNetCore.Lab
             }
             catch (Exception exception)
             {
-                // Setting
-                Program.ShowConsole();
-
                 // Exception
                 while (exception?.InnerException != null)
                 {
@@ -76,7 +73,7 @@ namespace CLK.AspNetCore.Lab
 
                 // Wait
                 var waitEvent = new ManualResetEvent(false);
-                Console.WriteLine("Program ended. Press Ctrl + C to shut down.");
+                Console.WriteLine("Program error. Press Ctrl + C to shut down.");
                 Console.CancelKeyPress += (sender, eventArgs) => { waitEvent.Set(); eventArgs.Cancel = true; };
                 waitEvent.WaitOne();
             }
