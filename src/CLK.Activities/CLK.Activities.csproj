@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D4DACFAC-45EB-402E-A44A-1D8ADCC88F36}</ProjectGuid>
+    <ProjectGuid>{AD634D0A-9295-4AE2-AEB5-6B8E5AD958C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CLK.Transactions.Distributing</RootNamespace>
-    <AssemblyName>CLK.Transactions.Distributing</AssemblyName>
+    <RootNamespace>CLK.Activities</RootNamespace>
+    <AssemblyName>CLK.Activities</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,26 +31,45 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DistributedTransactionScopeFactory.cs" />
-    <Compile Include="DistributedTransactionScopeProvider.cs" />
+    <Compile Include="Activity.cs" />
+    <Compile Include="ActivityContext.cs" />
+    <Compile Include="ActivityFactory.cs" />
+    <Compile Include="ActivityLauncher.cs" />
+    <Compile Include="ActivityModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shell.cs" />
+    <Compile Include="ShellModel.cs" />
+    <Compile Include="Utilities\BinableBase.cs" />
+    <Compile Include="Utilities\RelayCommand.cs" />
+    <Compile Include="Utilities\SyncContext.cs" />
+    <Compile Include="View.cs" />
+    <Compile Include="ViewConverter.cs" />
+    <Compile Include="ViewFactory.cs" />
+    <Compile Include="ViewModel.cs" />
+    <Compile Include="Views\NotFoundView.xaml.cs">
+      <DependentUpon>NotFoundView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NotFoundViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CLK.Transactions\CLK.Transactions.csproj">
-      <Project>{afa21d79-cb98-4723-9fe0-08a308cd9822}</Project>
-      <Name>CLK.Transactions</Name>
-    </ProjectReference>
+    <Page Include="Views\NotFoundView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
