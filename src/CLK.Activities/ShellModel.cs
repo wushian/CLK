@@ -10,30 +10,27 @@ namespace CLK.Activities
     public class ShellModel : ViewModel
     {
         // Fields
-        private readonly List<ActivityLauncher> _activityLauncherList = null;
-
         private readonly Uri _homeUri = null;
 
-        private ActivityModel _activityModel = null;
+        private ViewModel _viewModel = null;
 
 
         // Constructors
-        public ShellModel(List<ActivityLauncher> activityLauncherList, string homeUri = null)
+        public ShellModel(string homeUri = null)
         {
-            #region Contracts
-
-            if (activityLauncherList == null) throw new ArgumentException();
-
-            #endregion
-
-            // Default
-            _activityLauncherList = activityLauncherList;
-            _homeUri = string.IsNullOrEmpty(homeUri) == false ? new Uri(homeUri) : null;
-            _activityModel = null;
+            // HomeUri
+            if (string.IsNullOrEmpty(homeUri) == false)
+            {
+                _homeUri = new Uri(homeUri);
+            }
+            else
+            {
+                _homeUri = this.ViewModelLauncherList.FirstOrDefault()?.ViewUri;
+            }
 
             // Commands
-            this.GoHomeCommand = new RelayCommand(() => this.GoHome());
             this.NavigateCommand = new RelayCommand<Uri>((uri) => this.Navigate(uri));
+            this.NavigateHomeCommand = new RelayCommand(() => this.NavigateHome());
         }
 
         public override void Start()
@@ -42,7 +39,7 @@ namespace CLK.Activities
             base.Start();
 
             // Home
-            this.GoHome();
+            this.NavigateHome();
         }
 
         public override void Dispose()
@@ -53,63 +50,41 @@ namespace CLK.Activities
 
 
         // Properties
-        public virtual IEnumerable<ActivityLauncher> ActivityLauncherList
+        public virtual ViewModel ViewModel
         {
-            get { return _activityLauncherList; }
-        }
-
-        public virtual Uri HomeUri
-        {
-            get { return _homeUri; }
-        }
-
-        public virtual ActivityModel ActivityModel
-        {
-            get { return _activityModel; }
+            get { return _viewModel; }
             private set
             {
                 // Detach
-                if (_activityModel != null)
+                if (_viewModel != null)
                 {
-                    this.DetachActivityModel(_activityModel);
+                    this.Detach(_viewModel);
                 }
 
                 // Attach
                 if (value != null)
                 {
-                    this.AttachActivityModel(value);
+                    this.Attach(value);
                 }
 
                 // SetValue
-                this.SetValue(ref _activityModel, value);
+                this.SetValue(ref _viewModel, value);
             }
         }
-        
+
+        public virtual IEnumerable<ViewModelLauncher> ViewModelLauncherList
+        {
+            get { return ActivityContext.Current.ViewModelLauncherList.Where((viewModelLauncher) => viewModelLauncher is ActivityModel).Cast<ViewModelLauncher<ActivityModel>>(); }
+        }
+
 
         // Commands
-        public ICommand GoHomeCommand { get; private set; }
-
         public ICommand NavigateCommand { get; private set; }
+
+        public ICommand NavigateHomeCommand { get; private set; }
 
 
         // Methods
-        public void GoHome()
-        {
-            // HomeUri
-            if (_homeUri != null)
-            {
-                // Navigate
-                this.Navigate(_homeUri, null);
-            }
-
-            // First
-            if (_homeUri == null && _activityLauncherList.Count > 0)
-            {
-                // Navigate
-                this.Navigate(_activityLauncherList[0].ActivityUri, null);
-            }
-        }
-
         public void Navigate(Uri uri, Dictionary<string, object> bundle = null)
         {
             #region Contracts
@@ -119,25 +94,44 @@ namespace CLK.Activities
             #endregion
 
             // Navigate
-            foreach (var activityLauncher in _activityLauncherList)
-            {
-                // Create
-                var activityModel = activityLauncher.Create(uri, bundle);
-                if (activityModel == null) continue;
-
-                // Attach
-                this.ActivityModel = activityModel;
-
-                // Return
-                return;
-            }
-
-            // NotFound
-            this.ActivityModel = null;
+            this.ViewModel = ActivityContext.Current.CreateViewModel(uri, bundle);
         }
-        
 
-        protected virtual void AttachActivityModel(ActivityModel activityModel)
+        public void NavigateHome()
+        {
+            // Require
+            if (_homeUri == null) return;
+
+            // Navigate
+            this.Navigate(_homeUri, null);
+        }
+
+
+        protected virtual void Attach(ViewModel viewModel)
+        {
+            #region Contracts
+
+            if (viewModel == null) throw new ArgumentException();
+
+            #endregion
+
+            // ActivityModel
+            if (viewModel is ActivityModel) this.Attach(viewModel as ActivityModel);
+        }
+
+        protected virtual void Detach(ViewModel viewModel)
+        {
+            #region Contracts
+
+            if (viewModel == null) throw new ArgumentException();
+
+            #endregion
+
+            // ActivityModel
+            if (viewModel is ActivityModel) this.Detach(viewModel as ActivityModel);
+        }
+
+        private void Attach(ActivityModel activityModel)
         {
             #region Contracts
 
@@ -150,7 +144,7 @@ namespace CLK.Activities
             activityModel.Navigated += this.ActivityModel_Navigated;
         }
 
-        protected virtual void DetachActivityModel(ActivityModel activityModel)
+        private void Detach(ActivityModel activityModel)
         {
             #region Contracts
 
@@ -165,12 +159,6 @@ namespace CLK.Activities
 
 
         // Handlers
-        private void ActivityModel_HomeNavigated()
-        {
-            // Navigate
-            this.GoHome();
-        }
-
         private void ActivityModel_Navigated(Uri uri, Dictionary<string, object> bundle = null)
         {
             #region Contracts
@@ -181,6 +169,12 @@ namespace CLK.Activities
 
             // Navigate
             this.Navigate(uri, bundle);
+        }
+
+        private void ActivityModel_HomeNavigated()
+        {
+            // Navigate
+            this.NavigateHome();
         }
     }
 }

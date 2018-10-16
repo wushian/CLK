@@ -14,24 +14,18 @@ namespace CLK.Activities
         public ActivityModel()
         {
             // Commands
-            this.GoHomeCommand = new RelayCommand(() => this.GoHome());
             this.NavigateCommand = new RelayCommand<Uri>((uri) => this.Navigate(uri));
+            this.NavigateHomeCommand = new RelayCommand(() => this.NavigateHome());
         }
 
 
         // Commands
-        public ICommand GoHomeCommand { get; private set; }
-
         public ICommand NavigateCommand { get; private set; }
+
+        public ICommand NavigateHomeCommand { get; private set; }
 
 
         // Methods
-        public void GoHome()
-        {
-            // Notify
-            this.OnHomeNavigated();
-        }
-
         public void Navigate(Uri uri, Dictionary<string, object> bundle = null)
         {
             #region Contracts
@@ -44,19 +38,14 @@ namespace CLK.Activities
             this.OnNavigated(uri, bundle);
         }
 
-
-        // Events
-        public event Action HomeNavigated;
-        private void OnHomeNavigated()
+        public void NavigateHome()
         {
-            // Raise
-            var handler = this.HomeNavigated;
-            if (handler != null)
-            {
-                handler();
-            }
+            // Notify
+            this.OnHomeNavigated();
         }
 
+
+        // Events
         public event Action<Uri, Dictionary<string, object>> Navigated;
         private void OnNavigated(Uri uri, Dictionary<string, object> bundle = null)
         {
@@ -71,6 +60,17 @@ namespace CLK.Activities
             if (handler != null)
             {
                 handler(uri, bundle);
+            }
+        }
+
+        public event Action HomeNavigated;
+        private void OnHomeNavigated()
+        {
+            // Raise
+            var handler = this.HomeNavigated;
+            if (handler != null)
+            {
+                handler();
             }
         }
     }
