@@ -28,7 +28,7 @@ namespace CLK.AspNetCore
 
             // WebHost
             _webHost = new WebHostBuilder(baseUrl, controllerFilename, autofacContext).Create();
-            if (_webHost == null) throw new InvalidOperationException("_webHost=null");            
+            if (_webHost == null) throw new InvalidOperationException("_webHost=null");
         }
 
         public void Start()
@@ -81,7 +81,7 @@ namespace CLK.AspNetCore
                 {
                     // Builder
                     webHost = new Microsoft.AspNetCore.Hosting.WebHostBuilder()
- 
+
                     // Services
                     .ConfigureServices((services) =>
                     {
@@ -151,7 +151,7 @@ namespace CLK.AspNetCore
                     options.Conventions.AddNamespaceRoute();
 
                     // Filters
-                    options.Filters.AddActionLogger();                    
+                    options.Filters.AddActionLogger();
                 })
                 .AddJsonFormatters()
                 .AddAssemblyController(_controllerFilename);
@@ -163,12 +163,85 @@ namespace CLK.AspNetCore
                     _autofacContext.RegisterServices(services);
 
                     // Create
-                    serviceProvider = new AutofacServiceProvider(_autofacContext.Container);
+                    serviceProvider = new LazyAutofacServiceProvider(_autofacContext);
                 }
 
                 // Return
                 return serviceProvider;
             }
         }
-    }    
+
+
+        // Class
+        private class LazyAutofacServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
+        {
+            // Fields
+            private AutofacContext _autofacContext = null;
+
+            private AutofacServiceProvider _autofacServiceProvider = null;
+
+
+            // Constructors
+            public LazyAutofacServiceProvider(AutofacContext autofacContext)
+            {
+                #region Contracts
+
+                if (autofacContext == null) throw new ArgumentException();
+
+                #endregion
+
+                // Default
+                _autofacContext = autofacContext;
+            }
+
+            public void Dispose()
+            {
+                // Dispose
+                _autofacServiceProvider?.Dispose();
+            }
+
+
+            // Properties
+            public AutofacServiceProvider AutofacServiceProvider
+            {
+                get
+                {
+                    // Create
+                    if (_autofacServiceProvider == null)
+                    {
+                        _autofacServiceProvider = new AutofacServiceProvider(_autofacContext.Container);
+                    }
+
+                    // Return
+                    return _autofacServiceProvider;
+                }
+            }
+
+
+            // Methods
+            public object GetService(Type serviceType)
+            {
+                #region Contracts
+
+                if (serviceType == null) throw new ArgumentException();
+
+                #endregion
+
+                // Return
+                return this.AutofacServiceProvider.GetService(serviceType);
+            }
+                       
+            public object GetRequiredService(Type serviceType)
+            {
+                #region Contracts
+
+                if (serviceType == null) throw new ArgumentException();
+
+                #endregion
+
+                // Return
+                return this.AutofacServiceProvider.GetRequiredService(serviceType);
+            }
+        }
+    }
 }
