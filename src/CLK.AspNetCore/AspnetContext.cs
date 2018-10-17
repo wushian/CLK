@@ -9,10 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CLK.AspNetCore
 {
-    public partial class AspnetContext : IDisposable
+    public class AspnetContext : IDisposable
     {
         // Fields
-        private readonly IWebHost _webHost = null;
+        private WebHostBuilder _webHostBuilder = null;
+
+        private IWebHost _webHost = null;
 
 
         // Constructors
@@ -26,19 +28,28 @@ namespace CLK.AspNetCore
 
             #endregion
 
-            // WebHost
-            _webHost = new WebHostBuilder(baseUrl, controllerFilename, autofacContext).Create();
-            if (_webHost == null) throw new InvalidOperationException("_webHost=null");
+            // WebHostBuilder
+            _webHostBuilder = new WebHostBuilder(baseUrl, controllerFilename, autofacContext);
         }
 
         public void Start()
         {
+            // Require
+            if (_webHost != null) return;
+
+            // WebHost
+            _webHost = _webHostBuilder.Create();
+            if (_webHost == null) throw new InvalidOperationException("_webHost=null");
+
             // Start
             _webHost.Start();
         }
 
         public void Dispose()
         {
+            // Require
+            if (_webHost == null) return;
+
             // Dispose
             _webHost.Dispose();
         }
@@ -171,8 +182,6 @@ namespace CLK.AspNetCore
             }
         }
 
-
-        // Class
         private class LazyAutofacServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
         {
             // Fields

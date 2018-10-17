@@ -17,15 +17,8 @@ namespace CLK.Windows.Lab
         // Constructors
         public App()
         {
-            // Setting
-            this.ShutdownMode = ShutdownMode.OnLastWindowClose;
-
-            // Startup
-            this.Startup += (s, e)=>
-            {
-                // Run
-                Program.Run();
-            };
+            // Run
+            this.Startup += (s, e) => { Program.Run(); };
         }
     }
 
@@ -55,12 +48,15 @@ namespace CLK.Windows.Lab
                 // Context
                 var autofacContext = new AutofacContext(hostingFilename);
                 var aspnetContext = new AspnetContext(baseUrl, servicesFilename, autofacContext);
+                var windowContext = new WindowContext(autofacContext);
                 Action startAction = () =>
                 {
                     aspnetContext.Start();
+                    windowContext.Start();
                 };
                 Action endAction = () =>
                 {
+                    windowContext?.Dispose();
                     aspnetContext?.Dispose();
                     autofacContext?.Dispose();
                     loggerContext?.Dispose();
@@ -76,6 +72,7 @@ namespace CLK.Windows.Lab
                     logger.Info("Application ended");
                     logger.Info("========================================");
                 };
+                Application.Current.MainWindow.Title = string.Format("{0} ({1})", appName, appVersion);
             }
             catch (Exception exception)
             {
@@ -88,7 +85,7 @@ namespace CLK.Windows.Lab
                 logger.Info("========================================");
 
                 // Notify
-                MessageBox.Show(string.Format("Application error: exception={0}", exception?.Message));
+                MessageBox.Show(string.Format("Application error: exception={0}", exception?.Message), "Application error");
             }
         }
     }

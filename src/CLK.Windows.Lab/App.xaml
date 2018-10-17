@@ -1,8 +1,7 @@
 ﻿<Application x:Class="CLK.Windows.Lab.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:CLK.Windows.Lab"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:CLK.Windows.Lab">
     <Application.Resources>
          
     </Application.Resources>
