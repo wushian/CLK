@@ -1,7 +1,4 @@
-﻿using CLK.Autofac;
-using CLK.Logging;
-using CLK.Logging.Log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,84 +14,13 @@ namespace CLK.AspNetCore.Lab
         // Methods
         public static void Main(string[] args)
         {
+            // Setting
+            Program.ShowConsole();
+
             // Run
-            Program.Run();
+            CLK.AspNetCore.Application.Run();
         }
     }
-
-    public partial class Program
-    {
-        // Methods
-        public static void Run()
-        {
-            // Loger
-            var loggerContext = LoggerContext.Initialize(new Log4netLoggerFactory());
-            var logger = new Logger<Program>();
-
-            // Execute  
-            try
-            {
-                // AppSettings
-                var appSettings = SettingsHelper.GetAllAppSettings();
-                if (appSettings == null) throw new InvalidOperationException("appSettings=null");
-
-                // Variables
-                var appName = appSettings["appName"];
-                var appVersion = appSettings["appVersion"];
-                var baseUrl = @"http://*:5000";
-                var hostingFilename = @"*.Hosting.json";
-                var servicesFilename = @"*.Services.dll";
-
-                // Setting
-                Console.Title = string.Format("{0} ({1})", appName, appVersion);
-                Program.ShowConsole();
-
-                // Context
-                var autofacContext = new AutofacContext(hostingFilename);
-                var aspnetContext = new AspnetContext(baseUrl, servicesFilename, autofacContext);
-                Action startAction = () =>
-                {
-                    aspnetContext.Start();
-                };
-                Action endAction = () =>
-                {
-                    aspnetContext?.Dispose();
-                    autofacContext?.Dispose();
-                    loggerContext?.Dispose();
-                };
-
-                // Run  
-                logger.Info("========================================");
-                logger.Info(string.Format("Application started: appName={0}, appVersion={1}", appName, appVersion));
-                startAction?.Invoke();
-                {
-                    var executeEvent = new ManualResetEvent(false);
-                    Console.WriteLine("Press Ctrl + C to shut down.");
-                    Console.CancelKeyPress += (s, e) => { executeEvent.Set(); e.Cancel = true; };
-                    executeEvent.WaitOne();
-                }
-                endAction?.Invoke();
-                logger.Info("Application ended");
-                logger.Info("========================================");
-            }
-            catch (Exception exception)
-            {
-                // Error
-                while (exception?.InnerException != null)
-                {
-                    exception = exception.InnerException;
-                }
-                logger.Info(string.Format("Application error: exception={0}", exception?.Message), exception);
-                logger.Info("========================================");
-
-                // Notify
-                var notifyEvent = new ManualResetEvent(false);
-                Console.WriteLine("Press Ctrl + C to shut down.");
-                Console.CancelKeyPress += (s, e) => { notifyEvent.Set(); e.Cancel = true; };
-                notifyEvent.WaitOne();
-            }
-        }
-    }    
 
     #region Win32 API
 

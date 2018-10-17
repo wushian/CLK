@@ -1,35 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using CLK.AspNetCore;
+using System.Text;
+using System.Threading;
 using CLK.Autofac;
 using CLK.Logging;
 using CLK.Logging.Log4net;
 
-namespace CLK.Windows.Lab
+namespace CLK.AspNetCore
 {
-    public partial class App : System.Windows.Application
-    {
-        // Constructors
-        public App()
-        {
-            // Run
-            this.Startup += (s, e) => { Program.Run(); };
-        }
-    }
-
-    public partial class Program
+    public class Application
     {
         // Methods
         public static void Run()
         {
             // Loger
             var loggerContext = LoggerContext.Initialize(new Log4netLoggerFactory());
-            var logger = new Logger<Program>();
+            var logger = new Logger<Application>();
 
             // Execute  
             try
@@ -41,22 +27,22 @@ namespace CLK.Windows.Lab
                 // Variables
                 var appName = appSettings["appName"];
                 var appVersion = appSettings["appVersion"];
-                var listenUrl = @"http://*:5000";
+                var listenUrl = appSettings["webListen"];
                 var hostingFilename = @"*.Hosting.json";
                 var servicesFilename = @"*.Services.dll";
+
+                // Setting
+                Console.Title = string.Format("{0} ({1})", appName, appVersion);
 
                 // Context
                 var autofacContext = new AutofacContext(hostingFilename);
                 var aspnetContext = new AspnetContext(listenUrl, servicesFilename, autofacContext);
-                var windowContext = new WindowContext(autofacContext);
                 Action startAction = () =>
                 {
                     aspnetContext.Start();
-                    windowContext.Start();
                 };
                 Action endAction = () =>
                 {
-                    windowContext?.Dispose();
                     aspnetContext?.Dispose();
                     autofacContext?.Dispose();
                     loggerContext?.Dispose();
@@ -64,15 +50,17 @@ namespace CLK.Windows.Lab
 
                 // Run  
                 logger.Info("========================================");
-                logger.Info(string.Format("Application started: appName={0}, appVersion={1}", appName, appVersion));
+                logger.Info(string.Format("Application started: appName={0}, appVersion={1}, webListen={2}", appName, appVersion, listenUrl));
                 startAction?.Invoke();
-                System.Windows.Application.Current.Exit += (s, e) =>
                 {
-                    endAction?.Invoke();
-                    logger.Info("Application ended");
-                    logger.Info("========================================");
-                };
-                System.Windows.Application.Current.MainWindow.Title = string.Format("{0} ({1})", appName, appVersion);
+                    var executeEvent = new ManualResetEvent(false);
+                    Console.WriteLine("Press Ctrl + C to shut down.");
+                    Console.CancelKeyPress += (s, e) => { executeEvent.Set(); e.Cancel = true; };
+                    executeEvent.WaitOne();
+                }
+                endAction?.Invoke();
+                logger.Info("Application ended");
+                logger.Info("========================================");
             }
             catch (Exception exception)
             {
@@ -85,7 +73,10 @@ namespace CLK.Windows.Lab
                 logger.Info("========================================");
 
                 // Notify
-                MessageBox.Show(string.Format("Application error: exception={0}", exception?.Message), "Application error");
+                var notifyEvent = new ManualResetEvent(false);
+                Console.WriteLine("Press Ctrl + C to shut down.");
+                Console.CancelKeyPress += (s, e) => { notifyEvent.Set(); e.Cancel = true; };
+                notifyEvent.WaitOne();
             }
         }
     }

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj" />
+    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj" />
     <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj" />
     <ProjectReference Include="..\CLK.Services\CLK.Services.csproj" />
   </ItemGroup>

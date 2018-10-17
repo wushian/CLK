@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CLK.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.WebAPI

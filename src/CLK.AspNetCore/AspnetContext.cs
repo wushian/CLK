@@ -18,18 +18,18 @@ namespace CLK.AspNetCore
 
 
         // Constructors
-        public AspnetContext(string baseUrl, string controllerFilename, AutofacContext autofacContext)
+        public AspnetContext(string listenUrl, string controllerFilename, AutofacContext autofacContext)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
             if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
             if (autofacContext == null) throw new ArgumentException();
 
             #endregion
 
             // WebHostBuilder
-            _webHostBuilder = new WebHostBuilder(baseUrl, controllerFilename, autofacContext);
+            _webHostBuilder = new WebHostBuilder(listenUrl, controllerFilename, autofacContext);
         }
 
         public void Start()
@@ -59,7 +59,7 @@ namespace CLK.AspNetCore
         private class WebHostBuilder : IStartup
         {
             // Fields
-            private readonly string _baseUrl = null;
+            private readonly string _listenUrl = null;
 
             private readonly string _controllerFilename = null;
 
@@ -67,18 +67,18 @@ namespace CLK.AspNetCore
 
 
             // Constructors
-            public WebHostBuilder(string baseUrl, string controllerFilename, AutofacContext autofacContext)
+            public WebHostBuilder(string listenUrl, string controllerFilename, AutofacContext autofacContext)
             {
                 #region Contracts
 
-                if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
+                if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
                 if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
                 if (autofacContext == null) throw new ArgumentException();
 
                 #endregion
 
                 // Default
-                _baseUrl = baseUrl;
+                _listenUrl = listenUrl;
                 _controllerFilename = controllerFilename;
                 _autofacContext = autofacContext;
             }
@@ -107,7 +107,7 @@ namespace CLK.AspNetCore
                     .UseKestrel()
 
                     // Listen
-                    .UseUrls(_baseUrl)
+                    .UseUrls(_listenUrl)
 
                     // Build       
                     .Build();

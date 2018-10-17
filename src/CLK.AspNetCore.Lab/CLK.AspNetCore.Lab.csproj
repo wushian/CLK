@@ -58,22 +58,6 @@
       <Project>{97e76dc1-3a4f-4f05-aaab-99d7ef0c7474}</Project>
       <Name>CLK.AspNetCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj">
-      <Project>{8b3ab9af-a749-4bdc-9bd9-697233ad285e}</Project>
-      <Name>CLK.Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj">
-      <Project>{7afec0ad-36a8-4fc3-b7ad-9655c77a788a}</Project>
-      <Name>CLK.Logging.Log4net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj">
-      <Project>{92569f47-4aa2-44af-9119-0f2e27cbc5d1}</Project>
-      <Name>CLK.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Services\CLK.Services.csproj">
-      <Project>{d5f9a388-d6da-4e33-a42d-9fb555d839fc}</Project>
-      <Name>CLK.Services</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration">
