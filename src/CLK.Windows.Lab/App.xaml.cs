@@ -20,49 +20,76 @@ namespace CLK.Windows.Lab
             // Setting
             this.ShutdownMode = ShutdownMode.OnLastWindowClose;
 
-            // Events
-            this.Startup += this.App_Startup;
-        }
-
-
-        // Handlers
-        private void App_Startup(object sender, StartupEventArgs eventArgs)
-        {
-            // AppSettings
-            var appSettings = SettingsHelper.GetAllAppSettings();
-            if (appSettings == null) throw new InvalidOperationException("appSettings=null");
-
-            // Variables
-            var appId = appSettings["appId"];
-            var appName = appSettings["appName"];
-            var appVersion = appSettings["appVersion"];
-            var baseUrl = @"http://*:5000";
-            var hostingFilename = @"*.Hosting.json";
-            var servicesFilename = @"*.Services.dll";
-
-            // Context
-            var loggerContext = LoggerContext.Initialize(new Log4netLoggerFactory());
-            var autofacContext = new AutofacContext(hostingFilename);
-            var aspnetContext = new AspnetContext(baseUrl, servicesFilename, autofacContext);
-
-            // Logger
-            var logger = new Logger<App>();
-
-            // Start              
-            logger.Info("========================================");
-            logger.Info(string.Format("Program started: appId={0}, appName={1}, appVersion={2}", appId, appName, appVersion));
-            aspnetContext.Start();
-
-            // End
-            this.Exit += (s,e) =>
+            // Startup
+            this.Startup += (s, e)=>
             {
-                // Dispose
-                aspnetContext.Dispose();
-                autofacContext.Dispose();
-                loggerContext.Dispose();                
-                logger.Info("Program ended");
-                logger.Info("========================================");
+                // Run
+                Program.Run();
             };
+        }
+    }
+
+    public partial class Program
+    {
+        // Methods
+        public static void Run()
+        {
+            // Loger
+            var loggerContext = LoggerContext.Initialize(new Log4netLoggerFactory());
+            var logger = new Logger<Program>();
+
+            // Execute  
+            try
+            {
+                // AppSettings
+                var appSettings = SettingsHelper.GetAllAppSettings();
+                if (appSettings == null) throw new InvalidOperationException("appSettings=null");
+
+                // Variables
+                var appName = appSettings["appName"];
+                var appVersion = appSettings["appVersion"];
+                var baseUrl = @"http://*:5000";
+                var hostingFilename = @"*.Hosting.json";
+                var servicesFilename = @"*.Services.dll";
+
+                // Context
+                var autofacContext = new AutofacContext(hostingFilename);
+                var aspnetContext = new AspnetContext(baseUrl, servicesFilename, autofacContext);
+                Action startAction = () =>
+                {
+                    aspnetContext.Start();
+                };
+                Action endAction = () =>
+                {
+                    aspnetContext?.Dispose();
+                    autofacContext?.Dispose();
+                    loggerContext?.Dispose();
+                };
+
+                // Run  
+                logger.Info("========================================");
+                logger.Info(string.Format("Application started: appName={0}, appVersion={1}", appName, appVersion));
+                startAction?.Invoke();
+                Application.Current.Exit += (s, e) =>
+                {
+                    endAction?.Invoke();
+                    logger.Info("Application ended");
+                    logger.Info("========================================");
+                };
+            }
+            catch (Exception exception)
+            {
+                // Error
+                while (exception?.InnerException != null)
+                {
+                    exception = exception.InnerException;
+                }
+                logger.Info(string.Format("Application error: exception={0}", exception?.Message), exception);
+                logger.Info("========================================");
+
+                // Notify
+                MessageBox.Show(string.Format("Application error: exception={0}", exception?.Message));
+            }
         }
     }
 }
