@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using Autofac.Extensions.DependencyInjection;
 using CLK.Autofac;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,18 +16,18 @@ namespace CLK.AspNetCore
 
 
         // Constructors
-        public AspnetContext(string listenUrl, string controllerFilename, AutofacContext autofacContext)
+        public AspnetContext(AutofacContext autofacContext, string listenUrl, string controllerFilename)
         {
             #region Contracts
 
+            if (autofacContext == null) throw new ArgumentException();
             if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
             if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
-            if (autofacContext == null) throw new ArgumentException();
 
             #endregion
 
             // WebHostBuilder
-            _webHostBuilder = new WebHostBuilder(listenUrl, controllerFilename, autofacContext);
+            _webHostBuilder = new WebHostBuilder(autofacContext, listenUrl, controllerFilename);
         }
 
         public void Start()
@@ -59,28 +57,28 @@ namespace CLK.AspNetCore
         private class WebHostBuilder : IStartup
         {
             // Fields
+            private readonly AutofacContext _autofacContext = null;
+
             private readonly string _listenUrl = null;
 
             private readonly string _controllerFilename = null;
 
-            private readonly AutofacContext _autofacContext = null;
-
 
             // Constructors
-            public WebHostBuilder(string listenUrl, string controllerFilename, AutofacContext autofacContext)
+            public WebHostBuilder(AutofacContext autofacContext, string listenUrl, string controllerFilename)
             {
                 #region Contracts
 
+                if (autofacContext == null) throw new ArgumentException();
                 if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
                 if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
-                if (autofacContext == null) throw new ArgumentException();
 
                 #endregion
 
                 // Default
+                _autofacContext = autofacContext;
                 _listenUrl = listenUrl;
                 _controllerFilename = controllerFilename;
-                _autofacContext = autofacContext;
             }
 
 
@@ -180,77 +178,6 @@ namespace CLK.AspNetCore
                 // Return
                 return serviceProvider;
             }
-        }
-
-        private class LazyAutofacServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
-        {
-            // Fields
-            private AutofacContext _autofacContext = null;
-
-            private AutofacServiceProvider _autofacServiceProvider = null;
-
-
-            // Constructors
-            public LazyAutofacServiceProvider(AutofacContext autofacContext)
-            {
-                #region Contracts
-
-                if (autofacContext == null) throw new ArgumentException();
-
-                #endregion
-
-                // Default
-                _autofacContext = autofacContext;
-            }
-
-            public void Dispose()
-            {
-                // Dispose
-                _autofacServiceProvider?.Dispose();
-            }
-
-
-            // Properties
-            public AutofacServiceProvider AutofacServiceProvider
-            {
-                get
-                {
-                    // Create
-                    if (_autofacServiceProvider == null)
-                    {
-                        _autofacServiceProvider = new AutofacServiceProvider(_autofacContext.Container);
-                    }
-
-                    // Return
-                    return _autofacServiceProvider;
-                }
-            }
-
-
-            // Methods
-            public object GetService(Type serviceType)
-            {
-                #region Contracts
-
-                if (serviceType == null) throw new ArgumentException();
-
-                #endregion
-
-                // Return
-                return this.AutofacServiceProvider.GetService(serviceType);
-            }
-                       
-            public object GetRequiredService(Type serviceType)
-            {
-                #region Contracts
-
-                if (serviceType == null) throw new ArgumentException();
-
-                #endregion
-
-                // Return
-                return this.AutofacServiceProvider.GetRequiredService(serviceType);
-            }
-        }
+        }        
     }
 }

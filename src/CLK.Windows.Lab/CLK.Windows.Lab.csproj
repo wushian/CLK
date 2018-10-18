@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB05AFA8-86D1-47A2-A1AB-2CA8A6A99652}</ProjectGuid>
+    <ProjectGuid>{A5EF6FC9-6C6E-4E0C-95F2-9A69BCA5F562}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>CLK.Windows.Lab</RootNamespace>
     <AssemblyName>CLK.Windows.Lab</AssemblyName>
@@ -100,21 +100,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj">
-      <Project>{97e76dc1-3a4f-4f05-aaab-99d7ef0c7474}</Project>
-      <Name>CLK.AspNetCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj">
-      <Project>{8b3ab9af-a749-4bdc-9bd9-697233ad285e}</Project>
-      <Name>CLK.Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj">
-      <Project>{7afec0ad-36a8-4fc3-b7ad-9655c77a788a}</Project>
-      <Name>CLK.Logging.Log4net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj">
-      <Project>{92569f47-4aa2-44af-9119-0f2e27cbc5d1}</Project>
-      <Name>CLK.Logging</Name>
+    <Content Include="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="wwwroot\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CLK.Activities\CLK.Activities.csproj">
+      <Project>{ad634d0a-9295-4ae2-aeb5-6b8e5ad958c4}</Project>
+      <Name>CLK.Activities</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Services\CLK.Services.csproj">
       <Project>{d5f9a388-d6da-4e33-a42d-9fb555d839fc}</Project>
@@ -126,17 +122,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration">
-      <Version>2.1.1</Version>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc">
+      <Version>2.1.3</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="wwwroot\favicon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="wwwroot\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

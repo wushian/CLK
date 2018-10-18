@@ -63,8 +63,6 @@
       <DependentUpon>NotFoundView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NotFoundViewModel.cs" />
-    <Compile Include="Window.cs" />
-    <Compile Include="WindowModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\NotFoundView.xaml">

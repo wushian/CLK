@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{827CC11F-20F3-41BD-BE06-2C47C444455B}</ProjectGuid>
+    <ProjectGuid>{99157499-0CA9-4FF6-BF87-455346451CFE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>CLK.AspNetCore.Lab</RootNamespace>
     <AssemblyName>CLK.AspNetCore.Lab</AssemblyName>
@@ -54,23 +54,27 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj">
-      <Project>{97e76dc1-3a4f-4f05-aaab-99d7ef0c7474}</Project>
-      <Name>CLK.AspNetCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration">
-      <Version>2.1.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="wwwroot\favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj">
+      <Project>{97e76dc1-3a4f-4f05-aaab-99d7ef0c7474}</Project>
+      <Name>CLK.AspNetCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Services\CLK.Services.csproj">
+      <Project>{d5f9a388-d6da-4e33-a42d-9fb555d839fc}</Project>
+      <Name>CLK.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc">
+      <Version>2.1.3</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
