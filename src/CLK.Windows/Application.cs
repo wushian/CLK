@@ -53,10 +53,10 @@ namespace CLK.Windows
                 // Run  
                 logger.Info("========================================");
                 logger.Info(string.Format("Application started: appName={0}, appVersion={1}", appName, appVersion));
-                startAction?.Invoke();
+                startAction.Invoke();
                 System.Windows.Application.Current.Exit += (s, e) =>
                 {
-                    endAction?.Invoke();
+                    endAction.Invoke();
                     logger.Info("Application ended");
                     logger.Info("========================================");
                 };

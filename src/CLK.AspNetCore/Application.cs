@@ -51,14 +51,14 @@ namespace CLK.AspNetCore
                 // Run  
                 logger.Info("========================================");
                 logger.Info(string.Format("Application started: appName={0}, appVersion={1}, appListen={2}", appName, appVersion, listenUrl));
-                startAction?.Invoke();
+                startAction.Invoke();
                 {
                     var executeEvent = new ManualResetEvent(false);
                     Console.WriteLine("Press Ctrl + C to shut down.");
                     Console.CancelKeyPress += (s, e) => { executeEvent.Set(); e.Cancel = true; };
                     executeEvent.WaitOne();
                 }
-                endAction?.Invoke();
+                endAction.Invoke();
                 logger.Info("Application ended");
                 logger.Info("========================================");
             }
