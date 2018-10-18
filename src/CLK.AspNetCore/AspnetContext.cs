@@ -1,44 +1,53 @@
 ﻿using System;
 using System.IO;
-using Autofac.Extensions.DependencyInjection;
 using CLK.Autofac;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CLK.AspNetCore
 {
-    public partial class AspnetContext : IDisposable
+    public class AspnetContext : IDisposable
     {
         // Fields
-        private readonly IWebHost _webHost = null;
+        private WebHostBuilder _webHostBuilder = null;
+
+        private IWebHost _webHost = null;
 
 
         // Constructors
-        public AspnetContext(string baseUrl, string controllerFilename, AutofacContext autofacContext)
+        public AspnetContext(AutofacContext autofacContext, string listenUrl, string controllerFilename)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
-            if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
             if (autofacContext == null) throw new ArgumentException();
+            if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
 
             #endregion
 
-            // WebHost
-            _webHost = new WebHostBuilder(baseUrl, controllerFilename, autofacContext).Create();
-            if (_webHost == null) throw new InvalidOperationException("_webHost=null");            
+            // WebHostBuilder
+            _webHostBuilder = new WebHostBuilder(autofacContext, listenUrl, controllerFilename);
         }
 
         public void Start()
         {
+            // Require
+            if (_webHost != null) return;
+
+            // WebHost
+            _webHost = _webHostBuilder.Create();
+            if (_webHost == null) throw new InvalidOperationException("_webHost=null");
+
             // Start
             _webHost.Start();
         }
 
         public void Dispose()
         {
+            // Require
+            if (_webHost == null) return;
+
             // Dispose
             _webHost.Dispose();
         }
@@ -48,28 +57,28 @@ namespace CLK.AspNetCore
         private class WebHostBuilder : IStartup
         {
             // Fields
-            private readonly string _baseUrl = null;
+            private readonly AutofacContext _autofacContext = null;
+
+            private readonly string _listenUrl = null;
 
             private readonly string _controllerFilename = null;
 
-            private readonly AutofacContext _autofacContext = null;
-
 
             // Constructors
-            public WebHostBuilder(string baseUrl, string controllerFilename, AutofacContext autofacContext)
+            public WebHostBuilder(AutofacContext autofacContext, string listenUrl, string controllerFilename)
             {
                 #region Contracts
 
-                if (string.IsNullOrEmpty(baseUrl) == true) throw new ArgumentException();
-                if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
                 if (autofacContext == null) throw new ArgumentException();
+                if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
+                if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
 
                 #endregion
 
                 // Default
-                _baseUrl = baseUrl;
-                _controllerFilename = controllerFilename;
                 _autofacContext = autofacContext;
+                _listenUrl = listenUrl;
+                _controllerFilename = controllerFilename;
             }
 
 
@@ -81,7 +90,7 @@ namespace CLK.AspNetCore
                 {
                     // Builder
                     webHost = new Microsoft.AspNetCore.Hosting.WebHostBuilder()
- 
+
                     // Services
                     .ConfigureServices((services) =>
                     {
@@ -96,7 +105,7 @@ namespace CLK.AspNetCore
                     .UseKestrel()
 
                     // Listen
-                    .UseUrls(_baseUrl)
+                    .UseUrls(_listenUrl)
 
                     // Build       
                     .Build();
@@ -151,7 +160,7 @@ namespace CLK.AspNetCore
                     options.Conventions.AddNamespaceRoute();
 
                     // Filters
-                    options.Filters.AddActionLogger();                    
+                    options.Filters.AddActionLogger();
                 })
                 .AddJsonFormatters()
                 .AddAssemblyController(_controllerFilename);
@@ -163,12 +172,12 @@ namespace CLK.AspNetCore
                     _autofacContext.RegisterServices(services);
 
                     // Create
-                    serviceProvider = new AutofacServiceProvider(_autofacContext.Container);
+                    serviceProvider = new LazyAutofacServiceProvider(_autofacContext);
                 }
 
                 // Return
                 return serviceProvider;
             }
-        }
-    }    
+        }        
+    }
 }

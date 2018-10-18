@@ -1,7 +1,4 @@
-﻿using CLK.Autofac;
-using CLK.Logging;
-using CLK.Logging.Log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,68 +12,13 @@ namespace CLK.AspNetCore.Lab
     public partial class Program
     {
         // Methods
-        public static void Main()
+        public static void Main(string[] args)
         {
-            try
-            {
-                // AppSettings
-                var appSettings = SettingsHelper.GetAllAppSettings();
-                if (appSettings == null) throw new InvalidOperationException("appSettings=null");
+            // Setting
+            Program.ShowConsole();
 
-                // Variables
-                var appId = appSettings["appId"];
-                var appName = appSettings["appName"];
-                var appVersion = appSettings["appVersion"];
-                var baseUrl = @"http://*:5000";
-                var hostingFilename = @"*.Hosting.json";
-                var servicesFilename = @"*.Services.dll";
-
-                // Setting
-                Console.Title = string.Format("{0} ({1})", appName, appVersion);
-                Program.ShowConsole();
-
-                // Context
-                using (var loggerContext = LoggerContext.Initialize(new Log4netLoggerFactory()))
-                using (var autofacContext = new AutofacContext(hostingFilename))
-                using (var aspnetContext = new AspnetContext(baseUrl, servicesFilename, autofacContext))
-                {
-                    // Logger
-                    var logger = new Logger<Program>();
-
-                    // Run
-                    aspnetContext.Run(() =>
-                    {
-                        // Start
-                        logger.Info("========================================");
-                        logger.Info(string.Format("Program started: appId={0}, appName={1}, appVersion={2}", appId, appName, appVersion));
-
-                        // Execute                
-                        var executeEvent = new ManualResetEvent(false);
-                        Console.WriteLine("Program started. Press Ctrl + C to shut down.");
-                        Console.CancelKeyPress += (sender, eventArgs) => { executeEvent.Set(); eventArgs.Cancel = true; };
-                        executeEvent.WaitOne();
-
-                        // End
-                        logger.Info("Program ended");
-                        logger.Info("========================================");
-                    });
-                }
-            }
-            catch (Exception exception)
-            {
-                // Exception
-                while (exception?.InnerException != null)
-                {
-                    exception = exception.InnerException;
-                }
-                Console.WriteLine(exception.Message);
-
-                // Wait
-                var waitEvent = new ManualResetEvent(false);
-                Console.WriteLine("Program error. Press Ctrl + C to shut down.");
-                Console.CancelKeyPress += (sender, eventArgs) => { waitEvent.Set(); eventArgs.Cancel = true; };
-                waitEvent.WaitOne();
-            }
+            // Run
+            CLK.AspNetCore.Application.Run();
         }
     }
 
