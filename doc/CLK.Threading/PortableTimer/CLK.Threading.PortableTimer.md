@@ -17,7 +17,7 @@
 
 遇到這樣跨平台的功能模組開發，該如何提供跨平台的定時執行功能呢?
 
-![問題情景01](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Threading/PortableTimer/Images/%E5%95%8F%E9%A1%8C%E6%83%85%E6%99%AF01.png)
+![問題情景01](https://raw.github.com/Clark159/CLK/master/doc/CLK.Threading/PortableTimer/Images/%E5%95%8F%E9%A1%8C%E6%83%85%E6%99%AF01.png)
 
 
 ##解決方案##
@@ -191,7 +191,7 @@ CLK.Threading.PortableTimer是一個跨平台的Timer類別。在開發跨平台
 
 - 執行結果
 
-	![使用範例01](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Threading/PortableTimer/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B01.png)
+	![使用範例01](https://raw.github.com/Clark159/CLK/master/doc/CLK.Threading/PortableTimer/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B01.png)
 
 
 ###CLK.Threading.Samples.No002 - 在Windows Phone App中使用PortableTimer###
@@ -266,7 +266,7 @@ CLK.Threading.PortableTimer是一個跨平台的Timer類別。在開發跨平台
 
 - 執行結果
 
-	![使用範例02](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Threading/PortableTimer/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B02.png)
+	![使用範例02](https://raw.github.com/Clark159/CLK/master/doc/CLK.Threading/PortableTimer/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B02.png)
 
 
 ###CLK.Threading.Samples.No003 - 在WPF中使用PortableTimer###
@@ -341,4 +341,4 @@ CLK.Threading.PortableTimer是一個跨平台的Timer類別。在開發跨平台
 
 - 執行結果
 
-	![使用範例03](https://raw.github.com/Clark159/CLK/master/Documents/CLK.Threading/PortableTimer/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B03.png)
+	![使用範例03](https://raw.github.com/Clark159/CLK/master/doc/CLK.Threading/PortableTimer/Images/%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B03.png)
