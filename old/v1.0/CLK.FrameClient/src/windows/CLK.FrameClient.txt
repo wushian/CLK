@@ -1,0 +1,14 @@
+
+
+CLK.FrameClient
+
+CLK.FrameClient.Identity
+
+CLK.FrameClient.Transport
+
+CLK.FrameClient.Transport.Http
+
+
+CLK.FrameServices.Identity.AspNet
+
+CLK.FrameServices.Transport.AspNet

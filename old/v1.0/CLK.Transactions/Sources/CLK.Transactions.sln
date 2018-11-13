@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Transactions", "CLK.Transactions\CLK.Transactions.csproj", "{8653422B-E31E-406B-B398-AE195049B986}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLK.Transactions.Windows", "CLK.Transactions.Windows\CLK.Transactions.Windows.csproj", "{005BB258-7728-405D-B08A-115C12F9597B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Domains", "01 Domains", "{26E649BF-8412-4FCF-801C-49A57F96E8D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8653422B-E31E-406B-B398-AE195049B986}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8653422B-E31E-406B-B398-AE195049B986}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8653422B-E31E-406B-B398-AE195049B986}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8653422B-E31E-406B-B398-AE195049B986}.Release|Any CPU.Build.0 = Release|Any CPU
+		{005BB258-7728-405D-B08A-115C12F9597B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{005BB258-7728-405D-B08A-115C12F9597B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{005BB258-7728-405D-B08A-115C12F9597B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{005BB258-7728-405D-B08A-115C12F9597B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8653422B-E31E-406B-B398-AE195049B986} = {26E649BF-8412-4FCF-801C-49A57F96E8D4}
+		{005BB258-7728-405D-B08A-115C12F9597B} = {26E649BF-8412-4FCF-801C-49A57F96E8D4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CLK.Scheduling</id>
+    <version>0.0.0</version>
+    <title>CLK.Scheduling</title>
+    <authors>Clark</authors>
+    <owners>Clark</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>CLK.Scheduling</description>
+    <copyright>Copyright © 2014 CLK Software Studio</copyright>
+    <dependencies>
+      <dependency id="CLK" version="2.0.1" />
+    </dependencies>
+  </metadata>
+  <files>
+
+    <!-- CLK.Scheduling.dll -->
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\net" />
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\netcore" />
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\wpa" />
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\wp" />
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\MonoAndroid" />
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\MonoTouch" />
+    <file src="CLK.Scheduling\bin\Release\CLK.Scheduling.dll" target="lib\portable-net+netcore+wpa+wp+MonoAndroid+MonoTouch" />
+
+  </files>
+</package>
