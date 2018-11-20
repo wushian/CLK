@@ -16,6 +16,11 @@ namespace CLK.Transactions.SqlClient
 
         }
 
+        public void Start()
+        {
+
+        }
+
         public void Dispose()
         {
 

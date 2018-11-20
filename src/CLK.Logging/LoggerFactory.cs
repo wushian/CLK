@@ -8,7 +8,11 @@ namespace CLK.Logging
 {
     public interface LoggerFactory : IDisposable
     {
+        // Constructors
+        void Start();
+
+
         // Methods
-        LoggerProvider Create<TCategory>();
+        Logger<TCategory> Create<TCategory>();
     }
 }

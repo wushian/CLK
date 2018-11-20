@@ -14,6 +14,11 @@ namespace CLK.Transactions
 
         }
 
+        public void Start()
+        {
+
+        }
+
         public void Dispose()
         {
            

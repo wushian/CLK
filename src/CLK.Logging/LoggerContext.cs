@@ -6,74 +6,63 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging
 {
-    public partial class LoggerContext : IDisposable
-    {
-        // Singleton 
-        private static LoggerContext _current;
-
-        internal static LoggerContext Current
-        {
-            get
-            {
-                // Require
-                if (_current == null) throw new InvalidOperationException("_current=null");
-
-                // Return
-                return _current;
-            }
-        }
-
-        public static LoggerContext Initialize(LoggerFactory loggerFactory)
-        {
-            #region Contracts
-
-            if (loggerFactory == null) throw new ArgumentException();
-
-            #endregion
-
-            // Default
-            _current = new LoggerContext(loggerFactory);
-
-            // Return
-            return _current;
-        }
-    }
-
-    public partial class LoggerContext : IDisposable
+    public class LoggerContext : IDisposable
     {
         // Fields
-        private readonly LoggerFactory _loggerFactory = null;
+        private readonly IEnumerable<LoggerFactory> _loggerFactoryList = null;
 
 
         // Constructors
-        internal LoggerContext(LoggerFactory loggerFactory)
+        public LoggerContext(IEnumerable<LoggerFactory> loggerFactoryList)
         {
             #region Contracts
 
-            if (loggerFactory == null) throw new ArgumentException();
+            if (loggerFactoryList == null) throw new ArgumentException();
 
             #endregion
 
             // Default
-            _loggerFactory = loggerFactory;
+            _loggerFactoryList = loggerFactoryList;
+        }
+
+        public void Start()
+        {
+            // Start
+            foreach (var loggerFactory in _loggerFactoryList)
+            {
+                loggerFactory.Start();
+            }
         }
 
         public void Dispose()
         {
             // Dispose
-            _loggerFactory.Dispose();
+            foreach (var loggerFactory in _loggerFactoryList)
+            {
+                loggerFactory.Dispose();
+            }
         }
 
 
         // Methods
-        internal LoggerProvider Create<TCategory>()
+        internal IEnumerable<Logger<TCategory>> Create<TCategory>()
         {
-            // LoggerProvider
-            var loggerProvider = _loggerFactory.Create<TCategory>();
-            if (loggerProvider == null) throw new InvalidOperationException("loggerProvider=null");
+            // Result
+            List<Logger<TCategory>> loggerList = new List<Logger<TCategory>>();
+
+            // LoggerFactory
+            foreach (var loggerFactory in _loggerFactoryList)
+            {
+                // Create
+                var logger = loggerFactory.Create<TCategory>();
+                if (logger == null) throw new InvalidOperationException("logger=null");
+
+                // Add
+                loggerList.Add(logger);
+            }           
 
             // Return
-            return loggerProvider;
+            return loggerList;
         }
     }
 }

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{90576D7C-7C28-4D11-9457-CD54491F3A44}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CLK.Platform.Lab</RootNamespace>
+    <AssemblyName>CLK.Platform.Lab</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <Content Include="CLK.Platform.Lab.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CLK.Logging.Hosting\CLK.Logging.Hosting.csproj">
+      <Project>{16113871-01c9-4cb6-aab8-7d73c9cd6c99}</Project>
+      <Name>CLK.Logging.Hosting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj">
+      <Project>{7afec0ad-36a8-4fc3-b7ad-9655c77a788a}</Project>
+      <Name>CLK.Logging.Log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj">
+      <Project>{92569f47-4aa2-44af-9119-0f2e27cbc5d1}</Project>
+      <Name>CLK.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Platform\CLK.Platform.csproj">
+      <Project>{b98a7b65-fab0-4692-a59b-d8d32a8b041d}</Project>
+      <Name>CLK.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Transactions.Distributing\CLK.Transactions.Distributing.csproj">
+      <Project>{d4dacfac-45eb-402e-a44a-1d8adcc88f36}</Project>
+      <Name>CLK.Transactions.Distributing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Transactions.Hosting\CLK.Transactions.Hosting.csproj">
+      <Project>{ef80e2b4-e91d-4f42-827f-1cb1867ece13}</Project>
+      <Name>CLK.Transactions.Hosting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Transactions.SqlClient\CLK.Transactions.SqlClient.csproj">
+      <Project>{f0c8a089-0d0f-444c-ade3-79f9cd75c014}</Project>
+      <Name>CLK.Transactions.SqlClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Transactions\CLK.Transactions.csproj">
+      <Project>{afa21d79-cb98-4723-9fe0-08a308cd9822}</Project>
+      <Name>CLK.Transactions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac">
+      <Version>4.8.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

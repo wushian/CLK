@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions
 {
-    public partial class TransactionScope : TransactionScopeProvider
+    public partial class TransactionScope : IDisposable
+    {
+        // Constructors
+        public TransactionScope() : this(TransactionContext.Current.Create()) { }
+    }
+
+    public partial class TransactionScope : IDisposable
     {
         // Fields
         private readonly TransactionScopeProvider _transactionScopeProvider = null;
 
 
         // Constructors
-        internal TransactionScope(TransactionScopeProvider transactionScopeProvider)
+        private TransactionScope(TransactionScopeProvider transactionScopeProvider)
         {
             #region Contracts
 
@@ -38,11 +44,5 @@ namespace CLK.Transactions
             // Complete
             _transactionScopeProvider.Complete();
         }
-    }
-
-    public partial class TransactionScope : TransactionScopeProvider
-    {
-        // Constructors
-        public TransactionScope() : this(TransactionContext.Current.Create()) { }
     }
 }

@@ -23,16 +23,16 @@ namespace CLK.Transactions
             }
         }
 
-        public static TransactionContext Initialize(TransactionScopeFactory transactionScopeFactory)
+        public static TransactionContext Initialize(TransactionContext transactionContext)
         {
             #region Contracts
 
-            if (transactionScopeFactory == null) throw new ArgumentNullException();
+            if (transactionContext == null) throw new ArgumentNullException();
 
             #endregion
 
             // Default
-            _current = new TransactionContext(transactionScopeFactory);
+            _current = transactionContext;
 
             // Return
             return _current;
@@ -46,7 +46,7 @@ namespace CLK.Transactions
 
 
         // Constructors
-        internal TransactionContext(TransactionScopeFactory transactionScopeFactory)
+        public TransactionContext(TransactionScopeFactory transactionScopeFactory)
         {
             #region Contracts
 
@@ -56,6 +56,12 @@ namespace CLK.Transactions
 
             // Default
             _transactionScopeFactory = transactionScopeFactory;
+        }
+
+        public void Start()
+        {
+            // Start
+            _transactionScopeFactory.Start();
         }
 
         public void Dispose()

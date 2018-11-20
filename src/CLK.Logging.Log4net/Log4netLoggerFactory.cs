@@ -80,21 +80,22 @@ namespace CLK.Logging.Log4net
             }
         }
 
+        public void Start()
+        {
+            // Nothing
+        }
+
         public void Dispose()
         {
-
+            // Nothing
         }
 
 
         // Methods
-        public LoggerProvider Create<TCategory>()
+        public Logger<TCategory> Create<TCategory>()
         {
-            // Logger
-            var logger = LogManager.GetLogger(System.Reflection.Assembly.GetEntryAssembly(), typeof(TCategory));
-            if (logger == null) throw new InvalidOperationException("logger=null");
-
             // Return
-            return new Log4netLoggerProvider(logger);
+            return new Log4netLogger<TCategory>();
         }
     }
 }

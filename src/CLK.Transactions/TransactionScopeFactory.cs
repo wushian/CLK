@@ -8,6 +8,10 @@ namespace CLK.Transactions
 {
     public interface TransactionScopeFactory : IDisposable
     {
+        // Constructors
+        void Start();
+
+
         // Methods
         TransactionScopeProvider Create();
     }
