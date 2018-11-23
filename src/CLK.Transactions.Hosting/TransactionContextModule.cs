@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions.Hosting
 {
-    public class TransactionContextModule : PlatformModule
+    public class TransactionContextModule : ServiceModule
     {
         // Methods
         protected override void Load(ContainerBuilder autofacBuilder)
@@ -20,7 +20,7 @@ namespace CLK.Transactions.Hosting
             #endregion
 
             // TransactionContext
-            autofacBuilder.Register<TransactionContext>(autofacContext =>
+            autofacBuilder.Register(autofacContext =>
             {                
                 return new TransactionContext
                 (

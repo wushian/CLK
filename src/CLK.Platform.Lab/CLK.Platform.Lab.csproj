@@ -53,6 +53,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj">
+      <Project>{52579c54-fb89-4ece-80eb-9f6ad05a3394}</Project>
+      <Name>CLK.Autofac</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CLK.Logging.Hosting\CLK.Logging.Hosting.csproj">
       <Project>{16113871-01c9-4cb6-aab8-7d73c9cd6c99}</Project>
       <Name>CLK.Logging.Hosting</Name>
@@ -66,7 +70,7 @@
       <Name>CLK.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Platform\CLK.Platform.csproj">
-      <Project>{b98a7b65-fab0-4692-a59b-d8d32a8b041d}</Project>
+      <Project>{76cf9425-8c39-4f1a-8d6e-338d19770c94}</Project>
       <Name>CLK.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Transactions.Distributing\CLK.Transactions.Distributing.csproj">

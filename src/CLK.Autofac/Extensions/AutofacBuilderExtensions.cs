@@ -11,9 +11,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Platform
+namespace CLK.Autofac
 {
-    public static class AutofacBuilderExtensions
+    internal static class AutofacBuilderExtensions
     {
         // Methods
         public static void RegisterConfig(this ContainerBuilder autofacBuilder, string configFilename)

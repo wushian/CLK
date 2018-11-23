@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Configuration;
 using Autofac.Extensions.DependencyInjection;
+using CLK.Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,218 +17,88 @@ namespace CLK.Platform
     public class PlatformContext : IDisposable
     {
         // Fields
-        private readonly List<Action<ContainerBuilder>> _registerDelegateList = new List<Action<ContainerBuilder>>();
+        private readonly AutofacContext _platformAutofacContext = null;
+        
+        private readonly AutofacContext _serviceAutofacContext = null;
 
-        private IContainer _container = null;
+        private List<PlatformHoster> _platformHosterList = null;
 
 
         // Constructors
-        public PlatformContext(string configFilename = "*.Hosting.json", string moduleFileName = "*.Hosting.dll")
+        public PlatformContext(string moduleFileName = "*.Hosting.dll", string configFilename = "*.Hosting.json")
         {
-            // RegisterConfig
-            if (string.IsNullOrEmpty(configFilename) == false)
+            // PlatformAutofacContext
+            _platformAutofacContext = new AutofacContext();
             {
-                this.RegisterConfig(configFilename);
+                // RegisterModule
+                if (string.IsNullOrEmpty(moduleFileName) == false)
+                {
+                    _platformAutofacContext.RegisterAssemblyModules(typeof(PlatformModule), moduleFileName);
+                }
+                _platformAutofacContext.RegisterAssemblyModules(typeof(PlatformModule), Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location));
             }
-            this.RegisterConfig(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + ".json");
 
-            // RegisterAssemblyModules
-            if (string.IsNullOrEmpty(moduleFileName) == false)
+            // ServiceAutofacContext
+            _serviceAutofacContext = new AutofacContext();
             {
-                this.RegisterAssemblyModules(typeof(PlatformModule), moduleFileName);
+                // RegisterModule
+                if (string.IsNullOrEmpty(moduleFileName) == false)
+                {
+                    _serviceAutofacContext.RegisterAssemblyModules(typeof(ServiceModule), moduleFileName);
+                }
+                _serviceAutofacContext.RegisterAssemblyModules(typeof(ServiceModule), Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location));
+
+                // RegisterConfig
+                if (string.IsNullOrEmpty(configFilename) == false)
+                {
+                    _serviceAutofacContext.RegisterConfig(configFilename);
+                }
+                _serviceAutofacContext.RegisterConfig(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + Path.GetExtension(configFilename));
             }
-            this.RegisterAssemblyModules(typeof(PlatformModule), Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location));
+
+            // Attach
+            _platformAutofacContext.RegisterInstance(typeof(AutofacContext), _serviceAutofacContext);
         }
 
         public void Start()
         {
-            // Start
-            var container = this.Container;
-            if (container == null) throw new InvalidOperationException("container=null");
+            // AutofacContext
+            _platformAutofacContext.Start();
+            _serviceAutofacContext.Start();
+
+            // PlatformHosterList
+            _platformHosterList = _platformAutofacContext.Resolve<List<PlatformHoster>>();
+            if (_platformHosterList != null)
+            {
+                foreach (var platformHoster in _platformHosterList)
+                {
+                    platformHoster.Start();
+                }
+            }
         }
 
         public void Dispose()
         {
-            // Dispose
-            _container?.Dispose();
-        }
-
-
-        // Properties
-        public IContainer Container
-        {
-            get
+            // PlatformHosterList
+            if (_platformHosterList != null)
             {
-                // Create
-                if (_container == null)
+                foreach (var platformHoster in _platformHosterList.Reverse<PlatformHoster>())
                 {
-                    // AutofacBuilder    
-                    var autofacBuilder = new ContainerBuilder();
-                    foreach (var registerDelegate in _registerDelegateList)
-                    {
-                        // Register
-                        registerDelegate(autofacBuilder);
-                    }
-
-                    // AutofacContainer
-                    var autofacContainer = autofacBuilder.Build();
-                    if (autofacContainer == null) throw new InvalidOperationException();
-
-                    // Setting
-                    _container = autofacContainer;
+                    platformHoster.Dispose();
                 }
-
-                // Return
-                return _container;
             }
+
+            // AutofacContext
+            _serviceAutofacContext?.Dispose();
+            _platformAutofacContext?.Dispose();
         }
 
 
         // Methods
-        public TComponent Resolve<TComponent>()
+        public TService Resolve<TService>() where TService : class
         {
             // Return
-            return this.Container.Resolve<TComponent>();
-        }
-
-
-        public void RegisterConfig(string configFilename)
-        {
-            #region Contracts
-
-            if (string.IsNullOrEmpty(configFilename) == true) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterConfig(configFilename);
-            });
-        }
-
-        public void RegisterAssemblyTypes(Type type, string assemblyFilename)
-        {
-            #region Contracts
-
-            if (type == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(assemblyFilename) == true) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterAssemblyTypes(type, assemblyFilename);
-            });
-        }
-
-        public void RegisterAssemblyModules(Type type, string assemblyFilename)
-        {
-            #region Contracts
-
-            if (type == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(assemblyFilename) == true) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterAssemblyModules(type, assemblyFilename);
-            });
-        }
-
-
-        public void RegisterType(Type type)
-        {
-            #region Contracts
-
-            if (type == null) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterType(type);
-            });
-        }
-
-        public void RegisterInstance(Type type, object instance)
-        {
-            #region Contracts
-
-            if (type == null) throw new ArgumentException();
-            if (instance == null) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterInstance(type, instance);
-            });
-        }
-
-        public void RegisterGeneric(Type type, Type implementer)
-        {
-            #region Contracts
-
-            if (type == null) throw new ArgumentException();
-            if (implementer == null) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterInstance(type, implementer);
-            });
-        }
-
-
-        public void RegisterServices(IServiceCollection serviceList)
-        {
-            #region Contracts
-
-            if (serviceList == null) throw new ArgumentException();
-
-            #endregion
-
-            // Require
-            if (_container != null) throw new InvalidOperationException();
-
-            // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
-            {
-                // Register
-                autofacBuilder.RegisterServices(serviceList);
-            });
+            return _serviceAutofacContext.Resolve<TService>();
         }
     }
 }

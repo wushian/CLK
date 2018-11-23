@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging.Hosting
 {
-    public class LoggerContextModule : PlatformModule
+    public class LoggerContextModule : ServiceModule
     {
         // Methods
         protected override void Load(ContainerBuilder autofacBuilder)
@@ -19,11 +19,11 @@ namespace CLK.Logging.Hosting
 
             #endregion
 
-            // Components
-            autofacBuilder.RegisterGeneric(typeof(Logger<>), typeof(LoggerCollection<>));
+            // Register
+            autofacBuilder.RegisterGeneric(typeof(LoggerCollection<>)).As(typeof(Logger<>));
             
             // LoggerContext
-            autofacBuilder.Register<LoggerContext>(autofacContext =>
+            autofacBuilder.Register(autofacContext =>
             {                
                 return new LoggerContext
                 (

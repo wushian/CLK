@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Platform
+namespace CLK.Autofac
 {
     public static class FileHelper
     {
