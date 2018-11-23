@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <!--Title-->
+    <h2>ModelConverterSample (MVC4)</h2>
+    <hr /><br />
+    
+        
+    <!--Test()-->
+    <h3>
+        <a href="/ModelConverterSample/Test">/ModelConverterSample/Test</a>
+        <br />
+    </h3>
+    
+    <!--Test(string id, DateTime birthday, [GenderType]GenderType? genderType)-->
+    <h3>
+        <a href="/ModelConverterSample/Test?id=Clark&Birthday=1999-11-22 12:34:56&genderType=1">/ModelConverterSample/Test?id=Clark&Birthday=1999-11-22 12:34:56&genderType=1</a>
+        <br />
+    </h3>
+
+    <!--Test(EmployeeModel employee)-->
+    <h3>
+        <a href="/ModelConverterSample/Test?employee.Id=Clark&employee.Birthday=1999-11-22 12:34:56&employee.GenderType=1">/ModelConverterSample/Test?employee.Id=Clark&employee.Birthday=1999-11-22 12:34:56&employee.GenderType=1</a>
+        <br />
+    </h3>
+
+
+    <!--Result-->
+    <br />
+    <br />
+    <h1 style="color:red">@ViewBag.TriggerAction</h1>
+    <h1 style="color:red">@ViewBag.Id</h1>
+    <h1 style="color:red">@ViewBag.Birthday</h1>
+    <h1 style="color:red">@ViewBag.GenderType</h1>
+    
+</body>
+</html>

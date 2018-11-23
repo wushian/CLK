@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <!--Title-->
+    <h2>ActionOverloadingSample (MVC5)</h2>
+    <hr /><br />
+    
+        
+    <!--Test()-->
+    <h3>
+        <a href="/ActionOverloadingSample/Test">/ActionOverloadingSample/Test</a>
+        <br />
+    </h3>
+    
+    <!--Test(string arg01)-->
+    <h3>
+        <a href="/ActionOverloadingSample/Test?arg01=AAA">/ActionOverloadingSample/Test?arg01=AAA</a>
+        <br />
+    </h3>
+
+    <!--Test(string arg01, string arg02)-->
+    <h3>
+        <a href="/ActionOverloadingSample/Test?arg01=AAA&arg02=BBB">/ActionOverloadingSample/Test?arg01=AAA&arg02=BBB</a>
+        <br />
+    </h3>
+
+    <!--Test(string arg01, string arg02, string arg03)-->
+    <h3>
+        <a href="/ActionOverloadingSample/Test?arg01=AAA&arg02=BBB&arg03=CCC">/ActionOverloadingSample/Test?arg01=AAA&arg02=BBB&arg03=CCC</a>
+        <br />
+    </h3>
+
+
+    <!--Result-->
+    <br />
+    <br />
+    <h1 style="color:red">@ViewBag.TriggerAction</h1>
+    
+</body>
+</html>

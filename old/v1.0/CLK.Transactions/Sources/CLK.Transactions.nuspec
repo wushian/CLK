@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CLK.Transactions</id>
+    <version>0.0.0</version>
+    <title>CLK.Transactions</title>
+    <authors>Clark</authors>
+    <owners>Clark</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>CLK.Transactions</description>
+    <copyright>Copyright © 2014 CLK Software Studio</copyright>
+    <dependencies>
+      <group>
+        <dependency id="CLK" version="2.0.1" />
+      </group>
+      <group targetFramework="net">
+        <dependency id="CLK.Data" version="2.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+
+    <!-- CLK.Transactions.dll -->
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\net" />
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\netcore" />
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\wpa" />
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\wp" />
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\MonoAndroid" />
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\MonoTouch" />
+    <file src="CLK.Transactions\bin\Release\CLK.Transactions.dll" target="lib\portable-net+netcore+wpa+wp+MonoAndroid+MonoTouch" />
+
+    <!-- CLK.Transactions.Windows.dll -->
+    <file src="CLK.Transactions.Windows\bin\Release\CLK.Transactions.Windows.dll" target="lib\net" />
+
+  </files>
+</package>

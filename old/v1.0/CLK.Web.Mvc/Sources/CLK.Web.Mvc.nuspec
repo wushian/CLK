@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CLK.Web.Mvc</id>
+    <version>0.0.0</version>
+    <title>CLK.Web.Mvc</title>
+    <authors>Clark</authors>
+    <owners>Clark</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>CLK.Web.Mvc</description>
+    <copyright>Copyright © 2014 CLK Software Studio</copyright>
+    <dependencies />
+  </metadata>
+  <files>
+    <file src="CLK.Web.Mvc4\bin\Release\CLK.Web.Mvc4.dll" target="lib\net45" />
+    <file src="CLK.Web.Mvc5\bin\Release\CLK.Web.Mvc5.dll" target="lib\net45" />
+    <file src="packages.tools\*.*" target="tools" />
+  </files>
+</package>

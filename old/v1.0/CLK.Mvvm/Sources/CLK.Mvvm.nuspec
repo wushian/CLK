@@ -1,0 +1,28 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CLK.Mvvm</id>
+    <version>0.0.0</version>
+    <title>CLK.Mvvm</title>
+    <authors>Clark</authors>
+    <owners>Clark</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>CLK.Mvvm</description>
+    <copyright>Copyright © 2014 CLK Software Studio</copyright>
+    <dependencies>
+      <dependency id="CLK" version="2.0.1" />
+    </dependencies>
+  </metadata>
+  <files>
+
+    <!-- CLK.Mvvm.dll -->
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\net" />
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\netcore" />
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\wpa" />
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\wp" />
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\MonoAndroid" />
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\MonoTouch" />
+    <file src="CLK.Mvvm\bin\Release\CLK.Mvvm.dll" target="lib\portable-net+netcore+wpa+wp+MonoAndroid+MonoTouch" />
+
+  </files>
+</package>
