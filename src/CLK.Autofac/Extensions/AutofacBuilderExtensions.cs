@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Autofac
 {
-    internal static class AutofacBuilderExtensions
+    public static class AutofacBuilderExtensions
     {
         // Methods
         public static void RegisterConfig(this ContainerBuilder autofacBuilder, string configFilename)

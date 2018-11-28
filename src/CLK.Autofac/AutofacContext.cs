@@ -13,72 +13,54 @@ using System.Threading.Tasks;
 
 namespace CLK.Autofac
 {
-    public class AutofacContext : IDisposable
+    public class AutofacContext : AutofacScope
     {
         // Fields
-        private readonly List<Action<ContainerBuilder>> _registerDelegateList = new List<Action<ContainerBuilder>>();
-
-        private IContainer _container = null;
+        private List<Action<ContainerBuilder>> _configurationActionList = new List<Action<ContainerBuilder>>();
 
 
         // Constructors
-        public AutofacContext()
+        public AutofacContext() : this(new List<Action<ContainerBuilder>>())
         {
 
         }
 
-        public void Start()
+        private AutofacContext(List<Action<ContainerBuilder>> configurationActionList) : base(() => { return Build(configurationActionList); })
         {
-            // Start
-            var container = this.Container;
-            if (container == null) throw new InvalidOperationException("container=null");
-        }
+            #region Contracts
 
-        public void Dispose()
-        {
-            // Dispose
-            _container?.Dispose();
-        }
+            if (configurationActionList == null) throw new ArgumentException();
 
+            #endregion
 
-        // Properties
-        public IContainer Container
-        {
-            get
-            {
-                // Create
-                if (_container == null)
-                {
-                    // AutofacBuilder    
-                    var autofacBuilder = new ContainerBuilder();
-                    foreach (var registerDelegate in _registerDelegateList)
-                    {
-                        // Register
-                        registerDelegate(autofacBuilder);
-                    }
-
-                    // AutofacContainer
-                    var autofacContainer = autofacBuilder.Build();
-                    if (autofacContainer == null) throw new InvalidOperationException();
-
-                    // Setting
-                    _container = autofacContainer;
-                }
-
-                // Return
-                return _container;
-            }
+            // Default
+            _configurationActionList = configurationActionList;
         }
 
 
         // Methods
-        public TComponent Resolve<TComponent>() where TComponent : class
+        private static ILifetimeScope Build(List<Action<ContainerBuilder>> configurationActionList)
         {
-            // Require
-            if (this.Container.IsRegistered<TComponent>() == false) return null;
+            #region Contracts
+
+            if (configurationActionList == null) throw new ArgumentException();
+
+            #endregion
+
+            // AutofacBuilder    
+            var autofacBuilder = new ContainerBuilder();
+            foreach (var configurationAction in configurationActionList)
+            {
+                // Configure
+                configurationAction(autofacBuilder);
+            }
+
+            // AutofacContainer
+            var autofacContainer = autofacBuilder.Build();
+            if (autofacContainer == null) throw new InvalidOperationException();
 
             // Return
-            return this.Container.Resolve<TComponent>();
+            return autofacContainer;
         }
 
 
@@ -91,10 +73,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterConfig(configFilename);
@@ -111,10 +93,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterAssemblyTypes(type, assemblyFilename);
@@ -131,10 +113,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterAssemblyModules(type, assemblyFilename);
@@ -151,10 +133,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterType(type);
@@ -171,10 +153,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterInstance(type, instance);
@@ -191,10 +173,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterInstance(type, implementer);
@@ -211,10 +193,10 @@ namespace CLK.Autofac
             #endregion
 
             // Require
-            if (_container != null) throw new InvalidOperationException();
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
 
             // Attach
-            _registerDelegateList.Add((autofacBuilder) =>
+            _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
                 autofacBuilder.RegisterServices(serviceList);
