@@ -74,6 +74,16 @@ namespace CLK.Autofac
             // Return
             return new AutofacScope(buildAction);
         }
+        
+        
+        public bool IsRegistered<TComponent>() where TComponent : class
+        {
+            // Require
+            if (this.Container == null) throw new InvalidOperationException("this.Container=null");
+
+            // Return
+            return this.Container.IsRegistered<TComponent>();
+        }
 
         public TComponent Resolve<TComponent>() where TComponent : class
         {

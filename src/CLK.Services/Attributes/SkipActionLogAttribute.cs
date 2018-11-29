@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Services
 {
-    public class SkipLogAttribute : System.Attribute
+    public class SkipActionLogAttribute : System.Attribute
     {
 
     }

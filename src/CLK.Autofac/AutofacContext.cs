@@ -64,11 +64,11 @@ namespace CLK.Autofac
         }
 
 
-        public void RegisterConfig(string configFilename)
+        public void RegisterConfig(string configFileName)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(configFilename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(configFileName) == true) throw new ArgumentException();
 
             #endregion
 
@@ -79,16 +79,16 @@ namespace CLK.Autofac
             _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
-                autofacBuilder.RegisterConfig(configFilename);
+                autofacBuilder.RegisterConfig(configFileName);
             });
         }
 
-        public void RegisterAssemblyTypes(Type type, string assemblyFilename)
+        public void RegisterAssemblyTypes(Type type, string assemblyFileName)
         {
             #region Contracts
 
             if (type == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(assemblyFilename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(assemblyFileName) == true) throw new ArgumentException();
 
             #endregion
 
@@ -99,16 +99,16 @@ namespace CLK.Autofac
             _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
-                autofacBuilder.RegisterAssemblyTypes(type, assemblyFilename);
+                autofacBuilder.RegisterAssemblyTypes(type, assemblyFileName);
             });
         }
 
-        public void RegisterAssemblyModules(Type type, string assemblyFilename)
+        public void RegisterAssemblyModules(Type type, string assemblyFileName)
         {
             #region Contracts
 
             if (type == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(assemblyFilename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(assemblyFileName) == true) throw new ArgumentException();
 
             #endregion
 
@@ -119,7 +119,7 @@ namespace CLK.Autofac
             _configurationActionList.Add((autofacBuilder) =>
             {
                 // Register
-                autofacBuilder.RegisterAssemblyModules(type, assemblyFilename);
+                autofacBuilder.RegisterAssemblyModules(type, assemblyFileName);
             });
         }
 

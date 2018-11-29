@@ -17,59 +17,47 @@ namespace CLK.Platform
     public class PlatformContext : IDisposable
     {
         // Fields
-        private readonly AutofacContext _platformAutofacContext = null;
-        
-        private readonly AutofacContext _serviceAutofacContext = null;
+        private readonly AutofacContext _autofacContext = null;
 
         private List<PlatformHoster> _platformHosterList = null;
 
 
         // Constructors
-        public PlatformContext(string moduleFileName = "*.Hosting.dll", string configFilename = "*.Hosting.json")
+        public PlatformContext(string moduleFileName = @"*.Hosting.dll", string configFileName = @"*.Hosting.json")
         {
-            // PlatformAutofacContext
-            _platformAutofacContext = new AutofacContext();
+            // AutofacContext
+            _autofacContext = new AutofacContext();
             {
                 // RegisterModule
                 if (string.IsNullOrEmpty(moduleFileName) == false)
                 {
-                    _platformAutofacContext.RegisterAssemblyModules(typeof(PlatformModule), moduleFileName);
+                    _autofacContext.RegisterAssemblyModules(typeof(PlatformModule), moduleFileName);
                 }
-                _platformAutofacContext.RegisterAssemblyModules(typeof(PlatformModule), Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location));
-            }
-
-            // ServiceAutofacContext
-            _serviceAutofacContext = new AutofacContext();
-            {
-                // RegisterModule
-                if (string.IsNullOrEmpty(moduleFileName) == false)
-                {
-                    _serviceAutofacContext.RegisterAssemblyModules(typeof(ServiceModule), moduleFileName);
-                }
-                _serviceAutofacContext.RegisterAssemblyModules(typeof(ServiceModule), Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                _autofacContext.RegisterAssemblyModules(typeof(PlatformModule), Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location));
 
                 // RegisterConfig
-                if (string.IsNullOrEmpty(configFilename) == false)
+                if (string.IsNullOrEmpty(configFileName) == false)
                 {
-                    _serviceAutofacContext.RegisterConfig(configFilename);
+                    _autofacContext.RegisterConfig(configFileName);
                 }
-                _serviceAutofacContext.RegisterConfig(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + Path.GetExtension(configFilename));
+                _autofacContext.RegisterConfig(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + Path.GetExtension(configFileName));
             }
-
-            // Attach
-            _platformAutofacContext.RegisterInstance(typeof(AutofacContext), _serviceAutofacContext);
+            _autofacContext.RegisterInstance(typeof(AutofacContext), _autofacContext);
         }
 
         public void Start()
         {
             // AutofacContext
-            _platformAutofacContext.Start();
-            _serviceAutofacContext.Start();
+            _autofacContext.Start();
 
             // PlatformHosterList
-            _platformHosterList = _platformAutofacContext.Resolve<List<PlatformHoster>>();
-            if (_platformHosterList != null)
+            if (_autofacContext.IsRegistered<List<PlatformHoster>>() == true)
             {
+                // Create
+                _platformHosterList = _autofacContext.Resolve<List<PlatformHoster>>();
+                if (_platformHosterList == null) throw new InvalidOperationException("_platformHosterList=null");
+
+                // Start
                 foreach (var platformHoster in _platformHosterList)
                 {
                     platformHoster.Start();
@@ -82,6 +70,7 @@ namespace CLK.Platform
             // PlatformHosterList
             if (_platformHosterList != null)
             {
+                // Dispose
                 foreach (var platformHoster in _platformHosterList.Reverse<PlatformHoster>())
                 {
                     platformHoster.Dispose();
@@ -89,8 +78,7 @@ namespace CLK.Platform
             }
 
             // AutofacContext
-            _serviceAutofacContext?.Dispose();
-            _platformAutofacContext?.Dispose();
+            _autofacContext?.Dispose();
         }
 
 
@@ -98,7 +86,7 @@ namespace CLK.Platform
         public TService Resolve<TService>() where TService : class
         {
             // Return
-            return _serviceAutofacContext.Resolve<TService>();
+            return _autofacContext.Resolve<TService>();
         }
     }
 }

@@ -10,11 +10,11 @@ namespace CLK.Autofac
     public static class FileHelper
     {
         // Methods
-        public static List<FileInfo> GetAllFile(string filename)
+        public static List<FileInfo> GetAllFile(string fileName)
         {
             #region Contracts
 
-            if (string.IsNullOrEmpty(filename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(fileName) == true) throw new ArgumentException();
 
             #endregion
 
@@ -22,7 +22,7 @@ namespace CLK.Autofac
             var resultFileDictionary = new Dictionary<string, FileInfo>();
 
             // SearchPatternList
-            var searchPatternList = filename.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var searchPatternList = fileName.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             if (searchPatternList == null) throw new InvalidOperationException();
 
             // EntryDirectory

@@ -16,17 +16,17 @@ namespace CLK.Autofac
     public static class AutofacBuilderExtensions
     {
         // Methods
-        public static void RegisterConfig(this ContainerBuilder autofacBuilder, string configFilename)
+        public static void RegisterConfig(this ContainerBuilder autofacBuilder, string configFileName)
         {
             #region Contracts
 
             if (autofacBuilder == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(configFilename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(configFileName) == true) throw new ArgumentException();
 
             #endregion
             
             // ConfigFileList
-            var configFileList = FileHelper.GetAllFile(configFilename);
+            var configFileList = FileHelper.GetAllFile(configFileName);
             if (configFileList == null) throw new InvalidOperationException();
 
             // Execute
@@ -45,18 +45,18 @@ namespace CLK.Autofac
             }
         }
 
-        public static void RegisterAssemblyTypes(this ContainerBuilder autofacBuilder, Type type, string assemblyFilename)
+        public static void RegisterAssemblyTypes(this ContainerBuilder autofacBuilder, Type type, string assemblyFileName)
         {
             #region Contracts
 
             if (autofacBuilder == null) throw new ArgumentException();
             if (type == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(assemblyFilename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(assemblyFileName) == true) throw new ArgumentException();
 
             #endregion
 
             // AssemblyFileList
-            var assemblyFileList = FileHelper.GetAllFile(assemblyFilename);
+            var assemblyFileList = FileHelper.GetAllFile(assemblyFileName);
             if (assemblyFileList == null) throw new InvalidOperationException();
 
             // Execute
@@ -82,18 +82,18 @@ namespace CLK.Autofac
             }
         }
 
-        public static void RegisterAssemblyModules(this ContainerBuilder autofacBuilder, Type type, string assemblyFilename)
+        public static void RegisterAssemblyModules(this ContainerBuilder autofacBuilder, Type type, string assemblyFileName)
         {
             #region Contracts
 
             if (autofacBuilder == null) throw new ArgumentException();
             if (type == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(assemblyFilename) == true) throw new ArgumentException();
+            if (string.IsNullOrEmpty(assemblyFileName) == true) throw new ArgumentException();
 
             #endregion
             
             // AssemblyFileList
-            var assemblyFileList = FileHelper.GetAllFile(assemblyFilename);
+            var assemblyFileList = FileHelper.GetAllFile(assemblyFileName);
             if (assemblyFileList == null) throw new InvalidOperationException();
 
             // Execute
