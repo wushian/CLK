@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions
 {
-    public interface TransactionScopeProvider : IDisposable
+    public interface TransactionProvider : IDisposable
     {
+        // Constructors
+        void Start();
+
+
         // Methods
-        void Complete();
+        Transaction Create();
     }
 }

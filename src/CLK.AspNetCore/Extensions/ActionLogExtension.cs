@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CLK.AspNetCore
 {
-    internal static class ActionLoggerExtension
+    internal static class ActionLogExtension
     {
         // Methods
-        public static void AddActionLogger(this FilterCollection filters)
+        public static void AddActionLog(this FilterCollection filters)
         {
             #region Contracts
 
@@ -20,19 +20,19 @@ namespace CLK.AspNetCore
             #endregion
 
             // Attach
-            filters.Add(new ActionLoggerFilter());
+            filters.Add(new ActionLogFilter());
         }
 
 
         // Class
-        private class ActionLoggerFilter : IActionFilter
+        private class ActionLogFilter : IActionFilter
         {
             // Fields
             private readonly object _syncRoot = new object();
 
             private readonly Dictionary<Type, Logger> _loggerDictionary = new Dictionary<Type, Logger>();
 
-            private readonly string _executingTimeKey = "__" + typeof(ActionLoggerFilter).ToString();
+            private readonly string _executingTimeKey = "__" + typeof(ActionLogFilter).ToString();
 
 
             // Methods

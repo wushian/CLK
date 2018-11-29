@@ -10,10 +10,10 @@ using static log4net.Appender.RollingFileAppender;
 
 namespace CLK.Logging.Log4net
 {
-    public class Log4netLoggerFactory : LoggerFactory
+    public class Log4netLoggerProvider : LoggerProvider
     {
         // Constructors
-        public Log4netLoggerFactory(string configFilename = null)
+        public Log4netLoggerProvider(string configFilename = null)
         {
             // Setting
             log4net.MDC.Set("tab", "\t");

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using CLK.Autofac;
 using CLK.Platform;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging.Hosting
 {
-    public class LoggerContextModule : ServiceModule
+    public class LoggerContextModule : PlatformModule
     {
         // Methods
         protected override void Load(ContainerBuilder autofacBuilder)
@@ -18,29 +19,38 @@ namespace CLK.Logging.Hosting
             if (autofacBuilder == null) throw new ArgumentException();
 
             #endregion
-
-            // Register
-            autofacBuilder.RegisterGeneric(typeof(LoggerCollection<>)).As(typeof(Logger<>));
             
             // LoggerContext
             autofacBuilder.Register(autofacContext =>
-            {                
+            {
                 return new LoggerContext
                 (
-                    autofacContext.Resolve<IEnumerable<LoggerFactory>>()
+                    autofacContext.Resolve<IEnumerable<LoggerProvider>>()
                 )
                 {
-                        
-                };
-            }).As<LoggerContext>()
 
-            // Lifetime
-            .OnActivated(handler =>
+                };
+            })
+            .As<LoggerContext>()
+            .AutoActivate()
+            .SingleInstance()
+            .OnActivated(handler => { handler.Instance.Start();});
+
+            // LoggerFactory
+            autofacBuilder.Register(autofacContext =>
             {
-                // Start
-                handler.Instance.Start();
-            })            
-            .AutoActivate().SingleInstance();
+                return autofacContext.Resolve<LoggerContext>()?.LoggerFactory;
+            })
+            .As<LoggerFactory>()
+            .ExternallyOwned();
+
+            // Logger
+            autofacBuilder.RegisterGeneric
+            (
+                typeof(ResolveLogger<>)
+            )
+            .As(typeof(Logger<>))
+            .ExternallyOwned();
         }
     }
 }

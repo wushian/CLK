@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions
 {
-    public sealed class DistributedTransactionScopeFactory : TransactionScopeFactory
+    public sealed class DistributedTransactionProvider : TransactionProvider
     {
         // Constructors
-        public DistributedTransactionScopeFactory()
+        public DistributedTransactionProvider()
         {
 
         }
@@ -26,16 +26,16 @@ namespace CLK.Transactions
 
 
         // Methods
-        public TransactionScopeProvider Create()
+        public Transaction Create()
         {
             // TransactionScope
             System.Transactions.TransactionScope transactionScope = new System.Transactions.TransactionScope();
 
-            // TransactionScopeProvider
-            TransactionScopeProvider transactionScopeProvider = new DistributedTransactionScopeProvider(transactionScope);
+            // Transaction
+            Transaction transaction = new DistributedTransaction(transactionScope);
 
             // Return
-            return transactionScopeProvider;
+            return transaction;
         }
     }
 }

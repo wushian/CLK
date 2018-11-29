@@ -1,21 +1,19 @@
-﻿using CLK.Data.SqlClient;
-using CLK.Transactions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CLK.Transactions.SqlClient
+namespace CLK.Transactions
 {
-    public sealed class SqlTransactionScopeProvider : TransactionScopeProvider
+    public sealed class DistributedTransaction : Transaction
     {
         // Fields
-        private readonly SqlTransactionScope _transactionScope = null;
+        private readonly System.Transactions.TransactionScope _transactionScope = null;
 
 
         // Constructors
-        public SqlTransactionScopeProvider(SqlTransactionScope transactionScope)
+        public DistributedTransaction(System.Transactions.TransactionScope transactionScope)
         {
             #region Contracts
 
@@ -23,7 +21,7 @@ namespace CLK.Transactions.SqlClient
 
             #endregion
 
-            // Default
+            // Arguments
             _transactionScope = transactionScope;
         }
 

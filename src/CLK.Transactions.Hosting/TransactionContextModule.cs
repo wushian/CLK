@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions.Hosting
 {
-    public class TransactionContextModule : ServiceModule
+    public class TransactionContextModule : PlatformModule
     {
         // Methods
         protected override void Load(ContainerBuilder autofacBuilder)
@@ -21,23 +21,35 @@ namespace CLK.Transactions.Hosting
 
             // TransactionContext
             autofacBuilder.Register(autofacContext =>
-            {                
+            {
                 return new TransactionContext
                 (
-                    autofacContext.Resolve<TransactionScopeFactory>()
+                    autofacContext.Resolve<IEnumerable<TransactionProvider>>()
                 )
                 {
-                        
-                };
-            }).As<TransactionContext>()
 
-            // Lifetime
-            .OnActivated(handler =>
+                };
+            })
+            .As<TransactionContext>()
+            .AutoActivate()
+            .SingleInstance()
+            .OnActivated(handler => { handler.Instance.Start(); });
+
+            // TransactionFactory
+            autofacBuilder.Register(autofacContext =>
             {
-                // Start
-                TransactionContext.Initialize(handler.Instance).Start();
-            })            
-            .AutoActivate().SingleInstance();
+                return autofacContext.Resolve<TransactionContext>()?.TransactionFactory;
+            })
+            .As<TransactionFactory>()
+            .ExternallyOwned();
+
+            // Transaction
+            autofacBuilder.Register(autofacContext =>
+            {
+                return autofacContext.Resolve<TransactionContext>()?.BeginTransaction();
+            })
+            .As<Transaction>()
+            .ExternallyOwned();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CLK.Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace CLK.AspNetCore
 {
-    internal static class AssemblyControllerExtension
+    internal static class AssemblyControllersExtension
     {
         // Methods
-        public static void AddAssemblyController(this IMvcCoreBuilder builder, string controllerFilename)
+        public static void AddAssemblyControllers(this IMvcCoreBuilder builder, string controllerFilename)
         {
             #region Contracts
 

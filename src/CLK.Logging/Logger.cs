@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CLK.Logging
 {
-    public interface Logger<TCategory>
+    public interface Logger
     {
         // Methods
         void Debug(string message, Exception exception = null, [CallerMemberName]string methodName = "");
@@ -19,5 +19,10 @@ namespace CLK.Logging
         void Error(string message, Exception exception = null, [CallerMemberName]string methodName = "");
 
         void Fatal(string message, Exception exception = null, [CallerMemberName]string methodName = "");
+    }
+
+    public interface Logger<TCategory> : Logger
+    {
+
     }
 }

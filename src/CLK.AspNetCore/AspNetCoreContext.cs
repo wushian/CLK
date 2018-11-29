@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Autofac.Extensions.DependencyInjection;
 using CLK.Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CLK.AspNetCore
 {
-    public class AspnetContext : IDisposable
+    public class AspNetCoreContext : IDisposable
     {
         // Fields
         private WebHostBuilder _webHostBuilder = null;
@@ -16,18 +17,17 @@ namespace CLK.AspNetCore
 
 
         // Constructors
-        public AspnetContext(AutofacContext autofacContext, string listenUrl, string controllerFilename)
+        public AspNetCoreContext(AutofacContext autofacContext, AspNetCoreOptions aspNetCoreOptions)
         {
             #region Contracts
 
             if (autofacContext == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
-            if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
+            if (aspNetCoreOptions == null) throw new ArgumentException();
 
             #endregion
 
             // WebHostBuilder
-            _webHostBuilder = new WebHostBuilder(autofacContext, listenUrl, controllerFilename);
+            _webHostBuilder = new WebHostBuilder(autofacContext, aspNetCoreOptions);
         }
 
         public void Start()
@@ -36,7 +36,7 @@ namespace CLK.AspNetCore
             if (_webHost != null) return;
 
             // WebHost
-            _webHost = _webHostBuilder.Create();
+            _webHost = _webHostBuilder.Build();
             if (_webHost == null) throw new InvalidOperationException("_webHost=null");
 
             // Start
@@ -59,31 +59,27 @@ namespace CLK.AspNetCore
             // Fields
             private readonly AutofacContext _autofacContext = null;
 
-            private readonly string _listenUrl = null;
-
-            private readonly string _controllerFilename = null;
+            private readonly AspNetCoreOptions _aspNetCoreOptions = null;
 
 
             // Constructors
-            public WebHostBuilder(AutofacContext autofacContext, string listenUrl, string controllerFilename)
+            public WebHostBuilder(AutofacContext autofacContext, AspNetCoreOptions aspNetCoreOptions)
             {
                 #region Contracts
 
                 if (autofacContext == null) throw new ArgumentException();
-                if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException();
-                if (string.IsNullOrEmpty(controllerFilename) == true) throw new ArgumentException();
+                if (aspNetCoreOptions == null) throw new ArgumentException();
 
                 #endregion
 
                 // Default
                 _autofacContext = autofacContext;
-                _listenUrl = listenUrl;
-                _controllerFilename = controllerFilename;
+                _aspNetCoreOptions = aspNetCoreOptions;
             }
 
 
             // Methods
-            public IWebHost Create()
+            public IWebHost Build()
             {
                 // Create
                 IWebHost webHost = null;
@@ -105,7 +101,7 @@ namespace CLK.AspNetCore
                     .UseKestrel()
 
                     // Listen
-                    .UseUrls(_listenUrl)
+                    .UseUrls(_aspNetCoreOptions.ListenUrl)
 
                     // Build       
                     .Build();
@@ -160,24 +156,94 @@ namespace CLK.AspNetCore
                     options.Conventions.AddNamespaceRoute();
 
                     // Filters
-                    options.Filters.AddActionLogger();
+                    options.Filters.AddActionLog();
                 })
                 .AddJsonFormatters()
-                .AddAssemblyController(_controllerFilename);
+                .AddAssemblyControllers(_aspNetCoreOptions.ControllerFileName);
+                
+                // Return
+                return new WebHostServiceProvider(_autofacContext, services);
+            }
+        }
 
-                // ServiceProvider
-                IServiceProvider serviceProvider = null;
+        private class WebHostServiceProvider : IServiceProvider, ISupportRequiredService, IDisposable
+        {
+            // Fields
+            private AutofacScope _serviceScope = null;
+
+            private AutofacServiceProvider _serviceProvider = null;
+
+
+            // Constructors
+            public WebHostServiceProvider(AutofacContext autofacContext, IServiceCollection serviceCollection)
+            {
+                #region Contracts
+
+                if (autofacContext == null) throw new ArgumentException();
+                if (serviceCollection == null) throw new ArgumentException();
+
+                #endregion
+
+                // ServiceScope
+                _serviceScope = autofacContext.BeginScope((autofacBuilder) =>
                 {
                     // Register
-                    _autofacContext.RegisterServices(services);
+                    autofacBuilder.RegisterServices(serviceCollection);
+                });
+                _serviceScope.Start();
+            }
 
+            public void Dispose()
+            {
+                // Dispose
+                _serviceProvider?.Dispose();
+                _serviceScope?.Dispose();
+            }
+
+
+            // Properties
+            private AutofacServiceProvider ServiceProvider
+            {
+                get
+                {
                     // Create
-                    serviceProvider = new LazyAutofacServiceProvider(_autofacContext);
+                    if (_serviceProvider == null)
+                    {
+                        // ServiceProvider
+                        _serviceProvider = new AutofacServiceProvider(_serviceScope.Container);
+                    }
+                    if (_serviceProvider == null) throw new InvalidOperationException("_serviceProvider=null");
+
+                    // Return
+                    return _serviceProvider;
                 }
+            }
+
+
+            // Methods
+            public object GetService(Type serviceType)
+            {
+                #region Contracts
+
+                if (serviceType == null) throw new ArgumentException();
+
+                #endregion
 
                 // Return
-                return serviceProvider;
+                return this.ServiceProvider.GetService(serviceType);
             }
-        }        
+
+            public object GetRequiredService(Type serviceType)
+            {
+                #region Contracts
+
+                if (serviceType == null) throw new ArgumentException();
+
+                #endregion
+
+                // Return
+                return this.ServiceProvider.GetRequiredService(serviceType);
+            }
+        }
     }
 }

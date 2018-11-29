@@ -19,7 +19,7 @@ namespace CLK.Platform
         // Fields
         private readonly AutofacContext _autofacContext = null;
 
-        private List<PlatformHoster> _platformHosterList = null;
+        private IEnumerable<PlatformHoster> _platformHosterList = null;
 
 
         // Constructors
@@ -41,8 +41,13 @@ namespace CLK.Platform
                     _autofacContext.RegisterConfig(configFileName);
                 }
                 _autofacContext.RegisterConfig(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + Path.GetExtension(configFileName));
-            }
-            _autofacContext.RegisterInstance(typeof(AutofacContext), _autofacContext);
+
+                // RegisterAction
+                _autofacContext.RegisterAction((autofacBuilder) =>
+                {
+                    autofacBuilder.RegisterInstance(_autofacContext).As(typeof(AutofacContext)).ExternallyOwned();
+                });
+            }           
         }
 
         public void Start()
@@ -54,7 +59,7 @@ namespace CLK.Platform
             if (_autofacContext.IsRegistered<List<PlatformHoster>>() == true)
             {
                 // Create
-                _platformHosterList = _autofacContext.Resolve<List<PlatformHoster>>();
+                _platformHosterList = _autofacContext.Resolve<IEnumerable<PlatformHoster>>();
                 if (_platformHosterList == null) throw new InvalidOperationException("_platformHosterList=null");
 
                 // Start

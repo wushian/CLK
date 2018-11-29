@@ -182,7 +182,7 @@ namespace CLK.Autofac
                 autofacBuilder.RegisterInstance(type, implementer);
             });
         }
-
+                
 
         public void RegisterServices(IServiceCollection serviceList)
         {
@@ -200,6 +200,25 @@ namespace CLK.Autofac
             {
                 // Register
                 autofacBuilder.RegisterServices(serviceList);
+            });
+        }
+
+        public void RegisterAction(Action<ContainerBuilder> configurationAction)
+        {
+            #region Contracts
+
+            if (configurationAction == null) throw new ArgumentException();
+
+            #endregion
+
+            // Require
+            if (this.Container != null) throw new InvalidOperationException("this.Container!=null");
+
+            // Attach
+            _configurationActionList.Add((autofacBuilder) =>
+            {
+                // Register
+                configurationAction(autofacBuilder);
             });
         }
     }

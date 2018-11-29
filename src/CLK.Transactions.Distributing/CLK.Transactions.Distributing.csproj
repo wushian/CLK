@@ -42,8 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DistributedTransactionScopeFactory.cs" />
-    <Compile Include="DistributedTransactionScopeProvider.cs" />
+    <Compile Include="DistributedTransactionProvider.cs" />
+    <Compile Include="DistributedTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

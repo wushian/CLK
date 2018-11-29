@@ -9,60 +9,53 @@ namespace CLK.Logging
     public class LoggerContext : IDisposable
     {
         // Fields
-        private readonly IEnumerable<LoggerFactory> _loggerFactoryList = null;
+        private readonly IEnumerable<LoggerProvider> _loggerProviderList = null;
 
 
         // Constructors
-        public LoggerContext(IEnumerable<LoggerFactory> loggerFactoryList)
+        public LoggerContext(IEnumerable<LoggerProvider> loggerProviderList)
         {
             #region Contracts
 
-            if (loggerFactoryList == null) throw new ArgumentException();
+            if (loggerProviderList == null) throw new ArgumentException();
 
             #endregion
 
             // Default
-            _loggerFactoryList = loggerFactoryList;
+            _loggerProviderList = loggerProviderList;
+
+            // LoggerFactory
+            this.LoggerFactory = new CompositeLoggerFactory(loggerProviderList);
         }
 
         public void Start()
         {
-            // Start
-            foreach (var loggerFactory in _loggerFactoryList)
+            // LoggerProviderList
+            foreach (var loggerProvider in _loggerProviderList)
             {
-                loggerFactory.Start();
+                loggerProvider.Start();
             }
         }
 
         public void Dispose()
         {
-            // Dispose
-            foreach (var loggerFactory in _loggerFactoryList)
+            // LoggerProviderList
+            foreach (var loggerProvider in _loggerProviderList)
             {
-                loggerFactory.Dispose();
+                loggerProvider.Dispose();
             }
         }
 
 
+        // Properties
+        public LoggerFactory LoggerFactory { get; private set; }
+
+
         // Methods
-        internal IEnumerable<Logger<TCategory>> Create<TCategory>()
+        public Logger<TCategory> Create<TCategory>()
         {
-            // Result
-            List<Logger<TCategory>> loggerList = new List<Logger<TCategory>>();
-
-            // LoggerFactory
-            foreach (var loggerFactory in _loggerFactoryList)
-            {
-                // Create
-                var logger = loggerFactory.Create<TCategory>();
-                if (logger == null) throw new InvalidOperationException("logger=null");
-
-                // Add
-                loggerList.Add(logger);
-            }           
-
             // Return
-            return loggerList;
+            return this.LoggerFactory.Create<TCategory>();
         }
     }
 }

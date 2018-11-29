@@ -24,7 +24,7 @@ namespace CLK.Autofac
             if (string.IsNullOrEmpty(configFileName) == true) throw new ArgumentException();
 
             #endregion
-            
+
             // ConfigFileList
             var configFileList = FileHelper.GetAllFile(configFileName);
             if (configFileList == null) throw new InvalidOperationException();
@@ -141,7 +141,7 @@ namespace CLK.Autofac
             #endregion
 
             // Register
-            autofacBuilder.RegisterInstance(instance).AsImplementedInterfaces();
+            autofacBuilder.RegisterInstance(instance).As(type);
         }
 
         public static void RegisterGeneric(this ContainerBuilder autofacBuilder, Type type, Type implementer)

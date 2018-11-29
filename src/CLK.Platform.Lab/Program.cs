@@ -21,12 +21,12 @@ namespace CLK.Platform.Lab
                 var logger = platformContext.Resolve<Logger<Program>>();
                 logger.Debug("Clark");
 
-                // TransactionScope
-                using (var transactionScope = new TransactionScope())
+                // Transaction
+                using (var transaction = platformContext.Resolve<Transaction>())
                 {
-                    transactionScope.Complete();
+                    transaction.Complete();
                 }
-
+                
                 // End
                 Console.ReadLine();
             }

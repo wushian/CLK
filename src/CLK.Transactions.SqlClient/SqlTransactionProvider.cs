@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace CLK.Transactions.SqlClient
 {
-    public sealed class SqlTransactionScopeFactory : TransactionScopeFactory
+    public sealed class SqlTransactionProvider : TransactionProvider
     {
         // Constructors
-        public SqlTransactionScopeFactory()
+        public SqlTransactionProvider()
         {
 
         }
@@ -28,16 +28,16 @@ namespace CLK.Transactions.SqlClient
 
 
         // Methods
-        public TransactionScopeProvider Create()
+        public Transaction Create()
         {            
             // TransactionScope
             var transactionScope = new SqlTransactionScope();
 
-            // TransactionScopeProvider
-            var transactionScopeProvider = new SqlTransactionScopeProvider(transactionScope);
+            // Transaction
+            var transaction = new SqlTransaction(transactionScope);
 
             // Return
-            return transactionScopeProvider;
+            return transaction;
         }
     }
 }

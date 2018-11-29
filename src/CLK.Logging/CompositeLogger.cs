@@ -5,24 +5,23 @@ using System.Text;
 
 namespace CLK.Logging
 {
-    public class LoggerCollection<TCategory> : Logger<TCategory>
+    internal class CompositeLogger<TCategory> : Logger<TCategory>
     {
         // Fields
         private readonly IEnumerable<Logger<TCategory>> _loggerList = null;
 
 
         // Constructors
-        public LoggerCollection(LoggerContext loggerContext)
+        public CompositeLogger(IEnumerable<Logger<TCategory>> loggerList)
         {
             #region Contracts
 
-            if (loggerContext == null) throw new ArgumentException();
+            if (loggerList == null) throw new ArgumentException(nameof(loggerList));
 
             #endregion
 
-            // LoggerList
-            _loggerList = loggerContext.Create<TCategory>();
-            if (_loggerList == null) throw new InvalidOperationException("_loggerList=null");
+            // Default
+            _loggerList = loggerList;
         }
 
 
