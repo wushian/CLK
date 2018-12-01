@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="_old\**" />
+    <EmbeddedResource Remove="_old\**" />
+    <None Remove="_old\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
@@ -12,9 +18,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj" />
-    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj" />
     <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj" />
     <ProjectReference Include="..\CLK.Services\CLK.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 
 </Project>

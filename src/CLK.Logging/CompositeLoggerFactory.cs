@@ -11,7 +11,7 @@ namespace CLK.Logging
 
         private readonly IEnumerable<LoggerProvider> _loggerProviderList = null;
 
-        private readonly Dictionary<Type, Logger> _loggerDictionary = null;
+        private readonly Dictionary<Type, object> _loggerDictionary = null;
 
 
         // Constructors
@@ -25,7 +25,7 @@ namespace CLK.Logging
 
             // Default
             _loggerProviderList = loggerProviderList;
-            _loggerDictionary = new Dictionary<Type, Logger>();
+            _loggerDictionary = new Dictionary<Type, object>();
         }
 
 

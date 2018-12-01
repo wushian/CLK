@@ -45,7 +45,7 @@ namespace CLK.Platform
                 // RegisterAction
                 _autofacContext.RegisterAction((autofacBuilder) =>
                 {
-                    autofacBuilder.RegisterInstance(_autofacContext).As(typeof(AutofacContext)).ExternallyOwned();
+                    autofacBuilder.RegisterInstance(_autofacContext).As(typeof(AutofacScope)).ExternallyOwned();
                 });
             }           
         }
