@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="appsettings.json">
+    <Content Include="CLK.AspNetCore.Lab.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -62,19 +62,42 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj">
-      <Project>{97e76dc1-3a4f-4f05-aaab-99d7ef0c7474}</Project>
-      <Name>CLK.AspNetCore</Name>
+    <ProjectReference Include="..\CLK.AspNetCore.Hosting\CLK.AspNetCore.Hosting.csproj">
+      <Project>{43affe6c-011f-481a-a9a1-a9440915bc80}</Project>
+      <Name>CLK.AspNetCore.Hosting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging.Hosting\CLK.Logging.Hosting.csproj">
+      <Project>{16113871-01c9-4cb6-aab8-7d73c9cd6c99}</Project>
+      <Name>CLK.Logging.Hosting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging.Log4net\CLK.Logging.Log4net.csproj">
+      <Project>{7afec0ad-36a8-4fc3-b7ad-9655c77a788a}</Project>
+      <Name>CLK.Logging.Log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Logging\CLK.Logging.csproj">
+      <Project>{92569f47-4aa2-44af-9119-0f2e27cbc5d1}</Project>
+      <Name>CLK.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Platform\CLK.Platform.csproj">
+      <Project>{76cf9425-8c39-4f1a-8d6e-338d19770c94}</Project>
+      <Name>CLK.Platform</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLK.Services\CLK.Services.csproj">
       <Project>{d5f9a388-d6da-4e33-a42d-9fb555d839fc}</Project>
       <Name>CLK.Services</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc">
-      <Version>2.1.3</Version>
-    </PackageReference>
+    <ProjectReference Include="..\CLK.Transactions.Hosting\CLK.Transactions.Hosting.csproj">
+      <Project>{ef80e2b4-e91d-4f42-827f-1cb1867ece13}</Project>
+      <Name>CLK.Transactions.Hosting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Transactions.SqlClient\CLK.Transactions.SqlClient.csproj">
+      <Project>{f0c8a089-0d0f-444c-ade3-79f9cd75c014}</Project>
+      <Name>CLK.Transactions.SqlClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CLK.Transactions\CLK.Transactions.csproj">
+      <Project>{afa21d79-cb98-4723-9fe0-08a308cd9822}</Project>
+      <Name>CLK.Transactions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,19 @@
+﻿{
+  "components": [
+
+    // CLK.Logging.LoggerProvider
+    {
+      "type": "CLK.Logging.Log4net.Log4netLoggerProvider, CLK.Logging.Log4net",
+      "services": [ { "type": "CLK.Logging.LoggerProvider, CLK.Logging" } ],
+      "ownership": "external"
+    },
+
+    // CLK.Transactions.TransactionProvider
+    {
+      "type": "CLK.Transactions.SqlClient.SqlTransactionProvider, CLK.Transactions.SqlClient",
+      "services": [ { "type": "CLK.Transactions.TransactionProvider, CLK.Transactions" } ],
+      "ownership": "external"
+    }
+
+  ]
+}

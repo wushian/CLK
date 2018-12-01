@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CLK.Logging;
+using CLK.Platform;
 
 namespace CLK.AspNetCore.Lab
 {
@@ -17,8 +19,27 @@ namespace CLK.AspNetCore.Lab
             // Setting
             Program.ShowConsole();
 
-            // Run
-            CLK.AspNetCore.Application.Run();
+            // PlatformContext
+            using (var platformContext = new PlatformContext())
+            {
+                // Start
+                platformContext.Start();
+
+                // Logger
+                var logger = platformContext.Resolve<Logger<Program>>();
+
+                // Execute
+                logger?.Info("===================");
+                logger?.Info("Application started");
+                {
+                    var runEvent = new ManualResetEvent(false);
+                    Console.WriteLine("Application started. Press Ctrl + C to shut down.");
+                    Console.CancelKeyPress += (sender, eventArgs) => { runEvent.Set(); eventArgs.Cancel = true; };
+                    runEvent.WaitOne();
+                }
+                logger?.Info("Application ended");
+                logger?.Info("===================");
+            }
         }
     }
 

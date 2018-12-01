@@ -56,7 +56,7 @@ namespace CLK.Platform
             _autofacContext.Start();
 
             // PlatformHosterList
-            if (_autofacContext.IsRegistered<List<PlatformHoster>>() == true)
+            if (_autofacContext.IsRegistered<IEnumerable<PlatformHoster>>() == true)
             {
                 // Create
                 _platformHosterList = _autofacContext.Resolve<IEnumerable<PlatformHoster>>();

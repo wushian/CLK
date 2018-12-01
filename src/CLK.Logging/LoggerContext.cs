@@ -25,7 +25,7 @@ namespace CLK.Logging
             _loggerProviderList = loggerProviderList;
 
             // LoggerFactory
-            this.LoggerFactory = new CompositeLoggerFactory(loggerProviderList);
+            this.LoggerFactory = new LoggerFactory(loggerProviderList);
         }
 
         public void Start()
@@ -56,6 +56,12 @@ namespace CLK.Logging
         {
             // Return
             return this.LoggerFactory.Create<TCategory>();
+        }
+
+        public Logger<TCategory> Create<TCategory>(TCategory category)
+        {
+            // Return
+            return this.Create<TCategory>();
         }
     }
 }

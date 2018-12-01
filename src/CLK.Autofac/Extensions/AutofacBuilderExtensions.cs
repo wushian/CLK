@@ -117,19 +117,6 @@ namespace CLK.Autofac
         }
 
 
-        public static void RegisterType(this ContainerBuilder autofacBuilder, Type type)
-        {
-            #region Contracts
-
-            if (autofacBuilder == null) throw new ArgumentException();
-            if (type == null) throw new ArgumentException();
-
-            #endregion
-
-            // Register
-            autofacBuilder.RegisterType(type);
-        }
-
         public static void RegisterInstance(this ContainerBuilder autofacBuilder, Type type, object instance)
         {
             #region Contracts

@@ -5,14 +5,14 @@ using System.Text;
 
 namespace CLK.Logging
 {
-    internal class CompositeLogger<TCategory> : Logger<TCategory>
+    internal class LoggerCollection<TCategory> : Logger<TCategory>
     {
         // Fields
         private readonly IEnumerable<Logger<TCategory>> _loggerList = null;
 
 
         // Constructors
-        public CompositeLogger(IEnumerable<Logger<TCategory>> loggerList)
+        public LoggerCollection(IEnumerable<Logger<TCategory>> loggerList)
         {
             #region Contracts
 

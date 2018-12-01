@@ -22,8 +22,4 @@
     <ProjectReference Include="..\CLK.Services\CLK.Services.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
 </Project>

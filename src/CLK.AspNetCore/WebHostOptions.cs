@@ -10,29 +10,34 @@ namespace CLK.AspNetCore
     public class WebHostOptions
     {
         // Constructors
-        public WebHostOptions(AutofacScope autofacScope, IEnumerable<MiddlewareLauncher> middlewareLauncherList, string listenUrl = @"http://*:5000")
+        public WebHostOptions(AutofacScope autofacScope, string listenUrl = @"http://*:5000", IEnumerable<MiddlewareLauncher> middlewareLauncherList = null)
         {
             #region Contracts
 
             if (autofacScope == null) throw new ArgumentException(nameof(autofacScope));
-            if (middlewareLauncherList == null) throw new ArgumentException(nameof(middlewareLauncherList));
             if (string.IsNullOrEmpty(listenUrl) == true) throw new ArgumentException(nameof(listenUrl));
 
             #endregion
 
             // Default
-            this.ListenUrl = listenUrl;
             this.AutofacScope = autofacScope;
-            this.MiddlewareLauncherList = middlewareLauncherList;
+            this.ListenUrl = listenUrl;
+
+            // MiddlewareLauncherList
+            if (middlewareLauncherList == null)
+            {
+                middlewareLauncherList = new List<MiddlewareLauncher>();
+            }
+            this.MiddlewareLauncherList = this.ConfigureMiddlewareLauncher(middlewareLauncherList.ToList());
         }
 
 
         // Properties
-        public string ListenUrl { get; private set; }
-
         public AutofacScope AutofacScope { get; private set; }
 
-        public IEnumerable<MiddlewareLauncher> MiddlewareLauncherList { get; private set; }
+        public string ListenUrl { get; private set; }
+
+        public List<MiddlewareLauncher> MiddlewareLauncherList { get; private set; }
 
 
         // Methods
@@ -40,6 +45,18 @@ namespace CLK.AspNetCore
         {
             // Return
             return this.MiddlewareLauncherList.OfType<TMiddlewareLauncher>().FirstOrDefault();
+        }
+
+        protected virtual List<MiddlewareLauncher> ConfigureMiddlewareLauncher(List<MiddlewareLauncher> middlewareLauncherList)
+        {
+            #region Contracts
+
+            if (middlewareLauncherList == null) throw new ArgumentException(nameof(middlewareLauncherList));
+
+            #endregion
+
+            // Return
+            return middlewareLauncherList;
         }
     }
 }

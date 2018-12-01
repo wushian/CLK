@@ -73,10 +73,6 @@
       <Project>{76cf9425-8c39-4f1a-8d6e-338d19770c94}</Project>
       <Name>CLK.Platform</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CLK.Transactions.Distributing\CLK.Transactions.Distributing.csproj">
-      <Project>{d4dacfac-45eb-402e-a44a-1d8adcc88f36}</Project>
-      <Name>CLK.Transactions.Distributing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CLK.Transactions.Hosting\CLK.Transactions.Hosting.csproj">
       <Project>{ef80e2b4-e91d-4f42-827f-1cb1867ece13}</Project>
       <Name>CLK.Transactions.Hosting</Name>

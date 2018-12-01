@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CLK.AspNetCore\CLK.AspNetCore.csproj" />
+    <ProjectReference Include="..\CLK.Autofac\CLK.Autofac.csproj" />
+    <ProjectReference Include="..\CLK.Platform\CLK.Platform.csproj" />
+    <ProjectReference Include="..\CLK.Services\CLK.Services.csproj" />
+  </ItemGroup>
+
+</Project>
